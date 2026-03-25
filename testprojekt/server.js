@@ -14,7 +14,6 @@ import express from "express";
 import { createServer } from "http"; // et express ja socket koos töötaksid
 import { Server } from "socket.io";
 
-// testpush uuel oksal
 
 /* ==========> SERVERIÜHENDUS, handshake, CLIENT-i PORT <========== */
 const app = express(); // info "vahendaja"
@@ -59,6 +58,7 @@ let raceStartTime = null; //hasStarted-iga algab stopperi ajaarvestus
 let latestLapTime = null; // kuvatav tulemus (hiljem püüan lisada kiireimaga, aga kõigepealt tahaks toimima saada)
 let bestLapTime = null;
 let finalLapDone = false; // et keelata ajavõtunupu kasutus pärast taimeri nulli jooksmist ja sellejärgset viimast salvestamist
+let lapCount = null; // kuna peab ka loendama, mitmes ring on käsil
 
 /* KUI NÜÜD TAHTA LISADA RAJANUPPE STOPPERILE JUURDE,
 siis peab hakkama kasutama objektiloendit (Array of Objects), kus
@@ -70,8 +70,8 @@ edastad need ka emitState() sees ja emit-is:
 // sisse viia see max 8tk loogika, mis on frontdesk pärusmaa, aga küllap
 // arrayle max pikkus ja sisu ise on add-funktsioon ja mingisugune set() vms)
 let racers = [ 
-{id: 1, name: "racer 1", latestLapTime: null, bestLapTime: null, lastLapTimestamp: null, isFinished: false},
-{id: 2, name: "racer 2", latestLapTime: null, bestLapTime: null, lastLapTimestamp: null, isFinished: false}
+{id: 1, name: "racer 1", lapCount: 0, latestLapTime: null, bestLapTime: null, lastLapTimestamp: null, isFinished: false},
+{id: 2, name: "racer 2", lapCount: 0, latestLapTime: null, bestLapTime: null, lastLapTimestamp: null, isFinished: false}
 ];
 /* kui tahan hiljem id-ga otsida, SIIS PEAN MEELES PIDAMA, ET LOENDI
 INDEKSEERIMINE ALGAB 0-GA ja seega peaks ka indeksid olema 0,1 ...
@@ -144,10 +144,11 @@ io.on("connection", (socket) => { // socket, sest
             // kui ka ringiaegade avestuse algus)
             finalLapDone = false; // (selle muudame tõeseks alles siis, kui taimer on nullis)
 
-            //igal sõitjal oma isikliku algusaja sättimine taimeri käivituse hetkel:
+        /* vana, kus taimer ja stopper algasid samal ajal:
+        igal sõitjal oma isikliku algusaja sättimine taimeri käivituse hetkel:
             racers.forEach(r => {
                 r.lastLapTimestamp = now;
-            });
+            }); */
         }
         isPaused = !isPaused; 
         emitState();
@@ -183,12 +184,24 @@ io.on("connection", (socket) => { // socket, sest
         
         const now = Date.now(); // esmane nupuvajutus võtab algpunkti
 
-        // konkreetse sõitja algusaja/ületusaja defineerimine:
-        const startTime = racer.lastLapTimestamp || raceStartTime;
+        // ringi arvu loogika:
+        // kui ringide hulk on 0 või null,
+        if (racer.lapCount === 0 || racer.lapCount === null) {
+            racer.lapCount = 1; // siis muutub see 1ks
+            racer.lastLapTimestamp = now; // ja essal (1) jooneõletusel
+            // fikseerime sõitja
+            emitState(); // edastame muutused
+            return; // selles faasis arvutusi ei tee - need tulevad alles
+            // siis, kui lapCount on vähemalt 1
+        }
+        // konkreetse sõitja algusaja/ületusaja defineerimine,
+        // kui lapCount > 0 (algus kui 1, ringiaeg kui üle 2)
+        const startTime = racer.lastLapTimestamp;
         const elapsed = (now - startTime) / 1000; // aja arvutuskäik
         
         racer.latestLapTime = elapsed.toFixed(3); // 3 komakohta millisekundeid DISPLEI-VERSIOON!!
-        
+        racer.lapCount++; // ÄRA UNUSTA KA RINGI JUURDE LUGEDA!!
+
         // konkreetse sõitja parima aja arvestus:
         const currentLap = parseFloat(racer.latestLapTime); // stringist saadud ARV
         /* ja loome loogika parimaks ajaks LIHTSAMAL MOEL ehk
@@ -236,6 +249,7 @@ io.on("connection", (socket) => { // socket, sest
             racer.bestLapTime = null;
             racer.lastLapTimestamp = null;
             racer.isFinished = false;
+            racer.lapCount = 0;
         });
         // (et rajaloendi kuva oleks vastav ja ei näitaks eelmise sõidu aega)
         // taaskord kuulutatakse staatusemuutust üle süsteemi:

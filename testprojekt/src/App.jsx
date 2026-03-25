@@ -36,6 +36,9 @@ function App() {
   // lihtsalt omadusi/staatuseid juurde lisada ning neile kõigile pääseb
   // React-poolses koodis mugavalt ligi, lisamata uusi useState-isid
 
+  // leaderboardi current lap millisekundi visuaali tarbeks:
+  const [now, setNow] = useState(Date.now());
+
 /* ==========> STAATUSE SISU VAHENDAMINE (heartbeat ise, nupud)  <========== */  
   useEffect(() => {
     // serveripoolse südametukse (e kogu andme-objekti) "kuulamine":
@@ -51,6 +54,20 @@ function App() {
       socket.off("timer-tick");
     };
   }, []); // tühi array -> jooksuta vaid laadimisel 1x.
+
+  // useEffect arvutamaks leaderboardi visuaali tarbeks current
+  // lap-ile ka millisekundi kuva; pmst timestamp
+  useEffect(() => {
+
+    // pmst kliendipool "oletab" viimasest pulseeritud ajamärgisest
+    // tulenevalt aja möödumise millisekundites kuni järgmise data-ni
+    const ticker = setInterval(() => {
+      setNow(Date.now());
+    }, 50); // 50ms tagant edastamine sujuvaks visuaaliks
+    
+    return () => clearInterval(ticker); // loendamine lõpeb rakenduse sulgumisel
+    }, []);
+  
 
   // funktsioonid edastamaks infot host-serverile (react returnis kasutuseks):
   const toggleTimer = () => socket.emit("toggle-timer");
@@ -170,21 +187,36 @@ tabelis oli algul: {sortedRacers.map((racer, index) => {funktsioon loogelistes})
             */}
               <th>Pos</th>
               <th>Driver</th>
+              <th>Car</th>
+              <th>Lap</th>
+              <th>Live</th>
               <th>Latest Lap</th>
               <th>Best Lap</th>
             </tr>
           </thead>
           <tbody>
              {/* viitame ülal määratletud const-ile e sorteeritud sõitjad:*/}
-             {sortedRacers.map((racer, index) => (
+             {sortedRacers.map((racer, index) => {
+                let liveLapTime = "--:--:---"; // live-vaateks
+                // peame react-sisse looma funktsiooni, et racer-ite
+                // andmeid kuvada (scope-teema, mistap ei saa määratleda ülal):
+                if (racer.lastLapTimestamp && !racer.isFinished && !timerData?.isPaused) {
+                  const elapsed = (now - racer.lastLapTimestamp) / 1000;
+                  liveLapTime = formatLapDisplay(elapsed);
+                };
+                return (
                 <tr key={racer.id} className={index === 0 ? "first-place" : ""}>
                   {/* vorming: indeks 0 ehk essa koht saab klassi first-place omadused */}
                   <td>{index + 1}</td> {/* ehk POS on indeksi tõttu nihkes ja vaja paika arvutada */}
                   <td>{racer.name}</td>
+                  <td>TBD</td>
+                  <td>{racer.lapCount}</td>
+                  <td>{liveLapTime}</td> {/* juba "racer." määratletud */}
                   <td>{formatLapDisplay(racer.latestLapTime)}</td>
                   <td>{formatLapDisplay(racer.bestLapTime)}</td>
                 </tr>
-             ))}
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -217,7 +249,9 @@ tabelis oli algul: {sortedRacers.map((racer, index) => {funktsioon loogelistes})
                 ? (timerData?.hasStarted ? "Continue" : "Start")
                 : "Pause"}
               </button>
-              <button onClick={resetTimer}>Reset Timer</button>
+              <button onClick={resetTimer} className="end-session-button"><span>Confirm all racers have proceeded to paddock and</span>
+              <br></br>
+              END RACE SESSION</button>
             </>
           )}
         </div>
