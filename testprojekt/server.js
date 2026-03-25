@@ -14,6 +14,7 @@ import express from "express";
 import { createServer } from "http"; // et express ja socket koos töötaksid
 import { Server } from "socket.io";
 
+// testpush uuel oksal
 
 /* ==========> SERVERIÜHENDUS, handshake, CLIENT-i PORT <========== */
 const app = express(); // info "vahendaja"
