@@ -35,6 +35,12 @@ const timerDuration = isDev ? 60 : 600; // sekundites
 // 1min = 60 sek, seega 10min on 60x10=600
 // server hakkab määratud arvust allapoole lugema
 
+/* ==========> al. 25.03 STATE-SÜSTEEMILE ÜLEMINEK <========== */
+
+// loome vaikeoleku väljaspoolpool 'safe', 'hazard',
+// 'danger, 'finished' (, millest need kõik on in-session/active)
+let sessionStatus = "session-end";
+
 //NB! kui tahame TAIMERILE ka millisekundeid külge, siis see
 // mõistlik lahendada kliendipoolselt.
 
@@ -81,11 +87,22 @@ kui aga soovin ise id-sid (nt auto-gen), siis tuleb leidmisel kasutada find() */
 // edastada objektide id-d socket-emiti (record-lap) argumendina!
 
 /* ==========> STATE-i EDASTAMINE <========== */
-/* deklareerime tõhusamaks state-objekti jagamiseks tema väärtuse
-(e sisu) abimeetodiga: */
-const emitState = () => { /* tulevikus sarnane asi sisaldaks siis
- sessiooni ID-d, temaga seotud nimesid/sõitjaid ja sõidustaatust (safe, hazard..) jne */
+const emitState = () => {
     io.emit("timer-tick", {
+        secondsLeft,
+        sessionStatus,
+        hasStarted,
+        racers
+    });
+}
+
+/* STATE(status)-EELNE vers:
+deklareerime tõhusamaks state-objekti jagamiseks tema väärtuse
+(e sisu) abimeetodiga:
+const emitState = () => { /* tulevikus sarnane asi sisaldaks siis
+ sessiooni ID-d, temaga seotud nimesid/sõitjaid ja sõidustaatust (safe, hazard..) jne
+    io.emit("timer-tick", {
+        sessionStatus, // edastame front-endile
         secondsLeft,
         isPaused,
         hasStarted,
@@ -101,7 +118,7 @@ const emitState = () => { /* tulevikus sarnane asi sisaldaks siis
         // 0-erandi määratleme hiljem, allpool
         racers // kogu loendi sisu
     });
-};
+}; */
 
 /* ==========> COUNTDOWN (heartbeat taimer) <========== */
 setInterval(() => {
@@ -132,8 +149,35 @@ io.on("connection", (socket) => { // socket, sest
     // teistel (io) pole sama inffi uuesti vaja
     emitState(); // jällegi helperiga kogu objekti emit
 
-/* =========> TAIMER SEES/JÄTKAB/PAUS NUPP <========== */
-    socket.on("toggle-timer", () => { // kui klikatakse toggle-nuppu
+/* =========> TAIMERi KÄIVITUS <========== */
+    socket.on("toggle-timer", () => { 
+        // kui eelmine sess lõppenud, siis vajutus käivitab
+        // uue sõidusessiooni (roheline):
+        if (sessionStatus === "session-end") {
+
+            // käivitub taimer:
+            secondsLeft = timerDuration; // vastavalt dev v prod-build
+            // asendatakse taimeril seni olnu vaikeseadeks (60 v 600);
+
+            // ANDMETE KUSTUTAMINE
+            // tühjeneb eelmise sessi sõitjate isiklik ajalugu
+            // (leaderboardile ilmuvad uue sessi sõitjad):
+            racers.forEach(racer => {
+                racer.latestLapTime = null;
+                racer.bestLapTime = null;
+                racer.lastLapTimestamp = null;
+                racer.isFinished = false;
+                racer.lapCount = 0;
+            });
+
+            // UUS SESS
+            sessionStatus = "active";
+            hasStarted = true;
+        }
+        emitState();
+        
+        /* VANA STATUS-EELNE vers:
+        // kui klikatakse toggle-nuppu
         if (!hasStarted) {
             hasStarted = true; // siis onAlanud = tõene
             // taimeri käivitusega algab stopperiaja arvutusandmete kogumine:
@@ -148,10 +192,10 @@ io.on("connection", (socket) => { // socket, sest
         igal sõitjal oma isikliku algusaja sättimine taimeri käivituse hetkel:
             racers.forEach(r => {
                 r.lastLapTimestamp = now;
-            }); */
+            });
         }
         isPaused = !isPaused; 
-        emitState();
+        emitState(); */
 }); 
 
 /* ==========> STOPPERI JOONEÜLETUSNUPP <========== */

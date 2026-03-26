@@ -18,12 +18,13 @@ EHK kasutame vana-head  " * {} "
 
 /* ==========> ELEMENDIPÕHINE VORMING <========== */
 /* stiliseerime React-iga sätestatut: */
+
 .container {
   /*paneme taimeri-divi kogu ekraani täitma */
   min-height: 100vh;
   width: 100%;
 
-  /* lisame div-konteinerile tausta */
+  /* lisame div-konteinerile tausta: */
   background-image: url("./assets/bg.png");
   background-size: cover;
   background-position: center;
@@ -36,6 +37,19 @@ EHK kasutame vana-head  " * {} "
 
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
+
+.status-bar {
+  width: 100%;
+  height: 50px;
+  text-align: center;
+  font-weight: bold;
+  padding: 10px;
+}
+.status-bar.safe { background-color: greenyellow; color: white; }
+.status-bar.sessionEnd,
+.status-bar.danger { background-color: red; color: white; }
+.status-bar.hazard { background-color: goldenrod; color: black;}
+.status-bar.finished { background-image: url("./assets/ruut.png"); background-repeat: repeat; }
 
 .leaderboard {
   display: flex;

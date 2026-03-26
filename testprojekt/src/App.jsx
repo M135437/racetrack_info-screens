@@ -176,7 +176,10 @@ tabelis oli algul: {sortedRacers.map((racer, index) => {funktsioon loogelistes})
 /* ==========> REACT (ui loogika, mitte vorming/paigutus/stiilid) <========== */
   return (
     <div className="container">
-      <h3>{timerData?.hasStarted ? "Race in progress.." : "Ready to start.."}</h3>
+    {timerData?.sessionStatus === "finished" && (
+      <div className="status-bar finished">RACE ENDED - FINAL RESULTS:</div>
+    )}
+      <h3>{timerData?.hasStarted ? "Race in progress.." : ""}</h3>
       <div className="leaderboard">
         <h2>Current Standings: </h2>
         <table>
@@ -235,8 +238,7 @@ tabelis oli algul: {sortedRacers.map((racer, index) => {funktsioon loogelistes})
           : "Loading..."
           }        
         </div>
-        <p>Look at my countdown, boy!</p>
-        <p>ONCE AGAIN!</p>
+        <p>Look at my UI, boy!</p>
         <div className="controls">
         {/* aa , kombineerides loogelised pluss kommentaaritähise
         saab vist React-koodi SISSE ka kommenteerida, vau.
@@ -244,7 +246,7 @@ tabelis oli algul: {sortedRacers.map((racer, index) => {funktsioon loogelistes})
         ALLES SIIS, kui on ka objektilt saadud andmed olemas */}
           {timerData && (
             <>
-             <button onClick={toggleTimer}>
+             <button onClick={toggleTimer} className={timerData.sessionStatus === "safe"}>
                {timerData?.isPaused
                 ? (timerData?.hasStarted ? "Continue" : "Start")
                 : "Pause"}
