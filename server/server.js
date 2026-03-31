@@ -26,6 +26,13 @@ io.on("connection", (socket) => {
     console.log("client connected:", socket.id);
 });
 
+/*io.on("connection", (socket) => {
+    console.log("client connected:", socket.id);
+
+    socket.emit("hello", "backend works");
+});*/ //for testing
+
+
 server.listen(3000, () => {
     console.log("Server running on port 3000");
 });
