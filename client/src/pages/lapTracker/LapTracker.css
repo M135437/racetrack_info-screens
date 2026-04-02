@@ -1,0 +1,117 @@
+/* NB! esialgu jätan õpikommentaarid sisse, aga enne main-i
+    merge-i võtan maha (mul on nii lihtsam õppida)*/
+
+/* global border-box peaks saama kaetud app.css-ga */
+
+.lap-container {
+    height: 100vh; /* 100 prosa kogukõrgusesst */
+    width: 100vw; /* 100 prosa kogulaiusest */
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    overflow: hidden; /* ei võimalda skrollimist */
+}
+.debug-timer {
+  /* minimeerime testala suuruse
+  hiljem saan ümber kohaldada header-iks ja lisada
+  vb toggle full-screen siia */
+  flex: 0 0 auto;
+  text-align: center;
+  padding-bottom: 5px;
+}
+.waiting-screen {
+  animation: fadeIn 1s ease-in;
+}
+@keyframes fadeIn { /* animatsiooniinff vaiketekstile: */
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.lap-tracker-ui {
+  display: flex;
+  height: 100%; /* tagab, et iga div täidab kogu oma ala laiuse */
+  /* vaatan, kuidas visuaalselt on, enne kui lisan äärised (border) */
+}
+/* lisame animatsiooni e keyframes, et nupud ei ilmuks *plaksti!*
+ette, vaid sujuvalt: */
+@keyframes slideIn {
+  from { /* ilmumise algpunkt */
+    opacity: 0; /* nähtamatust */
+    transform: translateY(-30px); /* y-teljel 20px kauguselt*/
+  }
+  to { /* lõppunkt */
+    opacity: 1; /* läbipaistmatuks */
+    transform: translateY(0); /* klassiga ettenähtud asukoht*/
+  }
+}
+.racers-grid { /* vaikimisi e portreevaade */
+  flex: 1; /* iga sõitja ala koguruudustikus sama */
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* portrait, max 2 nuppu kõrvuti */
+  grid-auto-rows: 1fr; /* laieneb automaatselt */
+  /*gap: 1px;*/
+  width: 100%;
+  /*vana:
+  flex-wrap: wrap; /* kui lisada objekte juurde, siis kui enam
+  ühte ritta ei mahu, luuakse uus rida jne
+  align-items: stretch; /* tagab sama kõrguse */
+  animation: slideIn 1s ease-out forwards; /* keyframes-id */
+}
+/* siit landscape-view stiil, mis käivitub vaid siis, kui ekraan väga lai
+või kui tablet ise spetsiifiliselt landscape mode-is */
+@media screen and (min-width: 768px) and (orientation: landscape) {
+  .racers-grid {
+    /* muundame spetsiifiliselt max-tulbad: */
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* megasuure nupu saavutamine: */
+.lap-button {
+  width: 100%;
+  height: 100%;
+  font-size: 3rem; /* hästi nähtav */
+  font-weight: bold;
+  text-transform: uppercase;
+  border-radius: 0; /* et nuppudel poleks kumerad nurgad */
+  box-shadow: 5px 5px 3px rgba(193, 255, 94, 0.8) inset;
+  transition: all 0.08s ease-in-out;
+  display: block; /* tagab täislaiuse ja et tekst on keskel */
+  outline: none !important; /* et lahti saada koledast vaikimisi sinisest joonest */
+  -webkit-tap-highlight-color: transparent;
+  /* seni ükski neist outline none-idest jne ei eemaldanud sinist joonekest;
+  pole high-priority, nii et kunagi hiljem vb tegeleb edasi */
+}
+.lap-button:hover { /* tableti tõttu hiljem kustutan. võib näida "kinni kiilunud"*/
+  outline: none !important;
+  outline: 0 !important;
+  cursor: pointer;
+  opacity: 0.9;
+  /* VÕI siis lisan @media abil, et ainult clickable-seadmetes toimib; näis*/
+}
+.lap-button.active {
+  background-color: greenyellow;
+  color: white;
+  outline: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+.lap-button.active:active { /* nupuvajutuse hetkel muudatused: */
+  transform: scale(0.98); /* "vajub" ekraani sisse */
+  filter: brightness(1.1); /* "kumab" kergelt*/
+}
+.lap-button:focus {
+  outline: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+.lap-button:focus-visible {
+  outline: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+.lap-button.disabled {
+  background-color: darkolivegreen;
+  box-shadow: 5px 5px 3px rgba(55, 71, 9, 1) inset;
+  color: grey;
+  cursor: not-allowed;
+}
