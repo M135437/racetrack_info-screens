@@ -15,3 +15,5 @@ const EVENTS = {
     RACE_FINISHED: "race:finished",     // back-end announces end of specific race
     SESSION_ENDED: "race:sessionEnded"  // back-end confirms end of session as per race control ask or if timer ran out and triggers end of racing session
 }
+
+export default EVENTS;
