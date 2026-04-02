@@ -1,13 +1,13 @@
 let state = {
 	races: [
 	 	{
-		id: race.id,		// int
-		status: races.race1.status, 	// string "upcoming", "started", "finished" // NB! duplic hasStarted&isFinished
-		startTimeStamp: races.race1.startTimeStamp,	// LocalDateTime
-		secondsLeft: races.race1.secondsLeft,	// int
-		startTime: races.race1.startTime,		// LocalDateTime
-		hasStarted: races.race1.hasStarted, 	// boolean
-		isFinished: races.race1.isFinished, 	// boolean
+		id: 9,		// int  // race.id
+		status: 'started', 	// string "upcoming", "started", "finished" // races.race1.status // NB! duplic hasStarted&isFinished
+		startTimeStamp: 1775123702223,	// LocalDateTime // races.race1.startTimeStamp
+		secondsLeft: 100641 ,	// int milliseconds // races.race1.secondsLeft
+		startTime: 1775123702223,		// LocalDateTime // races.race1.startTime
+		hasStarted: true, 	// boolean // races.race1.hasStarted
+		isFinished: false, 	// boolean // races.race1.isFinished
 		racers: [
 			{
 			id: 7,		                    // int (incrementing) // racers.racer1.id
