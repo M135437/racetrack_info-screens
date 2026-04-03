@@ -3,12 +3,13 @@ let sessions = []
 let sessionIdCounter = 1
 
 //defining session-model (id, name, drivers, cars, status)
-function createSessionObject(name) {
+function createSessionObject(name, startTime) {
     return {
         id: sessionIdCounter++,
         name,
-        drivers: [],
-        cars: [],
+        startTime: startTime || new Date(), // specific time
+        maxSlots: 8, //default value, can be changed when creating session
+        freeSlotsLeft: 8, //default value, can be changed when drivers join
         status: 'pending' //later can be 'active' or 'completed'
     };
 }
@@ -34,6 +35,7 @@ function createSession(name) {
 
 
 //DELETE session (maybe to be used for canceling a session before it starts, to think of replacing with race status change to 'canceled' or something similar)
+//now it does not check if session exists, just filters out the session with the given id, can be improved to return error if session with given id does not exist
 function deleteSession(id) {
     sessions = sessions.filter(session => session.id !== id);
     return { message: `Session with id ${id} deleted successfully` };
