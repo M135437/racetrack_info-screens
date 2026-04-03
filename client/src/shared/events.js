@@ -1,5 +1,5 @@
 const EVENTS = {
-    // UI (front-end triggered) events
+    // UI (front-end triggered) actions (requests to create an event, flow from UI to -> back-end)
     RACE_CREATE: "race:create",     // front desk asks to create race with racers
     RACE_START: "race:start",       // race control asks to starts race
     RACE_MODE: "race:mode",         // race control asks to changes flag (state.raceMode.${})
@@ -8,7 +8,7 @@ const EVENTS = {
 
     // back-end recurring timer heartbeat
     TIMER_UPDATE: "timer:update",       // back-end heartbeat sends every timer update (as per config, example every second or every 1/4 of a second)
-    // back-end (confirmed) events
+    // back-end (confirmed) events (confirmed requests are turned to events, flow from back-end to -> UI & also changes state at back-end)
     RACE_CREATED: "race:created",       // back-end confirms creation of new race set with racers
     RACE_STARTED: "race:started",       // back-end confirms race start to all screens
     MODE_CHANGE: "mode:change",         // back-end announced mode change
