@@ -5,11 +5,13 @@
 
 // IMPORDID
 // react-tööriistad kuva kirjutamaks:
-import React from "react";
+import React, { useState, useEffect } from "react";
 // HOOK saamaks taimeri-stopperi infot (lb saab sealt ka stopperi kuva)
-import { useRaceState } from "../../hooks/useRaceState";
+// import { useRaceState } from "../../hooks/useRaceState";
 // ühendus serveriga, sest lt ui ka SAADAB infot (nupuvajutused)
-import { socket } from "../../socket/socket";
+// import { socket } from "../../socket/socket";
+import { io } from "socket.io-client"; // <- testimiseks otse siia socketid
+const socket = io("http://localhost:5000");
 // kujundus
 import "./LapTracker.css";
 
@@ -20,8 +22,48 @@ import "./LapTracker.css";
 const LapTracker = () => {
 
     // võtame HOOK-ilt vajalikud andmed:
-    const { timerData, now, recordLap } = useRaceState();
+    // const { timerData, now, recordLap } = useRaceState();
+    const [timerData, setTimerData] = useState(null);
+    const [now, setNow] = useState(Date.now());
 
+    useEffect(() => { // stopperivisuaaliks
+        const interval = setInterval(() => setNow(Date.now()), 10);
+        return () => clearInterval(interval);
+    }, []);
+
+    // kuulajad (esialgu mock-sõidule):
+    useEffect(() => {
+        // esmaühendusel
+        socket.on("lap:init", (initialRacers) => {
+            setTimerData({
+                hasStarted: false,
+                secondsLeft: 60,
+                racers: initialRacers
+            });
+        });
+        // sõidu algamisel
+        socket.on("race:started", (fullState) => {
+            setTimerData(fullState);
+        });
+        // ühe võistleja jooneületusel
+        socket.on("record-lap", (updatedRacer) => {
+            setTimerData(prev => {
+                if (!prev) return prev;
+                const newRacers = prev.racers.map(r =>
+                    r.id === updatedRacer.id ? updatedRacer : r
+                );
+                return { ...prev, racers: newRacers };
+            });
+        });
+
+        return () => {
+            socket.off("lap:init");
+            socket.off("race:started");
+            socket.off("record-lap");
+        };
+    }, []);
+    
+    //testimiseks trackerisse sisse
     // safeguard, kui timerData? kontroll võtab aega (ja ei taha
     // , et lehekülg näeks hangunud välja/laeks 100a):
     if (!timerData) return <div className="lap-container">Connecting...</div>
@@ -65,7 +107,7 @@ const LapTracker = () => {
             {!timerData?.hasStarted ? ( // ternary et nuppude asemel oleks
             // sessioonide vahel tekst:
                 <div className="waiting-screen">
-                    <p>Waiting for the next race to begin..</p>
+                    <p>Waiting for the mock/next race to begin..</p>
                 </div>
             ) : (
             <div className="racers-grid">
@@ -89,6 +131,8 @@ const LapTracker = () => {
                     >
                         {racer.isFinished ? `${racer.car} FINISHED` : racer.car}
                         {/* nupud peavad kuvama SÕIDUKI NR, mitte sõitja nime */}
+                        <span>Laps: {racer.lapCount} | Last time: {racer.latestLapTime} | Best: {racer.fastestLap || "--"}
+                        </span>
                     </button>
                 </div>
             ))}

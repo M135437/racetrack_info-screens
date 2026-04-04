@@ -6,15 +6,16 @@ TEAVITADA SELLEST SERVICE-ILE NING KUULUTADA ÜLE SÜSTEEMI, ET
 TOIMUS MINGISUGUNE MUUDATUS
 nn switchboard-logic -> saab signaali ja suunab töötlusse */
 
-// IMPORDID:
-import { recordLap } from "../../services/lapService.js";
+// IMPORDID (testandmetega):
+import { recordLap, getMockState, startMockRace } from "../../services/lapService.js";
 // seisund - aeg (taimer) ja objekt (racer)
 // import { state } from "../../state/state.js"; <- selgus, et handleris
 // ebavajalik, sest recordLap ise oma failis impordib ja kasutab
 // infovahetus
-import { emitState } from "../index.js";
+// import { emitState } from "../index.js";
 // vb nimi emitState vajab muutmist
 
+/* esialgne pre-test versioon
 export const lapHandler = (io, socket) => {
     socket.on("record-lap", (racerId) => {
         const updatedRacer = recordLap(racerId);
@@ -25,4 +26,29 @@ export const lapHandler = (io, socket) => {
             emitState(io);
         };
     });
-};
+}; */
+
+// MOCK-andmetega testversioon handler-ist:
+export default (io, socket) => {
+    // kui LapTracker komponent laeb, saadetakse sellele mock-andmete info
+    socket.emit("lap:init", getMockState().racers);
+
+    // automaatne võidusõidu alustamine, et testida, kas nupud
+    // tekivad alles siis kui on vajutatud "start"
+    setTimeout(() => {
+        startMockRace(); //seame vajalikud muundujad paika
+        io.emit("race:started", getMockState());
+    }, 3000); // viide 3 sek; siis tekivad nupud. enne seda "waiting.."
+
+    // nupuvajutusel:
+    socket.on("record-lap", (racerId) => {
+        const updatedRacer = recordLap(racerId);
+
+        if (updatedRacer) {
+            // pole veel ühtset state-emit-i, seega tavaline io:
+            io.emit("lap:update", updatedRacer);
+            // ja testi jaoks jälle nupuvajutusel kontrolltekst:
+            console.log(`Car ${updatedRacer.car} crossed line: ${updatedRacer.latestLapTime}s`);
+        }
+    })
+}
