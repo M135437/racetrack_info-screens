@@ -10,6 +10,7 @@ import { Server } from "socket.io";
 // KUI OLEKS SEAL NIMEGA, peaks kajastuma impordis
 // ja olema { lapHandler } õiges vormingus
 import lapHandler from "./socket/handlers/lap.js";
+import { getMockState, temporaryTimer } from "./services/lapService.js";
 
 const app = express();
 const httpServer = createServer(app);
@@ -19,8 +20,22 @@ const io = new Server(httpServer, {
 
 io.on("connection", (socket) => {
     console.log("sandbox server: dev3 ühendatud!", socket.id);
-
     lapHandler(io, socket);
+
+    // ajutine test-taimer:
+    const heartbeat = setInterval(() => {
+        const changed = temporaryTimer();
+
+        if (changed) {
+            io.emit("race:started", getMockState());
+        }
+        
+        if (getMockState().secondsLeft <= 0) {
+            console.log("Taimer nullis!");
+        }
+    }, 1000);
+
+    socket.on("disconnect", () => clearInterval(heartbeat));
 });
 
 httpServer.listen(5000, () => {

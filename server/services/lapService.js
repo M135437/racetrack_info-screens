@@ -110,3 +110,12 @@ if (mockState.secondsLeft <= 0) {
 racer.lastLapTimestamp = now; // nupuvajutusel uue ajaarvamise alguse määramine
 return racer; // objekti tagastamine
 };
+
+// testimiseks ise sandboxi loodud taimer info vahendamine
+export const temporaryTimer = () => {
+    if (mockState.hasStarted && mockState.secondsLeft > 0) {
+        mockState.secondsLeft--;
+        return true; // kui kell liikus, siis tõene (ON sekundeid alles)
+    }
+    return false;
+};
