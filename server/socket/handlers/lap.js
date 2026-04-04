@@ -30,6 +30,10 @@ export const lapHandler = (io, socket) => {
 
 // MOCK-andmetega testversioon handler-ist:
 export default (io, socket) => {
+
+    // ühendusprobleemi kontroll:
+    console.log("LAP HANDLER TÖÖTAB SOCKETIGA:", socket.id);
+
     // kui LapTracker komponent laeb, saadetakse sellele mock-andmete info
     socket.emit("lap:init", getMockState().racers);
 
