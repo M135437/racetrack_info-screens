@@ -4,6 +4,7 @@ import express from "express";
 import http from "http";
 import { Server } from "socket.io";
 import cors from "cors";
+import sessionHandler from "./socket/handlers/session.js"
 
 const app = express();
 app.use(cors());
@@ -24,14 +25,15 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
     console.log("client connected:", socket.id);
+
+    //connect session logics
+    sessionHandler(io, socket);
+    console.log("Session handler active"); //test log to confirm session handler is active
+
+    socket.on("disconnect", () => {
+        console.log("client disconnected:", socket.id);
+    });
 });
-
-/*io.on("connection", (socket) => {
-    console.log("client connected:", socket.id);
-
-    socket.emit("hello", "backend works");
-});*/ //for testing
-
 
 server.listen(3000, () => {
     console.log("Server running on port 3000");
