@@ -11,13 +11,24 @@
   z-index: 9999; /* kõigi muude elementide peal */
   background: rgba(255, 255, 255, 0.2); /* õrn värvierinevus taustaga */
   cursor: pointer;
+  opacity: 0.5;
+  transition: 0.2s;
+}
+.fullscreen:hover {
+  opacity: 1;
 }
 
 :fullscreen { /* üle kirjutamaks võimalikke lehitseja vaikesätteid
   fullscreenis - nt must taustpõhi jne jne */
   background-color: #000; /* või misiganes saab meie PÄRIS taustvärv olema */
 }
-
+:fullscreen .fullscreen {
+  opacity: 0; /* et täisekraanil nuppu kohe ei kuvaks*/
+  transition: 0.2s;
+}
+:fullscreen .fullscreen:hover {
+  opacity: 1;
+}
 /* kui on spetsiifilised high-res tabletid, läheb vaja ka:
 ::backdrop {
   background-color: #000;
