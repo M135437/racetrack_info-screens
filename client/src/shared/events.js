@@ -19,7 +19,7 @@ const EVENTS = {
     SESSION_CREATED: "session:created",       // back-end confirms creation of new race set with racers
     SESSION_LISTED: "session:listed",   // back-end updates list of session
     SESSION_STARTED: "session:started",       // back-end confirms race start to all screens
-    MODE_CHANGE: "mode:change",         // back-end announced mode change
+    MODE_CHANGED: "mode:changed",         // back-end announced mode change
     SESSION_FINISHED: "session:finished",     // back-end announces end of specific race
     SESSION_ENDED: "session:sessionEnded",  // back-end confirms end of session as per race control ask or if timer ran out and triggers end of racing session
 
