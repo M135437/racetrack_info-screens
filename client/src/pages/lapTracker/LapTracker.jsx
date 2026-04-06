@@ -18,6 +18,7 @@ import "./LapTracker.css";
 // impordin ka lipukese komponendi (tahan :D)
 // automaatselt rakendub imporditud komponendil talle kirjutatud css
 // import FlagDisplay from "../components/FlagDisplay";
+// import Timer from "../components/Timer";
 
 const LapTracker = () => {
 
