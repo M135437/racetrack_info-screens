@@ -15,6 +15,15 @@ import { recordLap, getMockState, startMockRace } from "../../services/lapServic
 // import { emitState } from "../index.js";
 // vb nimi emitState vajab muutmist
 
+/* pärast dev2 muutusi, edaspidi tuleb events.js kaudu emit-on suhtlus:
+import EVENTS from "../../../client/src/shared/events.js"
+st:
+race:started -> EVENTS.SESSION_STARTED
+record-lap -> EVENTS.LAP_RECORD
+lap:updated -> EVENTS.LAP_RECORDED
+jne
+*/
+
 /* esialgne pre-test versioon
 export const lapHandler = (io, socket) => {
     socket.on("record-lap", (racerId) => {
