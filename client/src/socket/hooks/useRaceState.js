@@ -16,7 +16,7 @@ visuaaliarvutuse kustutamisega (eelnevalt oli
 mul mõlema jaoks eraldi cleanup)
 
 */
-
+/* ajutiselt kommenteerin välja
 // IMPORDID:
 import { useState, useEffect } from "react"; // react-tööriistad:
 // useState - mälu
@@ -43,7 +43,7 @@ export const useRaceState = () => {
     const [now, setNow] = useState(Date.now());
 
 /* ==========> heartbeat ja lokaalsed visuaalid  <========== */  
-    useEffect(() => {
+    /* useEffect(() => {
         socket.on("timer-tick", (data) => {
             // testimiseks kuvame sõitjate andmeid:
             console.log("current race state: ", data.racers);
@@ -64,4 +64,4 @@ export const useRaceState = () => {
 
     // andmete tagastamine süsteemile kasutamiseks
     return { timerData, now };
-};
+}; */

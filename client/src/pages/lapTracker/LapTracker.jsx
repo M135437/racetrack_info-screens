@@ -15,7 +15,7 @@ const socket = io("http://localhost:5000"); // <- sandbox port
 // kujundus
 import "./LapTracker.css";
 
-// impording ka lipukese komponendi (tahan :D)
+// impordin ka lipukese komponendi (tahan :D)
 // automaatselt rakendub imporditud komponendil talle kirjutatud css
 // import FlagDisplay from "../components/FlagDisplay";
 
@@ -113,9 +113,31 @@ const LapTracker = () => {
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(6, "0")}`;
   };
 
+  // ajutine laptracker-ui-spetsiifiline täisekraaninupp
+    function toggleFullScreen() {
+        if (document.fullscreenElement) document.exitFullscreen();
+        else document.documentElement.requestFullscreen(); 
+    }
+
     return (
         <div className="lap-container">
-            { /* <FlagDisplay status={timerData?.raceMode} /> */ }
+            <div> {/* ajutine lt-spetsiifiline fullscreen: */}
+                <button onClick={() => toggleFullScreen()}
+                className="fullscreen">Fullscreen</button>
+                </div>
+            { /* kuhugi ui päisesse saan oma äranägemise järgi mahutada
+            ohutuslipu /ja vb taimer?);
+             tuleks luua eraldi konteiner, mille suurust/paigutust saan OMA
+            css-is hallata:
+            <div className="component-zone">
+                <div className="flag-wrapper">
+                    <FlagDisplay status={timerData?.raceMode} />
+                </div>
+                <div className="timer-wrapper">
+                    <Timer seconds={timerData?.secondsLeft} />
+                </div>
+            </div>
+            */}
             {/* kontrollime, kas nii taimer kui stopper töötavad */}
             <div className="debug-timer">
                 <h2>Time left: {timerData?.secondsLeft}s</h2>
