@@ -1,4 +1,5 @@
 import state from "./state.js"
+import EVENTS from "../../client/src/shared/events.js"
 
 //debub version //REVIEW
 function startTimer(io) {
@@ -19,6 +20,7 @@ function startTimer(io) {
     state.timer.timerStatus = setInterval(() => {
         console.log(`timer.js debug: timeRemaining was ${debugvalue}, now set to ${state.timer.timeRemaining}, start was at timestampt ${state.timer.startTime} (${new Date(state.timer.startTime).toLocaleString()}`) // REVIEW
         // REVIEW
+        io.emit(EVENTS.TIMER_UPDATE, state.timer.remaining);
         state.timer.timeRemaining--; // remove one interval unit (configured at end of this function)
 
         // stop condition
