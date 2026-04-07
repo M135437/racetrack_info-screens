@@ -15,6 +15,8 @@ import { recordLap, getMockState, startMockRace } from "../../services/lapServic
 // import { emitState } from "../index.js";
 // vb nimi emitState vajab muutmist
 
+// event-ide import ühtlustamaks io-socket infovahetust:
+import EVENTS from "../../../clien/src/shared/events.js";
 /* pärast dev2 muutusi, edaspidi tuleb events.js kaudu emit-on suhtlus:
 import EVENTS from "../../../client/src/shared/events.js"
 st:
@@ -50,16 +52,16 @@ export default (io, socket) => {
     // tekivad alles siis kui on vajutatud "start"
     setTimeout(() => {
         startMockRace(); //seame vajalikud muundujad paika
-        io.emit("race:started", getMockState());
+        io.emit(EVENTS.SESSION_STARTED, getMockState());
     }, 3000); // viide 3 sek; siis tekivad nupud. enne seda "waiting.."
 
     // nupuvajutusel:
-    socket.on("record-lap", (racerId) => {
+    socket.on(EVENTS.LAP_UPDATE, (racerId) => {
         const updatedRacer = recordLap(racerId);
 
         if (updatedRacer) {
             // pole veel ühtset state-emit-i, seega tavaline io:
-            io.emit("lap:update", updatedRacer);
+            io.emit(EVENTS.LAP_UPDATED, updatedRacer);
             // ja testi jaoks jälle nupuvajutusel kontrolltekst:
             console.log(`Car ${updatedRacer.car} crossed line: ${updatedRacer.latestLapTime}s`);
         }
