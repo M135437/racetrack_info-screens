@@ -5,8 +5,7 @@ import http from "http";
 import { Server } from "socket.io";
 import cors from "cors";
 import socketHandlers from "./socket/index.js"
-
-const PORT = 3000;
+import { ENV_VARIABLES, RACE_DURATION } from "./config/env.js"
 
 const app = express();
 app.use(cors());
@@ -27,13 +26,6 @@ const io = new Server(server, {
 
 socketHandlers(io);
 
-/*io.on("connection", (socket) => {
-    console.log("client connected:", socket.id);
-
-    socket.emit("hello", "backend works");
-});*/ //for testing
-
-
-server.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+server.listen(ENV_VARIABLES.RACETRACK_SERVER_PORT, () => {
+    console.log(`Server running on port ${ENV_VARIABLES.RACETRACK_SERVER_PORT}`);
 });

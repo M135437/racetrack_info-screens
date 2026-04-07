@@ -9,5 +9,7 @@ export default function(io) {
        raceHandler(socket, io);
        sessionHandler(socket, io);
        lapHandler(socket, io);
+
+       socket.emit("hello", "backend works"); // REVIEW - for testing only
     });
 };
