@@ -16,14 +16,14 @@ npm audit fix uuendaks vite-i, aga kuna mul juust arvuti, siis pliis
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
 // ui-impordid:
-import HomePage from ".pages/homePage/HomePage";
-import FrontDesk from ".pages/frontDesk/FrontDesk";
-import RaceControl from ".pages/raceControl/RaceControl";
+import HomePage from "./pages/homePage/HomePage";
+import FrontDesk from "./pages/frontDesk/FrontDesk";
+import RaceControl from "./pages/raceControl/RaceControl";
 import LapTracker from "./pages/lapTracker/LapTracker";
 import LeaderboardPage from "./pages/leaderboard/LeaderboardPage";
-import NextRace from ".pages/nextRace/NextRace";
-import Countdown from ".pages/countdown/Countdown";
-import Flags from ".pages/flags/Flags";
+import NextRace from "./pages/nextRace/NextRace";
+import Countdown from "./pages/countdown/Countdown";
+import Flags from "./pages/flags/Flags";
 
 
 function App() {
