@@ -1,5 +1,8 @@
 // esileht, et oleks kuskil kuvada kõikide liideste nuppe
 
+// eraldi failina, sest ehki teeme MVP, siis ~tulevikusoovide~ mõistes
+// scalable omaette failiga lähenemine mõistlik
+
 function HomePage() {
     return (
         <div>

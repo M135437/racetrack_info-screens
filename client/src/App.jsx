@@ -16,6 +16,7 @@ npm audit fix uuendaks vite-i, aga kuna mul juust arvuti, siis pliis
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
 // ui-impordid:
+import HomePage from ".pages/homePage/HomePage";
 import FrontDesk from ".pages/frontDesk/FrontDesk";
 import RaceControl from ".pages/raceControl/RaceControl";
 import LapTracker from "./pages/lapTracker/LapTracker";
@@ -32,7 +33,8 @@ function App() {
       <Routes>
         {/* siin osas defineerime kõik route-id: */}
   
-
+        {/* "koduleht" ka*/}
+        <Route path="/" element={<HomePage/>}/>
         <Route path="/front-desk" element={<FrontDesk/>}/>
         <Route path="/race-control" element={<RaceControl/>}/>
         <Route path="/lap-line-tracker" element={<LapTracker/>}/>
@@ -40,9 +42,6 @@ function App() {
         <Route path="/next-race" element={<NextRace/>}/>
         <Route path="/race-countdown" element={<Countdown/>}/>
         <Route path="/race-flags" element={<Flags/>}/>
-        
-        {/* "koduleht" ka*/}
-        <Route path="/" element={<h1>Welcome to Beachside Racetrack!</h1>}/>
       </Routes>
     </BrowserRouter>
   );
