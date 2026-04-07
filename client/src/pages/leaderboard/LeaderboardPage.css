@@ -43,3 +43,21 @@
 .table-row:nth-child(even) {
   background-color: #1a1a1a;
 }
+/* STATUS värvid */
+.race-status.safe {
+  background: green;
+}
+
+.race-status.danger {
+  background: red;
+}
+
+.race-status.hazard {
+  background: orange;
+}
+
+/* BEST lap highlight */
+.best {
+  color: #00ffcc;
+  font-weight: bold;
+}
