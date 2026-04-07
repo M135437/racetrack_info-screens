@@ -4,6 +4,9 @@ import express from "express";
 import http from "http";
 import { Server } from "socket.io";
 import cors from "cors";
+import socketHandlers from "./socket/index.js"
+
+const PORT = 3000;
 
 const app = express();
 app.use(cors());
@@ -22,9 +25,7 @@ const io = new Server(server, {
     cors: { origin: "*" }
 });
 
-io.on("connection", (socket) => {
-    console.log("client connected:", socket.id);
-});
+socketHandlers(io);
 
 /*io.on("connection", (socket) => {
     console.log("client connected:", socket.id);
@@ -33,6 +34,6 @@ io.on("connection", (socket) => {
 });*/ //for testing
 
 
-server.listen(3000, () => {
-    console.log("Server running on port 3000");
+server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
