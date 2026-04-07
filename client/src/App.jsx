@@ -2,8 +2,23 @@ import { useState } from 'react'
 import './App.css'
 
 // npm install react-router-dom (client-kaustas)
-// vajalikud impordid:
+/* nb! kuna meil on (minu pärast) vana vite, siis installimisel toob
+esile vite-i 1 high-risk murekoha. 
+gemini sõnul see vaid murekoht arenduse ajal serveripoolel (kui häkker samas
+võrgus tahaks salafailidele ligi pääseda, siis potentsiaalselt saaks), kuid
+mis ei kandu lõpptootesse üle.
+
+npm audit fix uuendaks vite-i, aga kuna mul juust arvuti, siis pliis
+ärme vaheta vite versiooni :D
+*/
+
+// vajalikud impordid jaotusfunktsionaalsuseks:
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+
+// ui-impordid:
+import LapTracker from "./pages/lapTracker/LapTracker";
+import Leaderboard from "./pages/leaderboard/LeaderboardPage";
+
 
 function App() {
   const [count, setCount] = useState(0)
