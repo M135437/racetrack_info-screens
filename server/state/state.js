@@ -28,7 +28,7 @@ let state = {
     raceMode: 'notStarted', 	// initially 'notStarted', options 'safe', 'hazard', 'danger', 'finish'
     session: 'started', //'null', 'started' or 'ended' once 10mins/1min runs out
     timer: {
-        duration: 6000000,              // 600 000 ms = 10 min, dev 60 000 = 1 min // REVIEW - needs to be connected to npm run / npm run dev setup
+        duration: 6000000,              // 600 000 ms = 10 min, dev 60 000 = 1 min // set by env var DEV MODE
         timeRemaining: 100641,          // ms value for heartbeat
         startTime: 1775123702223,       // LocalDateTime -- when was session started
         endTime: null,                  // LocalDateTime -- when does session run out of time (REVIEW - non-mandatory)
