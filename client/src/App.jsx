@@ -17,14 +17,23 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
 // ui-impordid:
 import HomePage from "./pages/homePage/HomePage";
-import FrontDesk from "./pages/frontDesk/FrontDesk";
-import RaceControl from "./pages/raceControl/RaceControl";
-import LapTracker from "./pages/lapTracker/LapTracker";
-import LeaderboardPage from "./pages/leaderboard/LeaderboardPage";
-import NextRace from "./pages/nextRace/NextRace";
-import Countdown from "./pages/countdown/Countdown";
-import Flags from "./pages/flags/Flags";
+//import FrontDesk from "./pages/frontDesk/FrontDesk";
+//import RaceControl from "./pages/raceControl/RaceControl";
+//import LapTracker from "./pages/lapTracker/LapTracker";
+//import LeaderboardPage from "./pages/leaderboard/LeaderboardPage";
+//import NextRace from "./pages/nextRace/NextRace";
+//import Countdown from "./pages/countdown/Countdown";
+//import Flags from "./pages/flags/Flags";
 
+// funktsionaalsuse tekstimiseks minikuva, sest muidu react jookseb kokku,
+// kui komponente veel pole:
+const Placeholder = ({ ajutine }) => (
+  <div style={{ padding: "20px"}}>
+    <h2>{ajutine} Leht</h2>
+    <p>Testleht - Homepage-lehekülg on arendamisel</p>
+    <Link to="/">Tagasi</Link>
+  </div>
+);
 
 function App() {
   return (
@@ -35,6 +44,17 @@ function App() {
   
         {/* "koduleht" ka*/}
         <Route path="/" element={<HomePage/>}/>
+
+        {/* ajutine route-ing: */}
+        <Route path="/front-desk" element={<Placeholder ajutine="FrontDesk"/>}/>
+        <Route path="/race-control" element={<Placeholder ajutine="RaceControl"/>}/>
+        <Route path="/lap-line-tracker" element={<Placeholder ajutine="LapTracker"/>}/>
+        <Route path="/leader-board" element={<Placeholder ajutine="LeaderboardPage"/>}/>
+        <Route path="/next-race" element={<Placeholder ajutine="NextRace"/>}/>
+        <Route path="/race-countdown" element={<Placeholder ajutine="Countdown"/>}/>
+        <Route path="/race-flags" element={<Placeholder ajutine="Flags"/>}/>
+
+        {/* päris-routing:
         <Route path="/front-desk" element={<FrontDesk/>}/>
         <Route path="/race-control" element={<RaceControl/>}/>
         <Route path="/lap-line-tracker" element={<LapTracker/>}/>
@@ -42,6 +62,7 @@ function App() {
         <Route path="/next-race" element={<NextRace/>}/>
         <Route path="/race-countdown" element={<Countdown/>}/>
         <Route path="/race-flags" element={<Flags/>}/>
+        */}
       </Routes>
     </BrowserRouter>
   );
