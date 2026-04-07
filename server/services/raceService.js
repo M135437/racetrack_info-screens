@@ -1,6 +1,7 @@
-import EVENTS from "../../../client/src/shared/events.js"
+import EVENTS from "../../client/src/shared/events.js"
 import state from "../state/state.js"
-import { RACE_MODES, PROTECTED_MODES, ACTIVE_MODES } from "../../../client/src/shared/types.js"
+import { startTimer, resetTimer } from "../state/timer.js"
+import { RACE_MODES, PROTECTED_MODES, ACTIVE_MODES } from "../../client/src/shared/types.js"
 
 function startSession(io) {
     if (Object.values(PROTECTED_MODES).includes(state.raceMode)) { 
@@ -11,6 +12,7 @@ function startSession(io) {
         });
         return 1;
     }
+    // variable / state update
     const startTime = Date.now();
     let session = state.sessions.find(s => s.id === state.currentRace);
     state.nextRace = +state.currentRace +1;
@@ -18,7 +20,10 @@ function startSession(io) {
     // endtime - currently out of use // REVIEW
     session.status = 'started';
     state.raceMode = RACE_MODES.SAFE;
-    // trigger timer processing - pending on timer construction
+    // trigger timer processing
+    resetTimer();
+    startTimer(io)
+    // emit io event for session start
     io.emit(EVENTS.SESSION_STARTED, {
         startTime,
         raceId: state.currentRace,
