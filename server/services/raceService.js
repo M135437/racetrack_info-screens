@@ -63,3 +63,5 @@ function endSession(io) {
         raceMode: RACE_MODES.ENDED
     });
 }
+
+export default { startSession, changeMode, finishMode, endSession};
