@@ -25,6 +25,56 @@ import HomePage from "./pages/homePage/HomePage";
 //import Countdown from "./pages/countdown/Countdown";
 //import Flags from "./pages/flags/Flags";
 
+/* ajutine autentimiskuva (hiljem eraldi komponendiks?) 
+ühtlasi - sõnastus hiljem kohaldada vastaval auth.js sisule */
+const AuthGate = ({ children, roleName }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [inputKey, setInputKey] = useState("");
+  const [error, setError] = useState("");
+
+  // nb! "children" on kindel sõnavara (reserved keyword) !!!
+  // siin loodud AuthGate funktsioon kasutab "children", et 
+  // KÕIKI tema sees määratletud osi kokku grupeerida ->
+  // loob ümbrise, mis aitab vältida koodi taaskirjutamist (DRY-põhimõte),
+  // sest loogika (tagasta "lapsed" kehtib igale elemendile, millega
+  // ta on ümbritsetud ja ei pea igale mõjutamist vajale elemendile
+  // hakkama looma oma eraldi loogikat)
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    // siia peaks käima socket-infovahetus parooli kontrollimiseks,
+    // aga testimiseks hardcodein "0000":
+    if (inputKey === "0000") {
+      setIsAuthenticated(true);
+    } else {
+      setError("Vale parool - proovi uuesti! (testkood on 0000)");
+      // hetkel läägi ei pane, see vist peaks ka auth-loogikast tulema?
+    }
+  };
+  if (isAuthenticated) { // kui autentimine õnnestus, siis
+    return children; // UI sisu kuvamine
+  }
+
+  // pääsukuva:
+  return (
+    <div style={{ padding: "50px", textAlign: "center" }}>
+      <h2>{roleName} - authorised access only!</h2>
+      <p>Please provide passcode:</p>
+      <form onSubmit={handleLogin}>
+        <input
+        type="password"
+        value={inputKey}
+        onChange={(e) => setInputKey(e.target.value)}
+        />
+        <button type="subit">Enter</button>
+      </form>
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      <Link to="/">Home</Link>
+    </div>
+  );
+};
+
+// ==============
 // funktsionaalsuse tekstimiseks minikuva, sest muidu react jookseb kokku,
 // kui komponente veel pole:
 const Placeholder = ({ ajutine }) => (
@@ -45,19 +95,42 @@ function App() {
         {/* "koduleht" ka*/}
         <Route path="/" element={<HomePage/>}/>
 
-        {/* ajutine route-ing: */}
-        <Route path="/front-desk" element={<Placeholder ajutine="FrontDesk"/>}/>
-        <Route path="/race-control" element={<Placeholder ajutine="RaceControl"/>}/>
-        <Route path="/lap-line-tracker" element={<Placeholder ajutine="LapTracker"/>}/>
+        {/* -> ajutine route-ing <- 
+        
+        parooli vajavad UI-d saavad AuthGate-ga mässitud: */}
+        <Route path="/front-desk" element={
+          <AuthGate roleName="Receptionist">
+            <Placeholder ajutine="FrontDesk"/>
+          </AuthGate>}/>
+        <Route path="/race-control" element={
+          <AuthGate roleName="Safety Official">
+            <Placeholder ajutine="RaceControl"/>
+          </AuthGate>}/>
+        <Route path="/lap-line-tracker" element={
+          <AuthGate roleName="Lap Observer">
+            <Placeholder ajutine="LapTracker"/>
+          </AuthGate>}/>
         <Route path="/leader-board" element={<Placeholder ajutine="LeaderboardPage"/>}/>
         <Route path="/next-race" element={<Placeholder ajutine="NextRace"/>}/>
         <Route path="/race-countdown" element={<Placeholder ajutine="Countdown"/>}/>
         <Route path="/race-flags" element={<Placeholder ajutine="Flags"/>}/>
 
         {/* päris-routing:
-        <Route path="/front-desk" element={<FrontDesk/>}/>
-        <Route path="/race-control" element={<RaceControl/>}/>
-        <Route path="/lap-line-tracker" element={<LapTracker/>}/>
+        <Route path="/front-desk" element={
+          <AuthGate roleName="Receptionist">
+            <FrontDesk/>
+          </AuthGate>
+          }/>
+        <Route path="/race-control" element={
+          </AuthGate roleName="Safety Official">
+            <RaceControl/>
+          </AuthGate>
+          }/>
+        <Route path="/lap-line-tracker" element={
+          <AuthGate roleName="Lap Observer">
+            <LapTracker/>
+          </AuthGate>
+        }/>
         <Route path="/leader-board" element={<LeaderboardPage/>}/>
         <Route path="/next-race" element={<NextRace/>}/>
         <Route path="/race-countdown" element={<Countdown/>}/>
