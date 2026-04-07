@@ -30,8 +30,8 @@ import HomePage from "./pages/homePage/HomePage";
 const Placeholder = ({ ajutine }) => (
   <div style={{ padding: "20px"}}>
     <h2>{ajutine} Leht</h2>
-    <p>Testleht - Homepage-lehekülg on arendamisel</p>
-    <Link to="/">Tagasi</Link>
+    <p>Lehekülg on arendamisel</p>
+    <Link to="/">Mine tagasi esilehele</Link>
   </div>
 );
 
