@@ -3,6 +3,10 @@
 
 /* react-iga ui tagastamine */
 
+// NB! ilmselt tuleb muudatus, kus:
+// võistlus ise -> session
+// racer -> driver
+
 // IMPORDID
 // react-tööriistad kuva kirjutamaks:
 import React, { useState, useEffect } from "react";
@@ -14,6 +18,9 @@ import { io } from "socket.io-client"; // <- testimiseks otse siia socketid
 const socket = io("http://localhost:5000"); // <- sandbox port
 // kujundus
 import "./LapTracker.css";
+
+// impording eventid:
+import EVENTS from "../../shared/events.js";
 
 // impordin ka lipukese komponendi (tahan :D)
 // automaatselt rakendub imporditud komponendil talle kirjutatud css
@@ -52,11 +59,11 @@ const LapTracker = () => {
             });
         });
         // sõidu algamisel
-        socket.on("race:started", (fullState) => {
+        socket.on(EVENTS.SESSION_STARTED, (fullState) => {
             setTimerData(fullState);
         });
         // ühe võistleja jooneületusel
-        socket.on("lap:update", (updatedRacer) => {
+        socket.on(EVENTS.LAP_UPDATED, (updatedRacer) => {
             setTimerData(prev => {
                 if (!prev) return prev;
                 const newRacers = prev.racers.map(r =>
@@ -68,8 +75,8 @@ const LapTracker = () => {
 
         return () => {
             socket.off("lap:init");
-            socket.off("race:started");
-            socket.off("lap:update");
+            socket.off(EVENTS.SESSION_STARTED);
+            socket.off(EVENTS.LAP_UPDATED);
         };
     }, []);
     
@@ -92,7 +99,7 @@ const LapTracker = () => {
     const handleRecordLap = (id) => { // id, millest saame returnis react.id
         // testimiseks:
         console.log(`Client clicking Racer ID: ${id}`);
-        socket.emit("record-lap", id); // andmete muutuse
+        socket.emit(EVENTS.LAP_UPDATE, id); // andmete muutuse
         // edastamine nupuvajutusel
     };
 

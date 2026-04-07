@@ -18,6 +18,10 @@ service-failid jätkuvalt PUHAS LOOGIKA!
 // -> IMPORT
 // import { state } from "../state/state.js";
 
+// NB! ilmselt tuleb muudatus, kus:
+// võistlus ise -> session
+// racer -> driver
+
 // test-andmed
 let mockState = {
         hasStarted: false,

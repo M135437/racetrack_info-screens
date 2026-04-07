@@ -39,6 +39,10 @@ export const lapHandler = (io, socket) => {
     });
 }; */
 
+// NB! ilmselt tuleb muudatus, kus:
+// võistlus ise -> session
+// racer -> driver
+
 // MOCK-andmetega testversioon handler-ist:
 export default (io, socket) => {
 
