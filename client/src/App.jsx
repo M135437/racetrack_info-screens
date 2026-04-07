@@ -31,14 +31,18 @@ function App() {
     {/* kõik, mis jääb VÄLJAPOOLE <routes>i, on püsivalt brauseri lehel */}
       <Routes>
         {/* siin osas defineerime kõik route-id: */}
+  
 
         <Route path="/front-desk" element={<FrontDesk/>}/>
         <Route path="/race-control" element={<RaceControl/>}/>
-        <Route path="lap-line-tracker" element={<LapTracker/>}/>
-        <Route path="leader-board" element={<LeaderboardPage/>}/>
-        <Route path="next-race" element={<NextRace/>}/>
-        <Route path="race-countdown" element={<Countdown/>}/>
-        <Route path="race-flags" element={<Flags/>}/>
+        <Route path="/lap-line-tracker" element={<LapTracker/>}/>
+        <Route path="/leader-board" element={<LeaderboardPage/>}/>
+        <Route path="/next-race" element={<NextRace/>}/>
+        <Route path="/race-countdown" element={<Countdown/>}/>
+        <Route path="/race-flags" element={<Flags/>}/>
+        
+        {/* "koduleht" ka*/}
+        <Route path="/" element={<h1>Welcome to Beachside Racetrack!</h1>}/>
       </Routes>
     </BrowserRouter>
   );
