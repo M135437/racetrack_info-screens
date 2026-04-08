@@ -1,6 +1,6 @@
 import * as sessionService from '../../services/sessionService.js'
 
-export default function sessionHandler(io, socket) {
+export default function sessionHandler(socket, io) {
 
     //GET upcoming sessions
     socket.on("session:get", () => {
