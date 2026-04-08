@@ -44,10 +44,13 @@ export const lapHandler = (io, socket) => {
 // racer -> driver
 
 // MOCK-andmetega testversioon handler-ist:
-export default (io, socket) => {
+export default (socket, io) => {
 
     // ühendusprobleemi kontroll:
-    console.log("LAP HANDLER TÖÖTAB SOCKETIGA:", socket.id);
+    // console.log("LAP HANDLER TÖÖTAB SOCKETIGA:", socket.id);
+    console.log("LAP HANDLER SOCKET ID:", socket?.id);
+    console.log("IS SOCKET OBJECT:", typeof socket);
+
 
     // kui LapTracker komponent laeb, saadetakse sellele mock-andmete info
     socket.emit("lap:init", getMockState().racers);
