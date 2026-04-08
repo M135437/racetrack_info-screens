@@ -1,4 +1,3 @@
-
 // Simple Express server with Socket.IO for real-time communication (minimal setup - module syntax)
 import express from "express";
 import http from "http";
@@ -27,5 +26,6 @@ const io = new Server(server, {
 socketHandlers(io);
 
 server.listen(ENV_VARIABLES.RACETRACK_SERVER_PORT, () => {
-    console.log(`Server running on port ${ENV_VARIABLES.RACETRACK_SERVER_PORT}`);
+    console.log(`  ➜  Server running on port ${ENV_VARIABLES.RACETRACK_SERVER_PORT}\n  ➜  http://localhost:${ENV_VARIABLES.RACETRACK_SERVER_PORT}/`);
+    console.log(`  ➜  Race duration set to ${(RACE_DURATION/1000)/60} minutes`);
 });
