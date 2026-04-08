@@ -37,4 +37,31 @@ export default function sessionHandler(io, socket) {
             socket.emit(EVENTS.SESSION_ERROR, err.message)
         }
     })
+
+    //ADD driver to session
+    socket.on(EVENTS.DRIVER_ADD, ({ sessionId, name, car }) => {
+        try {
+            sessionService.addDriver(sessionId, name, car)
+
+            const sessions = sessionService.getUpcomingSessions()
+            io.emit(EVENTS.SESSION_LISTED, sessions)
+
+        } catch (err) {
+            socket.emit(EVENTS.SESSION_ERROR, err.message)
+        }
+    })
+
+    //REMOVE driver from session
+    socket.on(EVENTS.DRIVER_REMOVE, ({ sessionId, driverId }) => {
+        try {
+            sessionService.removeDriver(sessionId, driverId)
+
+            const sessions = sessionService.getUpcomingSessions()
+            io.emit(EVENTS.SESSION_LISTED, sessions)
+
+        } catch (err) {
+            socket.emit(EVENTS.SESSION_ERROR, err.message)
+        }
+    })
+
 }

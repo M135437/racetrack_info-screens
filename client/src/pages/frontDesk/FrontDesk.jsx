@@ -1,19 +1,22 @@
 import { useEffect, useState } from "react"
-import { socket } from "../../socket/socket";
-import EVENTS from "../../shared/events";
-import "./FrontDesk.css";
+import { socket } from "../../socket/socket"
+import EVENTS from "../../shared/events"
+import "./FrontDesk.css"
 
-
-// This page is for managing sessions (creating/deleting) and viewing upcoming sessions. It is a simple interface that emits socket events to the server and listens for updates.
+// This page is for managing sessions (creating/deleting) and viewing upcoming sessions.
 export default function FrontDesk() {
-    const [sessions, setSessions] = useState([]) //
-    const [name, setName] = useState("") // for creating session
 
-    const [loading, setLoading] = useState(true) // ✅ ДОБАВЛЕНО: состояние загрузки
-    const [error, setError] = useState(null) // ✅ ДОБАВЛЕНО: состояние ошибки
+    // 🔥 inputs per session
+    const [inputs, setInputs] = useState({})
 
-    useEffect(() => { // on component mount, request the list of upcoming sessions from the server
+    const [sessions, setSessions] = useState([])
+    const [name, setName] = useState("")
 
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
+
+    // GET sessions on mount and listen for session list updates
+    useEffect(() => {
 
         socket.emit(EVENTS.SESSION_GET)
 
@@ -26,34 +29,70 @@ export default function FrontDesk() {
         socket.on(EVENTS.SESSION_LISTED, handler)
 
         return () => {
-            socket.off(EVENTS.SESSION_LISTED, handler) // 🔥 ВАЖНО
+            socket.off(EVENTS.SESSION_LISTED, handler)
         }
     }, [])
 
+    // SESSION ACTIONS
+    const createSession = () => {
+        if (!name.trim()) return
 
-    const createSession = () => { // emit event to create a new session with the given name, after validating that the name is not empty
-        if (!name.trim()) return // simple validation to prevent creating sessions with empty names
-
-        socket.emit("session:create", { name }) // emit event to create session with the name from state
-
-        setName("") // clear the input field after creating the session
+        socket.emit(EVENTS.SESSION_CREATE, { name })
+        setName("")
     }
 
-    const deleteSession = (id) => { // emit event to delete a session by its id
-        socket.emit("session:delete", { id }) // emit event to delete session with the given id
-
+    const deleteSession = (id) => {
+        socket.emit(EVENTS.SESSION_DELETE, { id })
     }
 
-    return ( // render the UI for managing sessions, including an input field for creating sessions and a list of existing sessions with delete buttons
+    // DRIVER INPUT HANDLERS
+    const updateInput = (sessionId, field, value) => {
+        setInputs(prev => {
+            const sessionInput = prev[sessionId] || {}
+
+            return {
+                ...prev,
+                [sessionId]: {
+                    ...sessionInput,
+                    [field]: value
+                }
+            }
+        })
+    }
+
+    // DRIVER ACTIONS
+    const addDriver = (sessionId) => {
+        const data = inputs[sessionId] || {}
+
+        if (!data.name?.trim()) return
+        // can add more validation here if needed (like checking if car is provided)
+        socket.emit(EVENTS.DRIVER_ADD, {
+            sessionId,
+            name: data.name,
+            car: data.car
+        })
+
+        // clear inputs for this session
+        setInputs(prev => {
+            const copy = { ...prev }
+            delete copy[sessionId]
+            return copy
+        })
+    }
+    // remove driver action
+    const removeDriver = (sessionId, driverId) => {
+        socket.emit(EVENTS.DRIVER_REMOVE, { sessionId, driverId })
+    }
+
+    //UI
+    return (
         <div className="container">
             <h1>Front Desk</h1>
 
-            {/* ✅ ДОБАВЛЕНО: отображение loading */}
             {loading && <p>Loading sessions...</p>}
-
-            {/* ✅ ДОБАВЛЕНО: отображение ошибки */}
             {error && <p style={{ color: "red" }}>Error: {error}</p>}
 
+            {/* CREATE SESSION */}
             <div className="create">
                 <input
                     value={name}
@@ -62,19 +101,61 @@ export default function FrontDesk() {
                 />
                 <button
                     onClick={createSession}
-                    disabled={!name.trim()} // ✅ ДОБАВЛЕНО: защита от пустого ввода
+                    disabled={!name.trim()}
                 >
                     Create
                 </button>
             </div>
 
+            {/* SESSIONS */}
             <div className="sessions">
-                {sessions.map(s => ( // render each session as a card with its name and a delete button
+                {sessions.map(s => (
                     <div key={s.id} className="card">
-                        <span>{s.name}</span>
-                        <button onClick={() => deleteSession(s.id)}>
+
+                        <div className="card-content">
+                            <strong>{s.name}</strong>
+
+                            {/* DRIVERS */}
+                            <div className="drivers">
+                                {s.drivers?.map(d => (
+                                    <div key={d.id} className="driver-row">
+                                        {d.name} ({d.car})
+                                        <button
+                                            onClick={() => removeDriver(s.id, d.id)}
+                                            className="delete-driver"
+                                        >
+                                            ❌
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* ADD DRIVER */}
+                            <div className="add-driver">
+                                <input
+                                    value={inputs[s.id]?.name ?? ""}
+                                    onChange={(e) => updateInput(s.id, "name", e.target.value)}
+                                    placeholder="Driver name"
+                                />
+                                <input
+                                    value={inputs[s.id]?.car ?? ""}
+                                    onChange={(e) => updateInput(s.id, "car", e.target.value)}
+                                    placeholder="Car"
+                                />
+                                <button onClick={() => addDriver(s.id)}>
+                                    Add
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* DELETE SESSION */}
+                        <button
+                            onClick={() => deleteSession(s.id)}
+                            className="delete-session"
+                        >
                             Delete
                         </button>
+
                     </div>
                 ))}
             </div>
