@@ -5,7 +5,7 @@ export default function sessionHandler(socket, io) {
     //GET upcoming sessions
     socket.on("session:get", () => {
         const sessions = sessionService.getUpcomingSessions()
-        socket.emit("session:list", sessions)
+        socket.emit("session:listed", sessions)
     })
 
     //CREATE session

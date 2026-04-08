@@ -13,7 +13,7 @@ export default function FrontDesk() {
         socket.connect()
 
         // session list request - when the component mounts, ask the server for the current list of sessions
-        onEvent(EVENTS.SESSION_LIST, (data) => {
+        onEvent(EVENTS.SESSION_LISTED, (data) => {
             console.log("📥 session list:", data)
             setSessions(data)
         })

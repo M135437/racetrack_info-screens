@@ -4,7 +4,7 @@ import EVENTS from "../shared/events";
 
 // SERVER → CLIENT
 const serverToClient = {
-    "session:list": EVENTS.SESSION_LIST,
+    "session:listed": EVENTS.SESSION_LIST,
     "session:created": EVENTS.SESSION_CREATED,
     "session:updated": EVENTS.SESSION_UPDATED,
     "session:deleted": EVENTS.SESSION_DELETED,
