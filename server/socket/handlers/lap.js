@@ -16,7 +16,7 @@ import { recordLap, getMockState, startMockRace } from "../../services/lapServic
 // vb nimi emitState vajab muutmist
 
 // event-ide import ühtlustamaks io-socket infovahetust:
-import EVENTS from "../../../clien/src/shared/events.js";
+import EVENTS from "../../../client/src/shared/events.js";
 /* pärast dev2 muutusi, edaspidi tuleb events.js kaudu emit-on suhtlus:
 import EVENTS from "../../../client/src/shared/events.js"
 st:
