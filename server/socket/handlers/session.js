@@ -1,39 +1,40 @@
 import * as sessionService from '../../services/sessionService.js'
+import EVENTS from "../../../client/src/shared/events.js";
+
 
 export default function sessionHandler(io, socket) {
 
     //GET upcoming sessions
-    socket.on("session:get", () => {
+    socket.on(EVENTS.SESSION_GET, () => {
         const sessions = sessionService.getUpcomingSessions()
-        socket.emit("session:list", sessions)
+        socket.emit(EVENTS.SESSION_LISTED, sessions)
     })
 
     //CREATE session
-    socket.on("session:create", (data) => {
+    socket.on(EVENTS.SESSION_CREATE, (data) => {
         try {
             sessionService.createSession(data.name)
 
             const sessions = sessionService.getUpcomingSessions()
 
-            //emit updated session list to all clients (could be optimized to emit only to clients that need it, but for simplicity emitting to all)
-            io.emit("session:list", sessions)
+            io.emit(EVENTS.SESSION_LISTED, sessions)
 
         } catch (err) {
-            socket.emit("session:error", err.message)
+            socket.emit(EVENTS.SESSION_ERROR, err.message)
         }
     })
 
     //DELETE session
-    socket.on("session:delete", (id) => {
+    socket.on(EVENTS.SESSION_DELETE, ({ id }) => {
         try {
             sessionService.deleteSession(id)
 
             const sessions = sessionService.getUpcomingSessions()
 
-            io.emit("session:list", sessions)
+            io.emit(EVENTS.SESSION_LISTED, sessions)
 
         } catch (err) {
-            socket.emit("session:error", err.message)
+            socket.emit(EVENTS.SESSION_ERROR, err.message)
         }
     })
 }

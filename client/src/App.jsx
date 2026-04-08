@@ -17,7 +17,7 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
 // ui-impordid:
 import HomePage from "./pages/homePage/HomePage";
-//import FrontDesk from "./pages/frontDesk/FrontDesk";
+import FrontDesk from "./pages/frontDesk/FrontDesk";
 //import RaceControl from "./pages/raceControl/RaceControl";
 //import LapTracker from "./pages/lapTracker/LapTracker";
 //import LeaderboardPage from "./pages/leaderboard/LeaderboardPage";
@@ -100,8 +100,10 @@ function App() {
         parooli vajavad UI-d saavad AuthGate-ga mässitud: */}
         <Route path="/front-desk" element={
           <AuthGate roleName="Receptionist">
-            <Placeholder ajutine="FrontDesk"/>
+           {/* <Placeholder ajutine="FrontDesk"/> */}
+            <FrontDesk/>
           </AuthGate>}/>
+          
         <Route path="/race-control" element={
           <AuthGate roleName="Safety Official">
             <Placeholder ajutine="RaceControl"/>
