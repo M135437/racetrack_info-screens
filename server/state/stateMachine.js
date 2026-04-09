@@ -6,10 +6,10 @@ export function updatePort(RACE_DURATION) {
 }
 
 export function stateUptStartSession(session) {
-    state.nextRace = +state.currentRace +1;
+    state.nextRace = +state.runningRace +1;
     state.raceMode = RACE_MODES.SAFE;   
     session.startTime = startTime;  // REVIEW -- vt koos Olgaga, kuidas session mgmt kokku käima saada
-                                    //  - kas läbi state.currentRace.startTime vmuud moodi
+                                    //  - kas läbi state.runningRace ~state.sessions.session[runningRace].startTime vmuud moodi
     // endtime - currently out of use // REVIEW
     session.status = 'started';
 }
