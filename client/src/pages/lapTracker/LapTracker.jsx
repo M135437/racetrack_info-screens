@@ -15,7 +15,7 @@ import { useState, useEffect } from "react";
 // ühendus serveriga, sest lt ui ka SAADAB infot (nupuvajutused)
 import { socket } from "../../socket/socket";
 // import { io } from "socket.io-client"; // <- eelnevalt testimiseks otse siia socketid
-const socket = io("http://localhost:5000"); // <- sandbox port
+// const socket = io("http://localhost:5000"); // <- sandbox port
 // kujundus
 import "./LapTracker.css";
 
@@ -34,6 +34,8 @@ const LapTracker = () => {
     // const { timerData, now, recordLap } = useRaceState();
     const [timerData, setTimerData] = useState(null);
     const [now, setNow] = useState(Date.now());
+    const [cooldowns, setCooldowns] = useState([]); // <- lokaalne state nupu
+    // keelamiseks vahetult pärast klikki
 
     useEffect(() => { // stopperivisuaaliks
         const interval = setInterval(() => setNow(Date.now()), 10);
@@ -102,8 +104,18 @@ const LapTracker = () => {
     const handleRecordLap = (id) => { // id, millest saame returnis react.id
         // testimiseks:
         console.log(`Client clicking Driver ID: ${id}`);
+
+        if (cooldowns.includes(id)) return; // <- cooldown-kontroll, mis
+        // ei luba vajutust, kui cooldwon state-is
         socket.emit(EVENTS.LAP_UPDATE, id); // andmete muutuse
         // edastamine nupuvajutusel
+        setCooldowns((prev) => [...prev, id]); // pärast klikki algab cooldown id-alusel
+
+        // cooldown-ist väljumine:
+        setTimeout(() => { // id põhjal filtreerime cooldowns-i pandud sõiduki VÄLJA:
+            setCooldowns((prev) => prev.filter((carId) => carId !== id));
+
+        }, 5000);
     };
 
     // ei hakanud praegu alias-eid kasutama, et importida utilsist
