@@ -1,9 +1,10 @@
-
 // Simple Express server with Socket.IO for real-time communication (minimal setup - module syntax)
 import express from "express";
 import http from "http";
 import { Server } from "socket.io";
 import cors from "cors";
+import socketHandlers from "./socket/index.js"
+import { ENV_VARIABLES, RACE_DURATION } from "./config/env.js"
 
 const app = express();
 app.use(cors());
@@ -22,17 +23,9 @@ const io = new Server(server, {
     cors: { origin: "*" }
 });
 
-io.on("connection", (socket) => {
-    console.log("client connected:", socket.id);
-});
+socketHandlers(io);
 
-/*io.on("connection", (socket) => {
-    console.log("client connected:", socket.id);
-
-    socket.emit("hello", "backend works");
-});*/ //for testing
-
-
-server.listen(3000, () => {
-    console.log("Server running on port 3000");
+server.listen(ENV_VARIABLES.RACETRACK_SERVER_PORT, () => {
+    console.log(`  ➜  Server running on port ${ENV_VARIABLES.RACETRACK_SERVER_PORT}\n  ➜  http://localhost:${ENV_VARIABLES.RACETRACK_SERVER_PORT}/`);
+    console.log(`  ➜  Race duration set to ${(RACE_DURATION/1000)/60} minutes`);
 });

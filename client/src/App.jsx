@@ -1,121 +1,144 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+// npm install react-router-dom (client-kaustas)
+/* nb! kuna meil on (minu pärast) vana vite, siis installimisel toob
+esile vite-i 1 high-risk murekoha. 
+gemini sõnul see vaid murekoht arenduse ajal serveripoolel (kui häkker samas
+võrgus tahaks salafailidele ligi pääseda, siis potentsiaalselt saaks), kuid
+mis ei kandu lõpptootesse üle.
 
+npm audit fix uuendaks vite-i, aga kuna mul juust arvuti, siis pliis
+ärme vaheta vite versiooni :D
+*/
+
+// vajalikud impordid jaotusfunktsionaalsuseks:
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+
+// ui-impordid:
+import HomePage from "./pages/homePage/HomePage";
+//import FrontDesk from "./pages/frontDesk/FrontDesk";
+//import RaceControl from "./pages/raceControl/RaceControl";
+//import LapTracker from "./pages/lapTracker/LapTracker";
+//import LeaderboardPage from "./pages/leaderboard/LeaderboardPage";
+//import NextRace from "./pages/nextRace/NextRace";
+//import Countdown from "./pages/countdown/Countdown";
+//import Flags from "./pages/flags/Flags";
+
+/* ajutine autentimiskuva (hiljem eraldi komponendiks?) 
+ühtlasi - sõnastus hiljem kohaldada vastaval auth.js sisule */
+const AuthGate = ({ children, roleName }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [inputKey, setInputKey] = useState("");
+  const [error, setError] = useState("");
+
+  // nb! "children" on kindel sõnavara (reserved keyword) !!!
+  // siin loodud AuthGate funktsioon kasutab "children", et 
+  // KÕIKI tema sees määratletud osi kokku grupeerida ->
+  // loob ümbrise, mis aitab vältida koodi taaskirjutamist (DRY-põhimõte),
+  // sest loogika (tagasta "lapsed" kehtib igale elemendile, millega
+  // ta on ümbritsetud ja ei pea igale mõjutamist vajale elemendile
+  // hakkama looma oma eraldi loogikat)
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    // siia peaks käima socket-infovahetus parooli kontrollimiseks,
+    // aga testimiseks hardcodein "0000":
+    if (inputKey === "0000") {
+      setIsAuthenticated(true);
+    } else {
+      setError("Vale parool - proovi uuesti! (testkood on 0000)");
+      // hetkel läägi ei pane, see vist peaks ka auth-loogikast tulema?
+    }
+  };
+  if (isAuthenticated) { // kui autentimine õnnestus, siis
+    return children; // UI sisu kuvamine
+  }
+
+  // pääsukuva:
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div style={{ padding: "50px", textAlign: "center" }}>
+      <h2>{roleName} - authorised access only!</h2>
+      <p>Please provide passcode:</p>
+      <form onSubmit={handleLogin}>
+        <input
+        type="password"
+        value={inputKey}
+        onChange={(e) => setInputKey(e.target.value)}
+        />
+        <button type="subit">Enter</button>
+      </form>
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      <Link to="/">Home</Link>
+    </div>
+  );
+};
 
-      <div className="ticks"></div>
+// ==============
+// funktsionaalsuse tekstimiseks minikuva, sest muidu react jookseb kokku,
+// kui komponente veel pole:
+const Placeholder = ({ ajutine }) => (
+  <div style={{ padding: "20px"}}>
+    <h2>{ajutine} Leht</h2>
+    <p>Lehekülg on arendamisel</p>
+    <Link to="/">Mine tagasi esilehele</Link>
+  </div>
+);
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+function App() {
+  return (
+    <BrowserRouter> {/* kogu return peab olema mähitud jagajasse */}
+    {/* kõik, mis jääb VÄLJAPOOLE <routes>i, on püsivalt brauseri lehel */}
+      <Routes>
+        {/* siin osas defineerime kõik route-id: */}
+  
+        {/* "koduleht" ka*/}
+        <Route path="/" element={<HomePage/>}/>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+        {/* -> ajutine route-ing <- 
+        
+        parooli vajavad UI-d saavad AuthGate-ga mässitud: */}
+        <Route path="/front-desk" element={
+          <AuthGate roleName="Receptionist">
+            <Placeholder ajutine="FrontDesk"/>
+          </AuthGate>}/>
+        <Route path="/race-control" element={
+          <AuthGate roleName="Safety Official">
+            <Placeholder ajutine="RaceControl"/>
+          </AuthGate>}/>
+        <Route path="/lap-line-tracker" element={
+          <AuthGate roleName="Lap Observer">
+            <Placeholder ajutine="LapTracker"/>
+          </AuthGate>}/>
+        <Route path="/leader-board" element={<Placeholder ajutine="LeaderboardPage"/>}/>
+        <Route path="/next-race" element={<Placeholder ajutine="NextRace"/>}/>
+        <Route path="/race-countdown" element={<Placeholder ajutine="Countdown"/>}/>
+        <Route path="/race-flags" element={<Placeholder ajutine="Flags"/>}/>
+
+        {/* päris-routing:
+        <Route path="/front-desk" element={
+          <AuthGate roleName="Receptionist">
+            <FrontDesk/>
+          </AuthGate>
+          }/>
+        <Route path="/race-control" element={
+          </AuthGate roleName="Safety Official">
+            <RaceControl/>
+          </AuthGate>
+          }/>
+        <Route path="/lap-line-tracker" element={
+          <AuthGate roleName="Lap Observer">
+            <LapTracker/>
+          </AuthGate>
+        }/>
+        <Route path="/leader-board" element={<LeaderboardPage/>}/>
+        <Route path="/next-race" element={<NextRace/>}/>
+        <Route path="/race-countdown" element={<Countdown/>}/>
+        <Route path="/race-flags" element={<Flags/>}/>
+        */}
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App
