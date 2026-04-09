@@ -1,0 +1,68 @@
+input {
+    padding: 6px;
+    margin-right: 8px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background: #111;
+    color: white;
+}
+
+button {
+    padding: 6px 10px;
+    border-radius: 6px;
+}
+
+.container {
+    padding: 20px;
+}
+
+.create {
+    margin-bottom: 16px;
+}
+
+.sessions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    background: #1e1e2f;
+    border-radius: 8px;
+    border: 1px solid #333;
+}
+
+.card span {
+    font-size: 16px;
+}
+
+.card button {
+    background: #ff4d4f;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+}
+
+.card button:hover {
+    background: #ff7875;
+}
+
+input {
+    padding: 6px;
+    margin-right: 8px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background: #111;
+    color: white;
+}
+
+button {
+    padding: 6px 10px;
+    border-radius: 6px;
+}

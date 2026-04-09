@@ -1,8 +1,8 @@
 let state = {
-	races: [
+	sessions: [
 	 	{
 		id: 9,		// int  // race.id
-		status: 'started', 	// string "upcoming", "started", "finished" // races.race1.status // NB! duplicate against hasStarted&isFinished
+		status: 'started', 	// string "notStarted", "started", "finishing", "ended" // races.race1.status // NB! duplicate against hasStarted&isFinished
 							// preferred if you use this value and set up hasStarted&isFinished locally
 		startTimeStamp: 1775123702223,	// LocalDateTime // races.race9.startTimeStamp
 		secondsLeft: 100641 ,	// int milliseconds // races.race1.secondsLeft  // REVIEW @MARI - secondsLeft --> msLeft? OK? NOT_OK?
@@ -26,7 +26,7 @@ let state = {
 	
 	runningRace: null, 	// initially null, upon start or equals(race.id) -> use as pointer to state.races.{}
 	nextRace: 0,	// initially 0, increments to 1 as soon as session/race 0 starts
-    raceMode: 'notStarted', 	// initially 'notStarted', options 'safe', 'hazard', 'danger', 'finish'
+    raceMode: 'notStarted', 	// initially 'notStarted', options 'safe', 'hazard', 'danger', 'finishing', 'ended'
     session: 'started', //'null', 'started' or 'ended' once 10mins/1min runs out
     timer: {
         duration: 6000000,              // 600 000 ms = 10 min, dev 60 000 = 1 min // set by env var DEV MODE
@@ -36,7 +36,7 @@ let state = {
         timerStatus: null
     },
 
-    leaderboard: [],
+    leaderboard: [], // server updates this with new driver info + sorted by bestLapTime each time socket.emit(EVENTS.LAP_UPDATED) is ran
 	};
 
 export default state;
