@@ -3,6 +3,7 @@ let state = {
 	 	{
 		id: 9,		// int  // race.id
 		status: 'started', 	// string "upcoming", "started", "finished" // races.race1.status // NB! duplicate against hasStarted&isFinished
+							// preferred if you use this value and set up hasStarted&isFinished locally
 		startTimeStamp: 1775123702223,	// LocalDateTime // races.race9.startTimeStamp
 		secondsLeft: 100641 ,	// int milliseconds // races.race1.secondsLeft  // REVIEW @MARI - secondsLeft --> msLeft? OK? NOT_OK?
 		startTime: 1775123702223,		// LocalDateTime // races.race1.startTime
@@ -23,7 +24,7 @@ let state = {
 		} 	// ... kuni indefinited race#
 		],	// races massiivi lõpp
 	
-	currentRace: null, 	// initially null, upon start or equals(race.id) -> use as pointer to state.races.{}
+	runningRace: null, 	// initially null, upon start or equals(race.id) -> use as pointer to state.races.{}
 	nextRace: 0,	// initially 0, increments to 1 as soon as session/race 0 starts
     raceMode: 'notStarted', 	// initially 'notStarted', options 'safe', 'hazard', 'danger', 'finish'
     session: 'started', //'null', 'started' or 'ended' once 10mins/1min runs out
