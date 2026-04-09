@@ -61,14 +61,25 @@ export const recordLap = (driverId) => {
     // testimiseks:
     console.log(`Server received lap for Driver ID: ${driverId}`);
 
+    // nii nagu .jsx-is, loon ka siin const-i, mis lubaks kasutada nii ühe
+    // kui mitmekordset nestimist (activeSession):
+    const driversList = state.drivers || state.activeSession?.drivers;
+    if (!driversList) {
+        console.error("could not find a drivers list inside state object");
+        return null;
+    }
+
     // konkreetse sõitja info saamine find()-ga:
-    const driver = state.drivers.find(d => d.id === driverId);
+    const driver = driversList.find(d => d.id === driverId);
     // kui tahta leida otse id-alusel (nb!indeksid!!), siis:
     // const racer = racers[racerId];
 
+    // topeltkontroll algusstaatuse osas:
+    const hasStarted = state.hasStarted || state.activeSession?.hasStarted;
+
     // errori/puuduliku info käsitlus ja ringiaja salvestamise
     // õiguse valideerimine:
-    if (!driver || driver.isFinished || !state.hasStarted) {
+    if (!driver || driver.isFinished || !hasStarted) {
         // kas state asemel "!EVENTS.SESSION_STARTED" ?
         return null;
     } // (varasemalt ühenupuvers - hasstarted ja finallap (canlap)
