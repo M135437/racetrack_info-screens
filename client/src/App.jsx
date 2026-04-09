@@ -1,5 +1,4 @@
-import LeaderboardPage from "./pages/leaderboard/LeaderboardPage";
-import NextRace from "./pages/nextRace/NextRace";
+
 import { useState } from 'react'
 import './App.css'
 
@@ -19,10 +18,12 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
 // ui-impordid:
 import HomePage from "./pages/homePage/HomePage";
+import LeaderboardPage from "./pages/leaderboard/LeaderboardPage";
+import NextRace from "./pages/nextRace/NextRace";
+
 //import FrontDesk from "./pages/frontDesk/FrontDesk";
 //import RaceControl from "./pages/raceControl/RaceControl";
 //import LapTracker from "./pages/lapTracker/LapTracker";
-
 //import Countdown from "./pages/countdown/Countdown";
 //import Flags from "./pages/flags/Flags";
 
@@ -111,8 +112,14 @@ function App() {
           <AuthGate roleName="Lap Observer">
             <Placeholder ajutine="LapTracker"/>
           </AuthGate>}/>
-        <Route path="/leader-board" element={<Placeholder ajutine="LeaderboardPage"/>}/>
-        <Route path="/next-race" element={<Placeholder ajutine="NextRace"/>}/>
+
+          {/* 🔥 HEILIKA PUBLIC SCREENS */}
+
+        <Route path="/leader-board" element={<LeaderboardPage />}/>
+
+        <Route path="/next-race" element={<NextRace />} />
+
+
         <Route path="/race-countdown" element={<Placeholder ajutine="Countdown"/>}/>
         <Route path="/race-flags" element={<Placeholder ajutine="Flags"/>}/>
 
@@ -134,7 +141,7 @@ function App() {
         }/>
 
         <Route path="/leaderboard" element={<Leaderboard />} />
-        <Route path="/nextRace" element={<NextRace />} />
+       
 
 
         <Route path="/leader-board" element={<LeaderboardPage/>}/>

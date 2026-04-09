@@ -21,7 +21,7 @@ const Leaderboard = () => {
     );
 
     return (
-        <div className="leaderboard-container">
+        <div className="next-race-container">
             <header className="leaderboard-header">
                 <h2>LEADERBOARD</h2>
 
