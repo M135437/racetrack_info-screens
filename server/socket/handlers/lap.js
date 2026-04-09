@@ -60,6 +60,22 @@ export default (io, socket) => {
     }, 3000); // viide 3 sek; siis tekivad nupud. enne seda "waiting.."
     */
 
+    // hardcode-in testandmed ja käivituse:
+    socket.emit(EVENTS.SESSION_STARTED, {
+        hasStarted: true,
+        secondsLeft: 60,
+        drivers: [
+        { id: 1, name: "racer 1", car: "1", lapCount: 0, latestLapTime: null, fastestLap: null, lastLapTimestamp: null, isFinished: false },
+        { id: 2, name: "racer 2", car: "2", lapCount: 0, latestLapTime: null, fastestLap: null, lastLapTimestamp: null, isFinished: false },
+        { id: 3, name: "racer 3", car: "3", lapCount: 0, latestLapTime: null, fastestLap: null, lastLapTimestamp: null, isFinished: false },
+        { id: 4, name: "racer 4", car: "4", lapCount: 0, latestLapTime: null, fastestLap: null, lastLapTimestamp: null, isFinished: false },
+        { id: 5, name: "racer 5", car: "5", lapCount: 0, latestLapTime: null, fastestLap: null, lastLapTimestamp: null, isFinished: false },
+        { id: 6, name: "racer 6", car: "6", lapCount: 0, latestLapTime: null, fastestLap: null, lastLapTimestamp: null, isFinished: false },
+        { id: 7, name: "racer 7", car: "7", lapCount: 0, latestLapTime: null, fastestLap: null, lastLapTimestamp: null, isFinished: false },
+        { id: 8, name: "racer 8", car: "8", lapCount: 0, latestLapTime: null, fastestLap: null, lastLapTimestamp: null, isFinished: false }
+        ]
+    }); 
+
     // nupuvajutusel:
     socket.on(EVENTS.LAP_UPDATE, (driverId) => {
         const updatedDriver = recordLap(driverId);

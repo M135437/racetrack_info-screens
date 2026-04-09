@@ -9,7 +9,9 @@
 
 // IMPORDID
 // react-tööriistad kuva kirjutamaks:
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react"; 
+// useRef on nuppude cooldown tarbeks
+
 // HOOK saamaks taimeri-stopperi infot (lb saab sealt ka stopperi kuva)
 // import { useRaceState } from "../../hooks/useRaceState"; (meil puudub??)
 // ühendus serveriga, sest lt ui ka SAADAB infot (nupuvajutused)
@@ -36,6 +38,31 @@ const LapTracker = () => {
     const [now, setNow] = useState(Date.now());
     const [cooldowns, setCooldowns] = useState([]); // <- lokaalne state nupu
     // keelamiseks vahetult pärast klikki
+    
+    const cooldownsRef = useRef([]); // <-automaatuuendus ilma lehte renderimata;
+    // väldib nupuloogikal "hangumist"; varasemalt üks nupp muutus aktiivseks alles siis,
+    // kui vahepeal mõnd muud nuppu vajutada
+
+    // testkeskkonnaks serverierrori useeffect:
+    useEffect(() => {
+        // ainult dev-is jooksutamiseks!
+        const timer= setTimeout(() => {
+            if (!incomingStateData) {
+                console.log("DEBUG. forcing mock-data because server is quiet");
+                setincomingStateData({
+                    hasStarted: true,
+                    secondsLeft: 60,
+                    drivers: [
+                        { id: 1, name: "racer 1", car: "1", lapCount: 0, latestLapTime: null, fastestLap: null, lastLapTimestamp: null, isFinished: false },
+                        { id: 2, name: "racer 2", car: "2", lapCount: 0, latestLapTime: null, fastestLap: null, lastLapTimestamp: null, isFinished: false },
+                        { id: 3, name: "racer 3", car: "3", lapCount: 0, latestLapTime: null, fastestLap: null, lastLapTimestamp: null, isFinished: false },
+                        { id: 4, name: "racer 4", car: "4", lapCount: 0, latestLapTime: null, fastestLap: null, lastLapTimestamp: null, isFinished: false }
+                    ]
+                });
+            }
+        }, 3000);
+        return () => clearTimeout(timer);
+    }, [incomingStateData]);
 
     useEffect(() => { // stopperivisuaaliks
         const interval = setInterval(() => setNow(Date.now()), 10);
@@ -128,16 +155,26 @@ const LapTracker = () => {
         // testimiseks:
         console.log(`Client clicking Driver ID: ${id}`);
 
-        if (cooldowns.includes(id)) return; // <- cooldown-kontroll, mis
+        if (cooldownsRef.current.includes(id)) { // <- cooldown-kontroll, mis
         // ei luba vajutust, kui cooldwon state-is
+            console.log(`button for driver ${id} blocked by cooldown!`);
+            return; // testimise abiks logitekst
+        };
+
+        // ref-i lisamine:
+        cooldownsRef.current.push(id);
+        // css tarbeks state:
+        setCooldowns([...cooldownsRef.current]);
+
         socket.emit(EVENTS.LAP_UPDATE, id); // andmete muutuse
         // edastamine nupuvajutusel
-        setCooldowns((prev) => [...prev, id]); // pärast klikki algab cooldown id-alusel
-
+        
         // cooldown-ist väljumine:
         setTimeout(() => { // id põhjal filtreerime cooldowns-i pandud sõiduki VÄLJA:
-            setCooldowns((prev) => prev.filter((carId) => carId !== id));
+            cooldownsRef.current = cooldownsRef.current.filter((carId) => carId !== id);
 
+            // uuendame, et väljuda edukalt cooldownist:
+            setCooldowns([...cooldownsRef.current]);
         }, 5000);
     };
 
@@ -212,7 +249,10 @@ const LapTracker = () => {
                         // emit-i välja kirjutama; nb! serveris argument "racerId", aga siin map-i kaudu objektist saadud "racer.id"
                         /* enne mitmiknupuversiooni oli disabled={!incomingStateData?.canLap} )*/
                         disabled={!incomingStateData?.hasStarted || driver.isFinished}
-                        className={`lap-button ${!incomingStateData?.hasStarted || driver.isFinished ? "disabled" : "active"}`}
+                        className={`lap-button ${
+                            !incomingStateData?.hasStarted || 
+                            driver.isFinished ||
+                            cooldowns.includes(driver.id) ? "disabled" : "active"}`}
                     >
                         {driver.isFinished ? `${driver.car} FINISHED` : `car ${driver.car} | `}
                         {/* nupud peavad kuvama SÕIDUKI NR, mitte sõitja nime */}
