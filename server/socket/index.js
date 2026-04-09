@@ -6,9 +6,9 @@ export default function(io) {
     io.on("connection", (socket) => {
         console.log(`connected: ${socket.id} from ${socket.address} with auth ${socket.auth}, time ${socket.time}`);
 
-       raceHandler(socket, io);
-       sessionHandler(socket, io);
-       lapHandler(socket, io);
+       raceHandler(io, socket);
+       sessionHandler(io, socket);
+       lapHandler(io, socket);
 
        socket.emit("hello", "backend works"); // REVIEW - for testing only
     });

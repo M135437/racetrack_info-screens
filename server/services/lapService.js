@@ -16,12 +16,13 @@ service-failid jätkuvalt PUHAS LOOGIKA!
 
 
 // -> IMPORT
-import { state } from "../state/state.js";
+import state from "../state/state.js";
 
-// NB! ilmselt tuleb muudatus, kus:
+// NB! tehtud muudatus, kus:
 // võistlus ise -> session
 // racer -> driver
 
+/* TESTFAASI liba-andmed
 // test-andmed
 let mockState = {
     hasStarted: false,
@@ -39,6 +40,7 @@ let mockState = {
     ],
     status: "safe"
 };
+*/
 
 /* TESTFAASI KÄIVITI:
 // helper mock-state sisu edastamiseks:
@@ -60,14 +62,14 @@ export const recordLap = (driverId) => {
     console.log(`Server received lap for Driver ID: ${driverId}`);
 
     // konkreetse sõitja info saamine find()-ga:
-    const driver = mockState.drivers.find(d => d.id === driverId);
+    const driver = state.drivers.find(d => d.id === driverId);
     // kui tahta leida otse id-alusel (nb!indeksid!!), siis:
     // const racer = racers[racerId];
 
     // errori/puuduliku info käsitlus ja ringiaja salvestamise
     // õiguse valideerimine:
-    if (!driver || driver.isFinished || !mockState.hasStarted) {
-        // mockstate asemel "!EVENTS.SESSION_STARTED" ?
+    if (!driver || driver.isFinished || !state.hasStarted) {
+        // kas state asemel "!EVENTS.SESSION_STARTED" ?
         return null;
     } // (varasemalt ühenupuvers - hasstarted ja finallap (canlap)
     // piisav nupulukuks post-timer. seega nüüd vaja siduda iga
@@ -91,7 +93,7 @@ export const recordLap = (driverId) => {
     // -> SÕITJA RINGIAEGADE ARVUTAMINE
     // konkreetse sõitja algusaja/ületusaja defineerimine,
     // kui lapCount > 0 (algus kui 1, ringiaeg kui üle 2)
-    const startTime = racer.lastLapTimestamp;
+    const startTime = driver.lastLapTimestamp;
     const elapsed = (now - startTime) / 1000; // aja arvutuskäik
 
     driver.latestLapTime = elapsed.toFixed(3); // 3 komakohta millisekundeid DISPLEI-VERSIOON!!
