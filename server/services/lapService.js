@@ -16,12 +16,13 @@ service-failid jätkuvalt PUHAS LOOGIKA!
 
 
 // -> IMPORT
-// import { state } from "../state/state.js";
+import state from "../state/state.js";
 
-// NB! ilmselt tuleb muudatus, kus:
+// NB! tehtud muudatus, kus:
 // võistlus ise -> session
 // racer -> driver
 
+/* TESTFAASI liba-andmed
 // test-andmed
 let mockState = {
     hasStarted: false,
@@ -39,7 +40,9 @@ let mockState = {
     ],
     status: "safe"
 };
+*/
 
+/* TESTFAASI KÄIVITI:
 // helper mock-state sisu edastamiseks:
 export const getMockState = () => mockState;
 
@@ -50,71 +53,90 @@ export const startMockRace = () => {
     // igaks juhuks konsooliteavitus ka:
     console.log("Mock-race started!");
 }
+*/
 
 // kogu süsteemile ekspordi abil kättesaadavaks
 // -> NUPUVAJUTUSE LOOGIKA
-export const recordLap = (racerId) => {
+export const recordLap = (driverId) => {
     // testimiseks:
-    console.log(`Server received lap for Racer ID: ${racerId}`);
+    console.log(`Server received lap for Driver ID: ${driverId}`);
+
+    // nii nagu .jsx-is, loon ka siin const-i, mis lubaks kasutada nii ühe
+    // kui mitmekordset nestimist (activeSession):
+    const driversList = state.drivers || state.activeSession?.drivers;
+    if (!driversList) {
+        console.error("could not find a drivers list inside state object");
+        return null;
+    }
 
     // konkreetse sõitja info saamine find()-ga:
-    const racer = mockState.racers.find(r => r.id === racerId);
+    const driver = driversList.find(d => d.id === driverId);
     // kui tahta leida otse id-alusel (nb!indeksid!!), siis:
     // const racer = racers[racerId];
 
+    // topeltkontroll algusstaatuse osas:
+    const hasStarted = state.hasStarted || state.activeSession?.hasStarted;
+
     // errori/puuduliku info käsitlus ja ringiaja salvestamise
     // õiguse valideerimine:
-    if (!racer || racer.isFinished || !mockState.hasStarted) {
+    if (!driver || driver.isFinished || !hasStarted) {
+        // kas state asemel "!EVENTS.SESSION_STARTED" ?
         return null;
     } // (varasemalt ühenupuvers - hasstarted ja finallap (canlap)
     // piisav nupulukuks post-timer. seega nüüd vaja siduda iga
     // sõitjaga, et ühe sõitja finallap ei lukustaks KÕIKIDE lap-nuppe)
 
-    // const secondsLeft = state.secondsLeft; // <- TAIMERI INFO
+    // mitmikkontrolliga taimeriinfo:
+    const secondsLeft = state.secondsLeft ?? state.timer?.secondsLeft ?? 0;
+    // (?? puhul vastavalt tingimusele märkidest vasak- v parempoolne väärtus)
+    
+    // vana: const secondsLeft = state.secondsLeft; // <- TAIMERI INFO 
     const now = Date.now(); // <- STOPPERI ALGPUNKT, aja arvutamiseks
 
     // -> SÕIDETAVA RINGI NR ARVUTAMINE
     // kui ringide hulk on 0 või null,
-    if (racer.lapCount === 0 || racer.lapCount === null) {
-        racer.lapCount = 1; // siis muutub see 1ks
-        racer.lastLapTimestamp = now; // ja essal (1) jooneületusel
+    if (driver.lapCount === 0 || driver.lapCount === null) {
+        driver.lapCount = 1; // siis muutub see 1ks
+        driver.lastLapTimestamp = now; // ja essal (1) jooneületusel
         // fikseerime sõitja
         // emitState(); // originaalis edastasime ka muutused;
         // nüüd teeb seda socket-handler
 
-        return racer; // tagastame sõitja-OBJEKTI
+        return driver; // tagastame sõitja-OBJEKTI
     }
 
     // -> SÕITJA RINGIAEGADE ARVUTAMINE
     // konkreetse sõitja algusaja/ületusaja defineerimine,
     // kui lapCount > 0 (algus kui 1, ringiaeg kui üle 2)
-    const startTime = racer.lastLapTimestamp;
+    const startTime = driver.lastLapTimestamp;
     const elapsed = (now - startTime) / 1000; // aja arvutuskäik
 
-    racer.latestLapTime = elapsed.toFixed(3); // 3 komakohta millisekundeid DISPLEI-VERSIOON!!
-    racer.lapCount++; // ÄRA UNUSTA KA RINGI JUURDE LUGEDA!!
+    driver.latestLapTime = elapsed.toFixed(3); // 3 komakohta millisekundeid DISPLEI-VERSIOON!!
+    driver.lapCount++; // ÄRA UNUSTA KA RINGI JUURDE LUGEDA!!
 
     // -> ÜHE SÕITJA PARIM AEG:
     // konkreetse sõitja parima aja arvestus:
-    const currentLap = parseFloat(racer.latestLapTime); // stringist saadud ARV
+    const currentLap = parseFloat(driver.latestLapTime); // stringist saadud ARV
     /* ja loome loogika parimaks ajaks LIHTSAIMAL MOEL ehk
     kõrvutades kaks aega ja jättes alles AINULT parima: */
-    if (racer.fastestLap === null || currentLap < racer.fastestLap) {
-        racer.fastestLap = currentLap;
+    if (driver.fastestLap === null || currentLap < driver.fastestLap) {
+        driver.fastestLap = currentLap;
     }
 
     // -> FINISH-MODE MÕJU NUPULE (hetkel taimeripõhine):
     // joonenupul pole mõju, kui pole sõit alanud v juba viimane ring sooritatud
-    if (mockState.secondsLeft <= 0) {
-        racer.isFinished = true;
+    if (secondsLeft <= 0) { // pean mihkli kontrollpaneeli ootama - kas "finish"
+    // nullib taimeri ja/või muudab raceMode-i?
+        driver.isFinished = true;
         // kui on sekundid nullis ja vajutatakse nuppu,
         // siis seejärel saab isFinished tõese väärtuse
     }
 
-    racer.lastLapTimestamp = now; // nupuvajutusel uue ajaarvamise alguse määramine
-    return racer; // objekti tagastamine
+    driver.lastLapTimestamp = now; // nupuvajutusel uue ajaarvamise alguse määramine
+    return driver; // objekti tagastamine
 };
 
+/* testfaasi ajutine taimer:
 // testimiseks ise sandboxi loodud taimer info vahendamine
 export const temporaryTimer = () => {
     if (mockState.hasStarted && mockState.secondsLeft > 0) {
@@ -123,3 +145,4 @@ export const temporaryTimer = () => {
     }
     return false;
 };
+*/

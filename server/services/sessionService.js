@@ -1,3 +1,5 @@
+
+
 //in-memory session store
 let sessions = []
 let sessionIdCounter = 1
@@ -10,7 +12,9 @@ function createSessionObject(name, startTime) {
         startTime: startTime || new Date(), // specific time
         maxSlots: 8, //default value, can be changed when creating session
         freeSlotsLeft: 8, //default value, can be changed when drivers join
-        status: 'pending' //later can be 'active' or 'completed'
+        status: 'pending', //later can be 'active' or 'completed'
+
+        drivers: [], //array of driver objects {id, name, car}
     };
 }
 
@@ -42,9 +46,66 @@ function deleteSession(id) {
 }
 
 
+//ADD driver to session (not implemented yet, but can be added later when implementing driver management)
+function addDriver(sessionId, driverName, car) {
+    const session = sessions.find(s => s.id === sessionId) //
+
+    if (!session) {
+        throw new Error("Session not found")
+    }
+
+    if (session.freeSlotsLeft <= 0) {
+        throw new Error("No free slots left")
+    }
+
+    if (!driverName || driverName.trim() === "") {
+        throw new Error("Driver name is required")
+    }
+
+    // prevent adding drivers with duplicate names in the same session, can be improved to allow duplicates if needed, but for now it will just throw an error if a driver with the same name already exists in the session
+    if (session.drivers.some(d => d.name === driverName)) {
+        throw new Error("Driver with this name already exists")
+    }
+
+    const driver = {
+        id: Date.now(), // simple unique id generator, can be improved to use a better method for generating unique ids
+        name: driverName,
+        car: car || "—"
+    }
+
+    session.drivers.push(driver) // add driver to session's drivers array
+    session.freeSlotsLeft-- // decrease free slots left by 1
+
+    return driver
+}
+
+
+//remove driver from session (not implemented yet, but can be added later when implementing driver management)
+function removeDriver(sessionId, driverId) {
+    const session = sessions.find(s => s.id === sessionId) // find session by id
+
+    if (!session) {
+        throw new Error("Session not found")
+    }
+
+    const initialLength = session.drivers.length
+
+    session.drivers = session.drivers.filter(d => d.id !== driverId) // remove driver from session's drivers array 
+    // by filtering out the driver with the given id
+
+    if (session.drivers.length < initialLength) {
+        session.freeSlotsLeft++
+    }
+
+    return { message: "Driver removed" }
+}
+
+
 //EXPORTING functions
 export {
     getUpcomingSessions,
     createSession,
-    deleteSession
+    deleteSession,
+    addDriver,
+    removeDriver
 }

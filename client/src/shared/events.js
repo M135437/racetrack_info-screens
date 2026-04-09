@@ -9,6 +9,9 @@ const EVENTS = {
     SESSION_FINISH: "session:finish",     // race control asks to set finish flag (state.raceMode.finish) and finishes race (state.races.${id} -> status:'finished')
     SESSION_END: "session:endSession",    // race control asks to end session
 
+    DRIVER_ADD: "driver:add",
+    DRIVER_REMOVE: "driver:remove",
+    
     LAP_INIT: "lap:init",                 // lap tracker initialization ||REVIEW - needed during dev for laptracker test
     LAP_UPDATE: "lap:update",             // lap tracker asks to update lap time
 
