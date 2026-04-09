@@ -88,7 +88,7 @@ ette, vaid sujuvalt: */
     transform: translateY(0); /* klassiga ettenähtud asukoht*/
   }
 }
-.racers-grid { /* vaikimisi e portreevaade */
+.drivers-grid { /* vaikimisi e portreevaade */
   flex: 1; /* iga sõitja ala koguruudustikus sama */
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* portrait, max 2 nuppu kõrvuti */
@@ -104,7 +104,7 @@ ette, vaid sujuvalt: */
 /* siit landscape-view stiil, mis käivitub vaid siis, kui ekraan väga lai
 või kui tablet ise spetsiifiliselt landscape mode-is */
 @media screen and (min-width: 768px) and (orientation: landscape) {
-  .racers-grid {
+  .drivers-grid {
     /* muundame spetsiifiliselt max-tulbad: */
     grid-template-columns: repeat(4, 1fr);
     gap: 2px;

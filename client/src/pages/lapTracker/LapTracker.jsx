@@ -9,12 +9,12 @@
 
 // IMPORDID
 // react-tööriistad kuva kirjutamaks:
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 // HOOK saamaks taimeri-stopperi infot (lb saab sealt ka stopperi kuva)
-// import { useRaceState } from "../../hooks/useRaceState";
+// import { useRaceState } from "../../hooks/useRaceState"; (meil puudub??)
 // ühendus serveriga, sest lt ui ka SAADAB infot (nupuvajutused)
-// import { socket } from "../../socket/socket";
-import { io } from "socket.io-client"; // <- testimiseks otse siia socketid
+import { socket } from "../../socket/socket";
+// import { io } from "socket.io-client"; // <- eelnevalt testimiseks otse siia socketid
 const socket = io("http://localhost:5000"); // <- sandbox port
 // kujundus
 import "./LapTracker.css";
@@ -27,6 +27,7 @@ import EVENTS from "../../shared/events.js";
 // import FlagDisplay from "../components/FlagDisplay";
 // import Timer from "../components/Timer";
 
+    // vaatasin, et olgal oli kasutusel export default function, mitte const:
 const LapTracker = () => {
 
     // võtame HOOK-ilt vajalikud andmed:
@@ -50,6 +51,7 @@ const LapTracker = () => {
 
     // kuulajad (esialgu mock-sõidule):
     useEffect(() => {
+        /* kommenteerin välja test-faasi käiviti:
         // esmaühendusel
         socket.on("lap:init", (initialRacers) => {
             setTimerData({
@@ -57,24 +59,25 @@ const LapTracker = () => {
                 secondsLeft: 60,
                 racers: initialRacers
             });
-        });
+        }); */
+
         // sõidu algamisel
         socket.on(EVENTS.SESSION_STARTED, (fullState) => {
             setTimerData(fullState);
         });
         // ühe võistleja jooneületusel
-        socket.on(EVENTS.LAP_UPDATED, (updatedRacer) => {
+        socket.on(EVENTS.LAP_UPDATED, (updatedDriver) => {
             setTimerData(prev => {
                 if (!prev) return prev;
-                const newRacers = prev.racers.map(r =>
-                    r.id === updatedRacer.id ? updatedRacer : r
+                const newDrivers = prev.drivers.map(d =>
+                    d.id === updatedDriver.id ? updatedDriver : d
                 );
-                return { ...prev, racers: newRacers };
+                return { ...prev, drivers: newDrivers };
             });
         });
 
         return () => {
-            socket.off("lap:init");
+            // socket.off("lap:init"); <- testfaasi event
             socket.off(EVENTS.SESSION_STARTED);
             socket.off(EVENTS.LAP_UPDATED);
         };
@@ -83,7 +86,7 @@ const LapTracker = () => {
     // testimiseks webdev konsooli andmeoutput ka:
     useEffect(() => {
         if (timerData) {
-            console.log("Current stats: ", timerData.racers);
+            console.log("Current stats: ", timerData.drivers);
         }
     }, [timerData]);
 
@@ -98,7 +101,7 @@ const LapTracker = () => {
     // ja handlerecordlap kasutusel pole vaja hook-ist eraldi recordLap-i võtta!
     const handleRecordLap = (id) => { // id, millest saame returnis react.id
         // testimiseks:
-        console.log(`Client clicking Racer ID: ${id}`);
+        console.log(`Client clicking Driver ID: ${id}`);
         socket.emit(EVENTS.LAP_UPDATE, id); // andmete muutuse
         // edastamine nupuvajutusel
     };
@@ -154,31 +157,31 @@ const LapTracker = () => {
             {!timerData?.hasStarted ? ( // ternary et nuppude asemel oleks
             // sessioonide vahel tekst:
                 <div className="waiting-screen">
-                    <p>Waiting for the mock/next race to begin..</p>
+                    <p>Waiting for the next race to begin..</p>
                 </div>
             ) : (
-            <div className="racers-grid">
+            <div className="drivers-grid">
             {/* nb! lisa ka vastav klass css-i, ühes display:flex-iga!! */}
-            {timerData?.racers.map((racer) => (
+            {timerData?.drivers.map((driver) => (
             // map-meetod ise kontrollib alguses ?-ga, kas timerData info
             // on olemas - SEE TÄHENDAB, et racer-spetsiifilise info 
             // kontrollimine timerData?-ga ei ole enam vajalik (küll aga
             // jätkuvalt vja kontrollida asju nagu canLap jne, sest on 
             // sõitja-objekti välised muundujad
-                <div key={racer.id} className="lap-tracker-ui">
+                <div key={driver.id} className="lap-tracker-ui">
 
                     <button
-                        onClick={() => handleRecordLap(racer.id)} // kasutame ülapool ära
+                        onClick={() => handleRecordLap(driver.id)} // kasutame ülapool ära
                         // märgitud uut const-i, mis edastaks socketile emit-i
                         // (VANA single-ui vers: peame siin info
                         // emit-i välja kirjutama; nb! serveris argument "racerId", aga siin map-i kaudu objektist saadud "racer.id"
                         /* enne mitmiknupuversiooni oli disabled={!timerData?.canLap} )*/
-                        disabled={!timerData?.hasStarted || racer.isFinished}
-                        className={`lap-button ${!timerData?.hasStarted || racer.isFinished ? "disabled" : "active"}`}
+                        disabled={!timerData?.hasStarted || driver.isFinished}
+                        className={`lap-button ${!timerData?.hasStarted || driver.isFinished ? "disabled" : "active"}`}
                     >
-                        {racer.isFinished ? `${racer.car} FINISHED` : `car ${racer.car} | `}
+                        {driver.isFinished ? `${driver.car} FINISHED` : `car ${driver.car} | `}
                         {/* nupud peavad kuvama SÕIDUKI NR, mitte sõitja nime */}
-                        <span>Laps: {racer.lapCount} | Last time: {racer.latestLapTime} | Best: {racer.fastestLap || "--"}
+                        <span>Laps: {driver.lapCount} | Last time: {driver.latestLapTime} | Best: {driver.fastestLap || "--"}
                         </span>
                     </button>
                 </div>
