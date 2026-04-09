@@ -31,8 +31,8 @@ import EVENTS from "../../shared/events.js";
 const LapTracker = () => {
 
     // võtame HOOK-ilt vajalikud andmed:
-    // const { timerData, now, recordLap } = useRaceState();
-    const [timerData, setTimerData] = useState(null);
+    // const { incomingStateData, now, recordLap } = useRaceState();
+    const [incomingStateData, setincomingStateData] = useState(null);
     const [now, setNow] = useState(Date.now());
     const [cooldowns, setCooldowns] = useState([]); // <- lokaalne state nupu
     // keelamiseks vahetult pärast klikki
@@ -56,30 +56,53 @@ const LapTracker = () => {
         /* kommenteerin välja test-faasi käiviti:
         // esmaühendusel
         socket.on("lap:init", (initialRacers) => {
-            setTimerData({
+            setincomingStateData({
                 hasStarted: false,
                 secondsLeft: 60,
                 racers: initialRacers
             });
         }); */
 
-        // sõidu algamisel
+        // taimeriinfo/südamelöögi kuulamine:
+        socket.on(EVENTS.TIMER_UPDATE, (serverTimer) => {
+            setincomingStateData(prev => ({ // vaatab kõige viimase stateobjekti sisu
+                ...prev, // loob koopia
+                secondsLeft: serverTimer.secondsLeft // uuendab vaid aega
+            }));
+        }); 
+        // sõidu algamisel (active session, racemode safe)
         socket.on(EVENTS.SESSION_STARTED, (fullState) => {
-            setTimerData(fullState);
+            setincomingStateData(fullState);
         });
         // ühe võistleja jooneületusel
         socket.on(EVENTS.LAP_UPDATED, (updatedDriver) => {
-            setTimerData(prev => {
+            setincomingStateData(prev => {
                 if (!prev) return prev;
+
+                // kuna ma ei tea state-i vormingut, siis määran siin ära, et
+                // kahe eri vorminguga sõitjainfo on vastuvõetav:
+                const currentDrivers = prev.drivers || prev.activeSession?.drivers;
+                if (!currentDrivers) return prev;
+
+                const updatedDrivers = currentDrivers.map(d =>
+                    d.id === updatedDriver.id ? updatedDriver : d
+                );
+                
+                return prev.activeSession
+                    ? { ...prev, activeSession: { ...prev.activeSession, drivers: updatedDrivers } }
+                    : { ...prev, drivers: updatedDrivers}
+
+               /* vana vers enne prev vs activesession:
                 const newDrivers = prev.drivers.map(d =>
                     d.id === updatedDriver.id ? updatedDriver : d
                 );
-                return { ...prev, drivers: newDrivers };
+                return { ...prev, drivers: newDrivers }; */
             });
         });
 
         return () => {
             // socket.off("lap:init"); <- testfaasi event
+            socket.off(EVENTS.TIMER_UPDATE);
             socket.off(EVENTS.SESSION_STARTED);
             socket.off(EVENTS.LAP_UPDATED);
         };
@@ -87,15 +110,15 @@ const LapTracker = () => {
     
     // testimiseks webdev konsooli andmeoutput ka:
     useEffect(() => {
-        if (timerData) {
-            console.log("Current stats: ", timerData.drivers);
+        if (incomingStateData) {
+            console.log("Current stats: ", incomingStateData.drivers);
         }
-    }, [timerData]);
+    }, [incomingStateData]);
 
     //testimiseks trackerisse sisse
-    // safeguard, kui timerData? kontroll võtab aega (ja ei taha
+    // safeguard, kui incomingStateData? kontroll võtab aega (ja ei taha
     // , et lehekülg näeks hangunud välja/laeks 100a):
-    if (!timerData) return <div className="lap-container">Connecting...</div>
+    if (!incomingStateData) return <div className="lap-container">Connecting...</div>
 
     // nb! handlerecordlap pole OTSESELT vajalik ja saaksin recordLap
     // funktsiooni kutsuda esile ka react return sees.
@@ -126,7 +149,7 @@ const LapTracker = () => {
 
     /* pre-leaderboard vana:
     if (!lapTime) { // juhul kui rajaaega veel pole, siis, KAS:
-      return timerData?.hasStarted ? "Awaiting first pass.." : "Waiting for race to start...";
+      return incomingStateData?.hasStarted ? "Awaiting first pass.." : "Waiting for race to start...";
     } */
 
     const totalSeconds = parseFloat(lapTime); // millisekundid arvuna loetavaks
@@ -154,19 +177,19 @@ const LapTracker = () => {
             css-is hallata:
             <div className="component-zone">
                 <div className="flag-wrapper">
-                    <FlagDisplay status={timerData?.raceMode} />
+                    <FlagDisplay status={incomingStateData?.raceMode} />
                 </div>
                 <div className="timer-wrapper">
-                    <Timer seconds={timerData?.secondsLeft} />
+                    <Timer seconds={incomingStateData?.secondsLeft} />
                 </div>
             </div>
             */}
             {/* kontrollime, kas nii taimer kui stopper töötavad */}
             <div className="debug-timer">
-                <h2>Time left: {timerData?.secondsLeft}s</h2>
+                <h2>Time left: {incomingStateData?.secondsLeft}s</h2>
                 <p>Local high-res: {formatLapDisplay(now / 1000)}</p>
             </div>
-            {!timerData?.hasStarted ? ( // ternary et nuppude asemel oleks
+            {!incomingStateData?.hasStarted ? ( // ternary et nuppude asemel oleks
             // sessioonide vahel tekst:
                 <div className="waiting-screen">
                     <p>Waiting for the next race to begin..</p>
@@ -174,10 +197,10 @@ const LapTracker = () => {
             ) : (
             <div className="drivers-grid">
             {/* nb! lisa ka vastav klass css-i, ühes display:flex-iga!! */}
-            {timerData?.drivers.map((driver) => (
-            // map-meetod ise kontrollib alguses ?-ga, kas timerData info
+            {incomingStateData?.drivers.map((driver) => (
+            // map-meetod ise kontrollib alguses ?-ga, kas incomingStateData info
             // on olemas - SEE TÄHENDAB, et racer-spetsiifilise info 
-            // kontrollimine timerData?-ga ei ole enam vajalik (küll aga
+            // kontrollimine incomingStateData?-ga ei ole enam vajalik (küll aga
             // jätkuvalt vja kontrollida asju nagu canLap jne, sest on 
             // sõitja-objekti välised muundujad
                 <div key={driver.id} className="lap-tracker-ui">
@@ -187,9 +210,9 @@ const LapTracker = () => {
                         // märgitud uut const-i, mis edastaks socketile emit-i
                         // (VANA single-ui vers: peame siin info
                         // emit-i välja kirjutama; nb! serveris argument "racerId", aga siin map-i kaudu objektist saadud "racer.id"
-                        /* enne mitmiknupuversiooni oli disabled={!timerData?.canLap} )*/
-                        disabled={!timerData?.hasStarted || driver.isFinished}
-                        className={`lap-button ${!timerData?.hasStarted || driver.isFinished ? "disabled" : "active"}`}
+                        /* enne mitmiknupuversiooni oli disabled={!incomingStateData?.canLap} )*/
+                        disabled={!incomingStateData?.hasStarted || driver.isFinished}
+                        className={`lap-button ${!incomingStateData?.hasStarted || driver.isFinished ? "disabled" : "active"}`}
                     >
                         {driver.isFinished ? `${driver.car} FINISHED` : `car ${driver.car} | `}
                         {/* nupud peavad kuvama SÕIDUKI NR, mitte sõitja nime */}
