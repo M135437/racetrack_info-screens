@@ -21,7 +21,7 @@ function startSession(io) {
     }
     // take current timestampt and "select"(find) the session
     const startTime = Date.now();
-    let session = state.sessions.find(s => s.id === state.currentRace);
+    let session = state.sessions.find(s => s.id === state.runningRace);
     // update state and trigger timer processing
     stateUptStartSession(session); // set RACE_MODE.SAFE and increment state.nextRace
     resetTimer();
@@ -29,7 +29,7 @@ function startSession(io) {
     // emit io event to inform of session start
     io.emit(EVENTS.SESSION_STARTED, {
         startTime,
-        raceId: state.currentRace,
+        raceId: state.runningRace,
         raceMode: RACE_MODES.SAFE
     });
 }
