@@ -19,7 +19,7 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import HomePage from "./pages/homePage/HomePage";
 //import FrontDesk from "./pages/frontDesk/FrontDesk";
 //import RaceControl from "./pages/raceControl/RaceControl";
-//import LapTracker from "./pages/lapTracker/LapTracker";
+import LapTracker from "./pages/lapTracker/LapTracker";
 //import LeaderboardPage from "./pages/leaderboard/LeaderboardPage";
 //import NextRace from "./pages/nextRace/NextRace";
 //import Countdown from "./pages/countdown/Countdown";
@@ -105,11 +105,11 @@ function App() {
         <Route path="/race-control" element={
           <AuthGate roleName="Safety Official">
             <Placeholder ajutine="RaceControl"/>
-          </AuthGate>}/>
+          </AuthGate>}/> {/*
         <Route path="/lap-line-tracker" element={
           <AuthGate roleName="Lap Observer">
             <Placeholder ajutine="LapTracker"/>
-          </AuthGate>}/>
+          </AuthGate>}/> */}
         <Route path="/leader-board" element={<Placeholder ajutine="LeaderboardPage"/>}/>
         <Route path="/next-race" element={<Placeholder ajutine="NextRace"/>}/>
         <Route path="/race-countdown" element={<Placeholder ajutine="Countdown"/>}/>
@@ -125,12 +125,12 @@ function App() {
           </AuthGate roleName="Safety Official">
             <RaceControl/>
           </AuthGate>
-          }/>
+          }/> */}
         <Route path="/lap-line-tracker" element={
           <AuthGate roleName="Lap Observer">
             <LapTracker/>
           </AuthGate>
-        }/>
+        }/> {/*
         <Route path="/leader-board" element={<LeaderboardPage/>}/>
         <Route path="/next-race" element={<NextRace/>}/>
         <Route path="/race-countdown" element={<Countdown/>}/>
@@ -141,4 +141,4 @@ function App() {
   );
 }
 
-export default App
+export default App;
