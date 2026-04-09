@@ -86,7 +86,11 @@ export const recordLap = (driverId) => {
     // piisav nupulukuks post-timer. seega nüüd vaja siduda iga
     // sõitjaga, et ühe sõitja finallap ei lukustaks KÕIKIDE lap-nuppe)
 
-    const secondsLeft = state.secondsLeft; // <- TAIMERI INFO 
+    // mitmikkontrolliga taimeriinfo:
+    const secondsLeft = state.secondsLeft ?? state.timer?.secondsLeft ?? 0;
+    // (?? puhul vastavalt tingimusele märkidest vasak- v parempoolne väärtus)
+    
+    // vana: const secondsLeft = state.secondsLeft; // <- TAIMERI INFO 
     const now = Date.now(); // <- STOPPERI ALGPUNKT, aja arvutamiseks
 
     // -> SÕIDETAVA RINGI NR ARVUTAMINE
