@@ -13,7 +13,7 @@ export default function sessionHandler(io, socket) {
     //CREATE session
     socket.on(EVENTS.SESSION_CREATE, (data) => {
         try {
-            sessionService.createSession(data.name)
+            sessionService.createSession(data.name, data.startTime)
 
             const sessions = sessionService.getUpcomingSessions()
 
