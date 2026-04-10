@@ -8,10 +8,12 @@ let sessionIdCounter = 1
 function createSessionObject(name, startTime) {
     return {
         id: sessionIdCounter++,
-        name,
-        startTime: startTime || new Date(), // specific time
+        name, 
+        startTime,
+
         maxSlots: 8, //default value, can be changed when creating session
         freeSlotsLeft: 8, //default value, can be changed when drivers join
+
         status: 'pending', //later can be 'active' or 'completed'
 
         drivers: [], //array of driver objects {id, name, car}
@@ -26,13 +28,16 @@ function getUpcomingSessions() {
 }
 
 //CREATE (POST) session
-function createSession(name) {
-    //error handlers
+function createSession(name, startTime) {
     if (!name || name.trim() === "") {
-        throw new Error('Session name is required and must be a string');
+        throw new Error('Session name is required');
     }
 
-    const session = createSessionObject(name);
+    if (!startTime) {
+        throw new Error('Start time is required');
+    }
+
+    const session = createSessionObject(name, startTime);
     sessions.push(session);
     return session;
 }

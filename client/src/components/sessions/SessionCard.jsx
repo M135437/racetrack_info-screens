@@ -11,7 +11,8 @@ export default function SessionCard({
 
             {/* HEADER */}
             <div className="card-header">
-                {session.name}
+                <span>{session.name}</span>
+                <span>{session.startTime}</span>
             </div>
 
             {/* TABLE */}

@@ -21,7 +21,7 @@ const NextRace = () => {
     // 2. Kuulame serveri vastust
     socket.on(EVENTS.SESSION_LISTED, (sessions) => {
       console.log("Saadud sessioonid:", sessions);
-      
+
       if (Array.isArray(sessions) && sessions.length > 0) {
         // Võtame esimese sessiooni, mis pole veel "finished"
         const upcoming = sessions.find(s => s.status !== "finished") || sessions[0];
@@ -31,7 +31,7 @@ const NextRace = () => {
 
     // 3. Kuulame ka uue sessiooni loomist reaalajas
     socket.on(EVENTS.SESSION_CREATED, (newSession) => {
-        setNextRace(newSession);
+      setNextRace(newSession);
     });
 
     return () => {
