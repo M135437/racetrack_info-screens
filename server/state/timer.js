@@ -7,7 +7,7 @@ function startTimer(io) {
     console.log("timer.js debug: starting timer"); //REVIEW
     console.log(`timer.js debug: timerStatus is ${state.timer.timerStatus}`) // REVIEW
     //check that timer is already not running
-    if (state.timer.intervalId) {
+    if (state.timer.timerStatus) {
         console.log("timer.js debug: timer seems to be already running - there is a value in state.timer.timerStatus that is not null") // REVIEW
         // proper feedback to UI TBD //REVIEW
         return;
@@ -20,7 +20,7 @@ function startTimer(io) {
     state.timer.timerStatus = setInterval(() => {
         console.log(`timer.js debug: timeRemaining was ${debugvalue}, now set to ${state.timer.timeRemaining}, start was at timestampt ${state.timer.startTime} (${new Date(state.timer.startTime).toLocaleString()}`) // REVIEW
         // REVIEW
-        io.emit(EVENTS.TIMER_UPDATE, state.timer.remaining);
+        io.emit(EVENTS.TIMER_UPDATE, state.timer.timeRemaining);
         state.timer.timeRemaining--; // remove one interval unit (configured at end of this function)
 
         // stop condition
@@ -39,7 +39,7 @@ function stopTimer() {
 
 function resetTimer() {
     console.log("timer.js debug: reset() ran");// REVIEW
-    state.timer.remaining = state.timer.duration; 
+    state.timer.timeRemaining = state.timer.duration; 
 }
 
 export { startTimer, stopTimer, resetTimer };
