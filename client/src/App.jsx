@@ -1,3 +1,4 @@
+
 import { useState } from 'react'
 import './App.css'
 
@@ -17,13 +18,14 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
 // ui-impordid:
 import HomePage from "./pages/homePage/HomePage";
+import LeaderboardPage from "./pages/leaderboard/LeaderboardPage";
+import NextRace from "./pages/nextRace/NextRace";
+import Flags from "./pages/flags/Flags";
+
 //import FrontDesk from "./pages/frontDesk/FrontDesk";
 //import RaceControl from "./pages/raceControl/RaceControl";
 //import LapTracker from "./pages/lapTracker/LapTracker";
-//import LeaderboardPage from "./pages/leaderboard/LeaderboardPage";
-//import NextRace from "./pages/nextRace/NextRace";
 //import Countdown from "./pages/countdown/Countdown";
-//import Flags from "./pages/flags/Flags";
 
 /* ajutine autentimiskuva (hiljem eraldi komponendiks?) 
 ühtlasi - sõnastus hiljem kohaldada vastaval auth.js sisule */
@@ -66,7 +68,7 @@ const AuthGate = ({ children, roleName }) => {
         value={inputKey}
         onChange={(e) => setInputKey(e.target.value)}
         />
-        <button type="subit">Enter</button>
+        <button type="submit">Enter</button>
       </form>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <Link to="/">Home</Link>
@@ -74,7 +76,7 @@ const AuthGate = ({ children, roleName }) => {
   );
 };
 
-// ==============
+
 // funktsionaalsuse tekstimiseks minikuva, sest muidu react jookseb kokku,
 // kui komponente veel pole:
 const Placeholder = ({ ajutine }) => (
@@ -110,10 +112,18 @@ function App() {
           <AuthGate roleName="Lap Observer">
             <Placeholder ajutine="LapTracker"/>
           </AuthGate>}/>
-        <Route path="/leader-board" element={<Placeholder ajutine="LeaderboardPage"/>}/>
-        <Route path="/next-race" element={<Placeholder ajutine="NextRace"/>}/>
+
+          {/* 🔥 HEILIKA PUBLIC SCREENS */}
+
+        <Route path="/leader-board" element=
+        {<LeaderboardPage />}/>
+        <Route path="/next-race" element=
+        {<NextRace />} />
+        <Route path="/race-flags" element=
+        {<Flags/>}/>
+
         <Route path="/race-countdown" element={<Placeholder ajutine="Countdown"/>}/>
-        <Route path="/race-flags" element={<Placeholder ajutine="Flags"/>}/>
+       
 
         {/* päris-routing:
         <Route path="/front-desk" element={
@@ -131,6 +141,11 @@ function App() {
             <LapTracker/>
           </AuthGate>
         }/>
+
+        <Route path="/leaderboard" element={<Leaderboard />} />
+       
+
+
         <Route path="/leader-board" element={<LeaderboardPage/>}/>
         <Route path="/next-race" element={<NextRace/>}/>
         <Route path="/race-countdown" element={<Countdown/>}/>
@@ -142,3 +157,4 @@ function App() {
 }
 
 export default App
+

@@ -1,0 +1,69 @@
+.leaderboard-container {
+  height: 100vh;
+  width: 100vw;
+  background-color: #1e2f3f;;
+  color: #ffffff;
+  font-family: 'Arial Black', sans-serif;
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+.leaderboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 4px solid #ffde00;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+}
+
+.race-status {
+  background: green;
+  padding: 5px 15px;
+  border-radius: 5px;
+}
+
+.leaderboard-table {
+  display: flex;
+  flex-direction: column;
+}
+
+.table-header, .table-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 150px 100px 150px;
+  padding: 15px;
+  border-bottom: 1px solid #333;
+}
+
+.table-header {
+  color: #ffde00;
+  font-size: 1.2rem;
+}
+
+.table-row:nth-child(even) {
+  background-color: #1a1a1a;
+}
+/* STATUS värvid */
+.race-status.safe {
+  background: green;
+}
+
+.race-status.danger {
+  background: red;
+}
+
+.race-status.hazard {
+  background: orange;
+}
+
+/* BEST lap highlight */
+.best {
+  color: #00ffcc;
+  font-weight: bold;
+}
+
+.next-race-container {
+  background: #2c3e50;
+  padding: 40px;
+  border-radius: 12px;
+}
