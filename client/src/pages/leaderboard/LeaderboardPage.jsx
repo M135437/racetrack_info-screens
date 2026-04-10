@@ -15,6 +15,7 @@ const initialMockData = {
     timeLeft: "08:45"
 };
 
+// Leaderboardi komponent, mis kuvab sõitjate nimekirja, nende ringiaegu ja režiimi staatust
 const Leaderboard = () => {
     const [timerData, setTimerData] = useState(initialMockData);
 

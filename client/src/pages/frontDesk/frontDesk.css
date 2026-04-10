@@ -1,6 +1,12 @@
+/*base*/
+body {
+    background: #0f0f1a;
+    color: white;
+    font-family: sans-serif;
+}
+
 input {
     padding: 6px;
-    margin-right: 8px;
     border-radius: 6px;
     border: 1px solid #444;
     background: #111;
@@ -10,59 +16,135 @@ input {
 button {
     padding: 6px 10px;
     border-radius: 6px;
+    border: none;
+    cursor: pointer;
 }
 
+
+/*layout*/
 .container {
     padding: 20px;
 }
 
 .create {
-    margin-bottom: 16px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
 }
 
 .sessions {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 14px;
 }
 
+
+/* card */
 .card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 14px;
     background: #1e1e2f;
-    border-radius: 8px;
     border: 1px solid #333;
+    border-radius: 10px;
+    padding: 16px;
 }
 
-.card span {
+.card-header {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+
+/*table flex version*/
+
+.drivers,
+.drivers-header,
+.driver-row,
+.add-driver {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/*column base*/
+.col {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/*NAME*/
+.col.name {
+    flex: 1;
+    min-width: 0;
+}
+
+/*CAR*/
+.col.car {
+    width: 120px;
+    flex-shrink: 0;
+}
+
+/*ACTION*/
+.col.action {
+    width: 60px;
+    flex-shrink: 0;
+    text-align: right;
+}
+
+
+/*header*/
+.drivers-header {
+    border-bottom: 1px solid #555;
+    padding-bottom: 6px;
+    margin-bottom: 6px;
+
+    color: #aaa;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+
+/*row*/
+.driver-row {
+    padding: 6px 0;
+    border-bottom: 1px solid #333;
+}
+
+.driver-row:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+
+/*buttons*/
+.delete-driver {
+    background: transparent;
+    color: #ff4d4f;
     font-size: 16px;
 }
 
-.card button {
+.delete-driver:hover {
+    color: #ff7875;
+}
+
+.add-btn {
+    background: #1890ff;
+    color: white;
+}
+
+.add-btn:hover {
+    background: #40a9ff;
+}
+
+
+/*delete session*/
+.delete-session {
+    margin-top: 12px;
     background: #ff4d4f;
-    border: none;
-    padding: 6px 10px;
-    border-radius: 6px;
     color: white;
-    cursor: pointer;
+    display: block;
+    margin-left: auto;
 }
 
-.card button:hover {
+.delete-session:hover {
     background: #ff7875;
-}
-
-input {
-    padding: 6px;
-    margin-right: 8px;
-    border-radius: 6px;
-    border: 1px solid #444;
-    background: #111;
-    color: white;
-}
-
-button {
-    padding: 6px 10px;
-    border-radius: 6px;
 }
