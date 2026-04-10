@@ -113,11 +113,14 @@ function App() {
         <Route path="/race-control" element={
           <AuthGate roleName="Safety Official">
             <Placeholder ajutine="RaceControl"/>
-          </AuthGate>}/> {/*
+          </AuthGate>}/>
+          
+          {/* MARI JOONENUPUD: */}
         <Route path="/lap-line-tracker" element={
           <AuthGate roleName="Lap Observer">
-            <Placeholder ajutine="LapTracker"/>
-          </AuthGate>}/> */}
+            <LapTracker/>
+          </AuthGate>}/>
+
          
 
           {/* 🔥 HEILIKA PUBLIC SCREENS */}

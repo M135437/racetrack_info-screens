@@ -34,7 +34,7 @@ const LapTracker = () => {
 
     // võtame HOOK-ilt vajalikud andmed:
     // const { incomingStateData, now, recordLap } = useRaceState();
-    const [incomingStateData, setincomingStateData] = useState(null);
+    const [incomingStateData, setIncomingStateData] = useState(null);
     const [now, setNow] = useState(Date.now());
     const [cooldowns, setCooldowns] = useState([]); // <- lokaalne state nupu
     // keelamiseks vahetult pärast klikki
@@ -44,7 +44,7 @@ const LapTracker = () => {
     // kui vahepeal mõnd muud nuppu vajutada
 
     // testkeskkonnaks serverierrori useeffect:
-    useEffect(() => {
+    /*useEffect(() => {
         // ainult dev-is jooksutamiseks!
         const timer= setTimeout(() => {
             if (!incomingStateData) {
@@ -62,7 +62,7 @@ const LapTracker = () => {
             }
         }, 3000);
         return () => clearTimeout(timer);
-    }, [incomingStateData]);
+    }, [incomingStateData]); */
 
     useEffect(() => { // stopperivisuaaliks
         const interval = setInterval(() => setNow(Date.now()), 10);
@@ -90,20 +90,29 @@ const LapTracker = () => {
             });
         }); */
 
+        // uuenduse küsimine]:
+        socket.emit(EVENTS.SESSION_GET);
+
+        // vastuse kuulamine:
+        socket.on(EVENTS.SESSION_LISTED, (sessions) => {
+        console.log("Available sessions:", sessions);
+
+        // hetkel aktiivse (runningRace) sessi leidmine:
+        const activeSession = sessions.find(s => s.isActive) || sessions[0];
+        if (activeSession) setIncomingStateData(activeSession);
+        });
+
         // taimeriinfo/südamelöögi kuulamine:
         socket.on(EVENTS.TIMER_UPDATE, (serverTimer) => {
-            setincomingStateData(prev => ({ // vaatab kõige viimase stateobjekti sisu
-                ...prev, // loob koopia
-                secondsLeft: serverTimer.secondsLeft // uuendab vaid aega
-            }));
+            setIncomingStateData(serverTimer);
         }); 
-        // sõidu algamisel (active session, racemode safe)
+        // sõidu algamisel, "waiting"-> tekivad nupud (active session, racemode safe)
         socket.on(EVENTS.SESSION_STARTED, (fullState) => {
-            setincomingStateData(fullState);
+            setIncomingStateData(fullState);
         });
-        // ühe võistleja jooneületusel
+        // ühe võistleja jooneületusel 
         socket.on(EVENTS.LAP_UPDATED, (updatedDriver) => {
-            setincomingStateData(prev => {
+            setIncomingStateData(prev => {
                 if (!prev) return prev;
 
                 // kuna ma ei tea state-i vormingut, siis määran siin ära, et
@@ -115,9 +124,13 @@ const LapTracker = () => {
                     d.id === updatedDriver.id ? updatedDriver : d
                 );
                 
-                return prev.activeSession
+                // state tagastamine selle algsel kujul:
+                return { ...prev, activeSession: { ...prev.activeSession, drivers: updatedDrivers }};
+
+                // esmase dev2 merge-imise eelne:
+                /*return prev.activeSession
                     ? { ...prev, activeSession: { ...prev.activeSession, drivers: updatedDrivers } }
-                    : { ...prev, drivers: updatedDrivers}
+                    : { ...prev, drivers: updatedDrivers} */
 
                /* vana vers enne prev vs activesession:
                 const newDrivers = prev.drivers.map(d =>
@@ -129,6 +142,7 @@ const LapTracker = () => {
 
         return () => {
             // socket.off("lap:init"); <- testfaasi event
+            socket.off(EVENTS.SESSION_LISTED)
             socket.off(EVENTS.TIMER_UPDATE);
             socket.off(EVENTS.SESSION_STARTED);
             socket.off(EVENTS.LAP_UPDATED);
@@ -145,7 +159,7 @@ const LapTracker = () => {
     //testimiseks trackerisse sisse
     // safeguard, kui incomingStateData? kontroll võtab aega (ja ei taha
     // , et lehekülg näeks hangunud välja/laeks 100a):
-    if (!incomingStateData) return <div className="lap-container">Connecting...</div>
+    // if (!incomingStateData) return <div className="lap-container">Connecting...</div>
 
     // nb! handlerecordlap pole OTSESELT vajalik ja saaksin recordLap
     // funktsiooni kutsuda esile ka react return sees.
@@ -184,11 +198,6 @@ const LapTracker = () => {
     const formatLapDisplay = (lapTime) => {
     if (!lapTime) return "--:--:---";
 
-    /* pre-leaderboard vana:
-    if (!lapTime) { // juhul kui rajaaega veel pole, siis, KAS:
-      return incomingStateData?.hasStarted ? "Awaiting first pass.." : "Waiting for race to start...";
-    } */
-
     const totalSeconds = parseFloat(lapTime); // millisekundid arvuna loetavaks
     const mins = Math.floor(totalSeconds / 60);
     const secs = (totalSeconds % 60).toFixed(3);
@@ -196,10 +205,20 @@ const LapTracker = () => {
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(6, "0")}`;
   };
 
+  // esmane nupuvajutusluba (kui pole sõitu, pole nuppe):
+  const isRaceActive = incomingStateData?.hasStarted &&
+                        incomingStateData?.secondsLeft > 0 &&
+                        incomingStateData?.status !== "finish";
+
   // ajutine laptracker-ui-spetsiifiline täisekraaninupp
     function toggleFullScreen() {
         if (document.fullscreenElement) document.exitFullscreen();
         else document.documentElement.requestFullscreen(); 
+    }
+
+    // ühendumisel:
+    if (!incomingStateData) {
+        return <div className="lap-container">Connecting...</div>
     }
 
     return (
@@ -223,9 +242,11 @@ const LapTracker = () => {
             */}
             {/* kontrollime, kas nii taimer kui stopper töötavad */}
             <div className="debug-timer">
-                <h2>Time left: {incomingStateData?.secondsLeft}s</h2>
+                <h2>Time left: {incomingStateData?.secondsLeft || 0}s</h2>
                 <p>Local high-res: {formatLapDisplay(now / 1000)}</p>
+                <p>Mode: {incomingStateData.status || incomingStateData.raceMode || "N/A"}</p>
             </div>
+            {/* nö ootereiim kui sess pole alanud: */}
             {!incomingStateData?.hasStarted ? ( // ternary et nuppude asemel oleks
             // sessioonide vahel tekst:
                 <div className="waiting-screen">

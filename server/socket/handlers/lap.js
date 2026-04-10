@@ -74,7 +74,7 @@ export default (io, socket) => {
         { id: 7, name: "racer 7", car: "7", lapCount: 0, latestLapTime: null, fastestLap: null, lastLapTimestamp: null, isFinished: false },
         { id: 8, name: "racer 8", car: "8", lapCount: 0, latestLapTime: null, fastestLap: null, lastLapTimestamp: null, isFinished: false }
         ]
-    }); 
+    });
 
     // nupuvajutusel:
     socket.on(EVENTS.LAP_UPDATE, (driverId) => {
