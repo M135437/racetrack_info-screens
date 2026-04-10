@@ -10,13 +10,10 @@ import { startTimer, resetTimer } from "../state/timer.js"
 import { RACE_MODES, PROTECTED_MODES, ACTIVE_MODES } from "../../client/src/shared/types.js"
 
 function startSession(io) {
-    // check that there is no overlapping active session in motion
+    // check that there is no overlapping active session in motion ("protected modes")
+    // PROTECTED_MODES = ['notStarted', 'safe', 'danger', 'hazard', 'finish'];
     if (Object.values(PROTECTED_MODES).includes(state.raceMode)) { 
-        io.emit(EVENTS.SESSION_ERROR, {
-            // inform front-end that they cannot start a new race until
-            // race-control has gracefully ended previous session
-            // PROTECTED_MODES = ['notStarted', 'safe', 'danger', 'hazard', 'finish'];
-        });
+        io.emit(EVENTS.SESSION_ERROR, "Unable to start a new race - safety alert! Previous race has not ended gracefully!");
         return 1;
     }
     // take current timestampt and "select"(find) the session
@@ -45,13 +42,14 @@ function changeMode(io, mode) {
     } else {
         // Once the race mode changes to "Finished", it cannot be changed to any other mode.
             // any control measures to take here? REVIEW
-        // is it also worth anything to set up separate checks for changeMode to also avoid "RACE_MODES.SAFE"?
+        // any other separate checks for changeMode to also avoid "RACE_MODES.SAFE"?
+        // REVIEW&TEST - double-check that there is no option for raceMode === 'ended' and mode gets changed
     }
 }
 
 function finishMode(io) {
     stateUptFinishMode()
-    // any other checks this fuction should do before trusting to emit? REVIEW
+
     io.emit(EVENTS.SESSION_MODE, {
         raceMode: RACE_MODES.FINISH
     });
@@ -59,9 +57,7 @@ function finishMode(io) {
 
 function endSession(io) {
     stateUptEndSession()
-    // this should prevent further lap-time buttons to be clicked
-        // anything this should block for DEV3-lapService?
-    // any other checks this fuction should do before trusting to emit? REVIEW
+
     io.emit(EVENTS.SESSION_END, {
         raceMode: RACE_MODES.ENDED
     });
