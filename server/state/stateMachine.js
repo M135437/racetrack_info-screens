@@ -2,7 +2,7 @@ import { ENV_VARIABLES } from "../config/env.js"
 import state from "./state.js"
 import { RACE_MODES } from "../../client/src/shared/types.js"
 
-export function updatePort(RACE_DURATION) {
+export function setDuration(RACE_DURATION) {
     state.timer.duration = RACE_DURATION;
 }
 
@@ -32,12 +32,14 @@ export function stateUptStartSession(session) {
         return;
     }
     state.runningRace = session.id;
+        console.log("state.raceMode enne: ",state.raceMode);
     state.raceMode = RACE_MODES.SAFE;
     session.startTime = Date.now();
     session.startTimeStamp = Date.now();
     session.hasStarted = true;
     session.status = 'started';
     state.nextRace = getNextRaceId();
+    console.log("state.raceMode pärast: ",state.raceMode);
 }
 
 

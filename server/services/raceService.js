@@ -6,8 +6,15 @@ import {
   stateUptFinishMode,
   stateUptEndSession
 } from "../state/stateMachine.js"
-import { startTimer, resetTimer } from "../state/timer.js"
+import { startTimer, resetTimer, stopTimer } from "../state/timer.js"
 import { RACE_MODES, PROTECTED_MODES, ACTIVE_MODES } from "../../client/src/shared/types.js"
+
+function getTime(io) { // REVIEW - debug only
+    io.emit("get:time", {
+        timeRemaining: state.timer.timeRemaining,
+        startTime: state.timer.startTime
+    })
+}
 
 function startSession(io) {
     // check that there is no overlapping active session in motion ("protected modes")
@@ -61,6 +68,7 @@ function endSession(io) {
     io.emit(EVENTS.SESSION_END, {
         raceMode: RACE_MODES.ENDED
     });
+    stopTimer();
 }
 
-export default { startSession, changeMode, finishMode, endSession};
+export default { startSession, changeMode, finishMode, endSession, getTime};
