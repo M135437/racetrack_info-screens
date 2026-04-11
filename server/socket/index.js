@@ -7,9 +7,9 @@ export default function (io) {
     io.on("connection", (socket) => {
         console.log(`connected: ${socket.id}`);
 
-       raceHandler(io, socket);
-       sessionHandler(io, socket);
-       lapHandler(io, socket);
+        raceHandler(io, socket); //REVIEW - match with Mari-s content      
+        sessionHandler(io, socket); //REVIEW - match with Olga-s content   
+        lapHandler(io, socket); //REVIEW - match with Mari-s content      
 
         socket.emit("hello", "backend works"); // testimise jaoks - kui ühendus luuakse, saadab server sõnumi "hello" koos tekstiga "backend works"
     });
