@@ -22,7 +22,7 @@ function getAllNotStartedRacesId() {           //REVIEW - not in use yet
   return allNextRaces;
 }
 
-export function stateUptNextRace(id) {
+export function stateUptNextRaceId(id) {
     // REVIEW - no quality check against overwriting etc
     state.nextRace = id;
 }
@@ -54,5 +54,5 @@ export function stateUptEndSession() {
     state.raceMode = RACE_MODES.ENDED;
     state.runningRace = null;
     state.currentRace = null;
-    state.nextRace = getNextPendingRaceId();
+    state.nextRace = getNextRaceId();
 }
