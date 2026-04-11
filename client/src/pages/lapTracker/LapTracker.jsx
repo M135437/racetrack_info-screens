@@ -38,10 +38,28 @@ const LapTracker = () => {
     const [now, setNow] = useState(Date.now());
     const [cooldowns, setCooldowns] = useState([]); // <- lokaalne state nupu
     // keelamiseks vahetult pärast klikki
+
+    // "laadimine", kui pole andmeid:
+    const isLoading = !incomingStateData;
     
     const cooldownsRef = useRef([]); // <-automaatuuendus ilma lehte renderimata;
     // väldib nupuloogikal "hangumist"; varasemalt üks nupp muutus aktiivseks alles siis,
     // kui vahepeal mõnd muud nuppu vajutada
+
+   const mockData = {
+        hasStarted: true,
+        secondsLeft: 60,
+        drivers: [
+        { id: 1, name: "racer 1", car: "1", lapCount: 0, latestLapTime: null, fastestLap: null, lastLapTimestamp: null, isFinished: false },
+        { id: 2, name: "racer 2", car: "2", lapCount: 0, latestLapTime: null, fastestLap: null, lastLapTimestamp: null, isFinished: false },
+        { id: 3, name: "racer 3", car: "3", lapCount: 0, latestLapTime: null, fastestLap: null, lastLapTimestamp: null, isFinished: false },
+        { id: 4, name: "racer 4", car: "4", lapCount: 0, latestLapTime: null, fastestLap: null, lastLapTimestamp: null, isFinished: false },
+        { id: 5, name: "racer 5", car: "5", lapCount: 0, latestLapTime: null, fastestLap: null, lastLapTimestamp: null, isFinished: false },
+        { id: 6, name: "racer 6", car: "6", lapCount: 0, latestLapTime: null, fastestLap: null, lastLapTimestamp: null, isFinished: false },
+        { id: 7, name: "racer 7", car: "7", lapCount: 0, latestLapTime: null, fastestLap: null, lastLapTimestamp: null, isFinished: false },
+        { id: 8, name: "racer 8", car: "8", lapCount: 0, latestLapTime: null, fastestLap: null, lastLapTimestamp: null, isFinished: false }
+        ]
+    };
 
     // testkeskkonnaks serverierrori useeffect:
     /*useEffect(() => {
@@ -71,10 +89,10 @@ const LapTracker = () => {
 
     useEffect(() => {
         socket.on("connect", () => {
-            console.log("ühendus serveriga loodud");
+            console.log("ühendus serveriga LOODUD");
         });
         socket.on("connect_error", (err) => {
-            console.error("ühendus nurjus", err.message);
+            console.error("ühendus NURJUS", err.message);
         });
     }, []);
 
@@ -116,7 +134,26 @@ const LapTracker = () => {
                 if (!prev) return prev;
 
                 // kuna ma ei tea state-i vormingut, siis määran siin ära, et
-                // kahe eri vorminguga sõitjainfo on vastuvõetav:
+                // kahe eri vorminguga sõitjainfo on vastuvõetav, aga pean seda
+                // tegema moel, mis võimaldaks saata ka eeldatud vormingus uuendatud
+                // objekti serverisse TAGASI. seega tuleb eraldi arvestada nestinguga.
+                // vana versiooni kommenteerin välja, et oleks näha võrdlust.
+
+                const isNested = !!prev.activeSession;
+                const currentDrivers = isNested ? prev.activeSession.drivers : prev.drivers;
+
+                if (!currentDrivers) return prev;
+
+                const updatedDrivers = currentDrivers.map(d => 
+                    d.id === updatedDriver.id ? updatedDriver : d
+                );
+
+                // isNested-struktuuri arvesse võttev objekti tagastamine:
+                return isNested 
+                    ? { ...prev, activeSession: { ...prev.activeSession, drivers: updatedDrivers }} 
+                    : { ...prev, drivers: updatedDrivers };
+
+                /* VANA:
                 const currentDrivers = prev.drivers || prev.activeSession?.drivers;
                 if (!currentDrivers) return prev;
 
@@ -126,13 +163,14 @@ const LapTracker = () => {
                 
                 // state tagastamine selle algsel kujul:
                 return { ...prev, activeSession: { ...prev.activeSession, drivers: updatedDrivers }};
+                ===== *()
 
                 // esmase dev2 merge-imise eelne:
                 /*return prev.activeSession
                     ? { ...prev, activeSession: { ...prev.activeSession, drivers: updatedDrivers } }
                     : { ...prev, drivers: updatedDrivers} */
 
-               /* vana vers enne prev vs activesession:
+               /* vanim vers enne prev vs activesession:
                 const newDrivers = prev.drivers.map(d =>
                     d.id === updatedDriver.id ? updatedDriver : d
                 );
@@ -217,16 +255,19 @@ const LapTracker = () => {
     }
 
     // ühendumisel:
-    if (!incomingStateData) {
+    /*if (!incomingStateData) {
         return <div className="lap-container">Connecting...</div>
-    }
+    }*/
+
+    // pärisandmed vs võltsandmed:
+const displayData = incomingStateData || mockData;
 
     return (
         <div className="lap-container">
             <div> {/* ajutine lt-spetsiifiline fullscreen: */}
                 <button onClick={() => toggleFullScreen()}
                 className="fullscreen">Fullscreen</button>
-                </div>
+            </div>
             { /* kuhugi ui päisesse saan oma äranägemise järgi mahutada
             ohutuslipu /ja vb taimer?);
              tuleks luua eraldi konteiner, mille suurust/paigutust saan OMA
@@ -242,12 +283,13 @@ const LapTracker = () => {
             */}
             {/* kontrollime, kas nii taimer kui stopper töötavad */}
             <div className="debug-timer">
-                <h2>Time left: {incomingStateData?.secondsLeft || 0}s</h2>
+                <h2>Time left: {displayData?.secondsLeft ?? "--:--"}s</h2>
                 <p>Local high-res: {formatLapDisplay(now / 1000)}</p>
-                <p>Mode: {incomingStateData.status || incomingStateData.raceMode || "N/A"}</p>
+                <p>Mode: {displayData.status || displayData.raceMode || "N/A"}</p>
+                <p>Status: {isLoading ? "Syncing with server.." : "Connected"}</p>
             </div>
             {/* nö ootereiim kui sess pole alanud: */}
-            {!incomingStateData?.hasStarted ? ( // ternary et nuppude asemel oleks
+            {!displayData?.hasStarted ? ( // ternary et nuppude asemel oleks
             // sessioonide vahel tekst:
                 <div className="waiting-screen">
                     <p>Waiting for the next race to begin..</p>
@@ -255,7 +297,7 @@ const LapTracker = () => {
             ) : (
             <div className="drivers-grid">
             {/* nb! lisa ka vastav klass css-i, ühes display:flex-iga!! */}
-            {incomingStateData?.drivers.map((driver) => (
+            {displayData?.drivers.map((driver) => (
             // map-meetod ise kontrollib alguses ?-ga, kas incomingStateData info
             // on olemas - SEE TÄHENDAB, et racer-spetsiifilise info 
             // kontrollimine incomingStateData?-ga ei ole enam vajalik (küll aga
@@ -269,9 +311,12 @@ const LapTracker = () => {
                         // (VANA single-ui vers: peame siin info
                         // emit-i välja kirjutama; nb! serveris argument "racerId", aga siin map-i kaudu objektist saadud "racer.id"
                         /* enne mitmiknupuversiooni oli disabled={!incomingStateData?.canLap} )*/
-                        disabled={!incomingStateData?.hasStarted || driver.isFinished}
+                        disabled={!isRaceActive || 
+                            driver.isFinished ||
+                            cooldowns.includes(driver.id)}
+                        
                         className={`lap-button ${
-                            !incomingStateData?.hasStarted || 
+                            !displayData.hasStarted || /* hiljem !isRaceActive. testimiseks jätan klikatavaks */
                             driver.isFinished ||
                             cooldowns.includes(driver.id) ? "disabled" : "active"}`}
                     >
