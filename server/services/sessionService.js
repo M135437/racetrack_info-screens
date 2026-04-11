@@ -1,18 +1,27 @@
+import state from "../state/state.js"
+import * as stateMachine from "../state/stateMachine.js"
 
+//in-memory pointer to sessions in state
+let sessions = state.sessions;
 
-//in-memory session store
-let sessions = []
-let sessionIdCounter = 1
+function getLastNotStartedSession() {
+  for (let i = state.sessions.length - 1; i >= 0; i--) {
+    if (state.sessions[i].status === 'notStarted') {
+      return state.sessions[i];
+    }
+  }
+  return null;
+}
 
 //defining session-model (id, name, drivers, cars, status)
 function createSessionObject(name, startTime) {
     return {
-        id: sessionIdCounter++,
+        id: (state.sessions.length),
         name,
         startTime: startTime || new Date(), // specific time
         maxSlots: 8, //default value, can be changed when creating session
         freeSlotsLeft: 8, //default value, can be changed when drivers join
-        status: 'pending', //later can be 'active' or 'completed'
+        status: 'notStarted', //later can be 'active' or 'completed'
 
         drivers: [], //array of driver objects {id, name, car}
     };
@@ -22,7 +31,12 @@ function createSessionObject(name, startTime) {
 
 //READ (GET) upcoming sessions
 function getUpcomingSessions() {
-    return sessions   //hiljem return sessions.filter(session => session.status === 'pending');
+    return state.sessions.filter(session => session.status === 'notStarted');
+}
+
+//READ (GET) all sessions
+function getAllSessions() {
+    return state.sessions;
 }
 
 //CREATE (POST) session
@@ -33,7 +47,8 @@ function createSession(name) {
     }
 
     const session = createSessionObject(name);
-    sessions.push(session);
+    state.sessions.push(session);
+    stateMachine.stateUptNextRace(getLastNotStartedSession().id);
     return session;
 }
 
@@ -41,14 +56,14 @@ function createSession(name) {
 //DELETE session (maybe to be used for canceling a session before it starts, to think of replacing with race status change to 'canceled' or something similar)
 //now it does not check if session exists, just filters out the session with the given id, can be improved to return error if session with given id does not exist
 function deleteSession(id) {
-    sessions = sessions.filter(session => session.id !== id);
+    state.sessions = state.sessions.filter(session => session.id !== id);
     return { message: `Session with id ${id} deleted successfully` };
 }
 
 
 //ADD driver to session (not implemented yet, but can be added later when implementing driver management)
 function addDriver(sessionId, driverName, car) {
-    const session = sessions.find(s => s.id === sessionId) //
+    const session = state.sessions.find(s => s.id === sessionId) //
 
     if (!session) {
         throw new Error("Session not found")
@@ -82,7 +97,7 @@ function addDriver(sessionId, driverName, car) {
 
 //remove driver from session (not implemented yet, but can be added later when implementing driver management)
 function removeDriver(sessionId, driverId) {
-    const session = sessions.find(s => s.id === sessionId) // find session by id
+    const session = state.sessions.find(s => s.id === sessionId) // find session by id
 
     if (!session) {
         throw new Error("Session not found")
@@ -104,6 +119,7 @@ function removeDriver(sessionId, driverId) {
 //EXPORTING functions
 export {
     getUpcomingSessions,
+    getAllSessions,
     createSession,
     deleteSession,
     addDriver,

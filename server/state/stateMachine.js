@@ -8,18 +8,23 @@ export function updatePort(RACE_DURATION) {
 
     // two utilities to support state update
         // 1
-function getNextPendingRaceId() {                   // goes through the array state.sessions[]
+export function getNextRaceId() {                   // goes through the array state.sessions[]
   const next = state.sessions.find((session) => {   // and returns the first with status 'notStarted'
     return  session.status === 'notStarted';
   });
   return next ? next.id : null;
 }
         // 2
-function getAllNextPendingRacesId() {           //REVIEW - not in use yet
+function getAllNotStartedRacesId() {           //REVIEW - not in use yet
   const allNextRaces = state.sessions.filter((session) => {
     return  session.status === 'notStarted';
   });
   return allNextRaces;
+}
+
+export function stateUptNextRace(id) {
+    // REVIEW - no quality check against overwriting etc
+    state.nextRace = id;
 }
 
 export function stateUptStartSession(session) {
@@ -32,7 +37,7 @@ export function stateUptStartSession(session) {
     session.startTimeStamp = Date.now();
     session.hasStarted = true;
     session.status = 'started';
-    state.nextRace = getNextPendingRaceId();
+    state.nextRace = getNextRaceId();
 }
 
 
