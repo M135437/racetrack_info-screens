@@ -5,7 +5,7 @@ import EVENTS from "../../client/src/shared/events.js"
 function startTimer(io) {
     //DEBUG
     console.log("timer.js debug: starting timer"); //REVIEW
-    console.log(`timer.js debug: timerStatus is ${state.timer.timerStatus}`) // REVIEW
+    //console.log(`timer.js debug: timerStatus is ${state.timer.timerStatus} at start`) // REVIEW
     //check that timer is already not running
     if (state.timer.timerStatus) {
         console.log("timer.js debug: timer seems to be already running - there is a value in state.timer.timerStatus that is not null") // REVIEW
@@ -18,7 +18,7 @@ function startTimer(io) {
     state.timer.startTime = Date.now();
     // start timer
     state.timer.timerStatus = setInterval(() => {
-        console.log(`timer.js debug: timeRemaining was ${debugvalue}, now set to ${state.timer.timeRemaining}, start was at timestampt ${state.timer.startTime} (${new Date(state.timer.startTime).toLocaleString()}`) // REVIEW
+     //   console.log(`timer.js debug: timeRemaining was ${debugvalue}, now set to ${state.timer.timeRemaining}, start was at timestampt ${state.timer.startTime} (${new Date(state.timer.startTime).toLocaleString()}`) // REVIEW
         // REVIEW
         io.emit(EVENTS.TIMER_UPDATE, state.timer.timeRemaining);
         state.timer.timeRemaining--; // remove one interval unit (configured at end of this function)
@@ -38,7 +38,6 @@ function stopTimer() {
 }
 
 function resetTimer() {
-    console.log("timer.js debug: reset() ran");// REVIEW
     state.timer.timeRemaining = state.timer.duration; 
 }
 
