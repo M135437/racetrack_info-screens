@@ -40,7 +40,7 @@ function getAllSessions() {
 }
 
 //CREATE (POST) session
-function createSession(name) {
+function createSession(name, startTime) {
     //error handlers
     if (!name || name.trim() === "") {
         throw new Error('Session name is required');
