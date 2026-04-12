@@ -41,17 +41,25 @@ function getAllSessions() {
 
 //CREATE (POST) session
 function createSession(name, startTime) {
+    console.log("doing createSession(name, startTime)")
     //error handlers
     if (!name || name.trim() === "") {
         throw new Error('Session name is required');
+        console.log("name error")
     }
     if (!startTime) {
         throw new Error('Start time is required');
+        console.log("starttime error")
     }
 
     const session = createSessionObject(name, startTime);
     state.sessions.push(session);
-    stateMachine.stateUptNextRace(getLastNotStartedSession().id);
+    const last = getLastNotStartedSession();
+    if (!last) {
+        console.log("No notStarted sessions found");
+        return session;
+    }
+    stateMachine.stateUptNextRaceId(last.id);
     return session;
 }
 
