@@ -1,7 +1,11 @@
 import EVENTS from "../../../client/src/shared/events.js"
 import raceService from "../../services/raceService.js"
 
-export default function raceHandler (socket, io) {
+export default function raceHandler (io, socket) {
+    console.log("raceHandler attached");
+    socket.onAny((event, ...args) => {
+        console.log("VERBOSE MODE - EVENT RECEIVED:", event, args); // REVIEW - for debug purposes
+    });
     socket.on(EVENTS.SESSION_START, () => {
         raceService.startSession(io);
     });
@@ -14,5 +18,7 @@ export default function raceHandler (socket, io) {
     socket.on(EVENTS.SESSION_END, () => {
         raceService.endSession(io);
     });
+    socket.on("get:time", () => 
+        raceService.getTime(io))
 
 }

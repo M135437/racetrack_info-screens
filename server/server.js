@@ -5,6 +5,7 @@ import { Server } from "socket.io";
 import cors from "cors";
 import socketHandlers from "./socket/index.js"
 import { ENV_VARIABLES, RACE_DURATION } from "./config/env.js"
+import {setDuration} from "./state/stateMachine.js"
 
 
 const app = express();
@@ -25,6 +26,8 @@ const io = new Server(server, {
 });
 
 socketHandlers(io);
+
+setDuration(RACE_DURATION);
 
 server.listen(ENV_VARIABLES.RACETRACK_SERVER_PORT, () => {
     console.log(`  ➜  Server running on port ${ENV_VARIABLES.RACETRACK_SERVER_PORT}\n  ➜  http://localhost:${ENV_VARIABLES.RACETRACK_SERVER_PORT}/`);
