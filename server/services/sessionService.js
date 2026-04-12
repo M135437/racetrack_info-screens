@@ -18,10 +18,10 @@ function createSessionObject(name, startTime) {
     return {
         id: (state.sessions.length),
         name,
-        startTime: startTime || new Date(), // specific time
+        startTime: startTime,
         maxSlots: 8, //default value, can be changed when creating session
         freeSlotsLeft: 8, //default value, can be changed when drivers join
-        status: 'notStarted', //later can be 'active' or 'completed'
+        status: 'notStarted', //later can be 'started', 'finishing' or 'ended'
 
         drivers: [], //array of driver objects {id, name, car}
     };
@@ -43,10 +43,13 @@ function getAllSessions() {
 function createSession(name) {
     //error handlers
     if (!name || name.trim() === "") {
-        throw new Error('Session name is required and must be a string');
+        throw new Error('Session name is required');
+    }
+    if (!startTime) {
+        throw new Error('Start time is required');
     }
 
-    const session = createSessionObject(name);
+    const session = createSessionObject(name, startTime);
     state.sessions.push(session);
     stateMachine.stateUptNextRace(getLastNotStartedSession().id);
     return session;
