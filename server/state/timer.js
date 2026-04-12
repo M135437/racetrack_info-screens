@@ -18,10 +18,9 @@ function startTimer(io) {
     state.timer.startTime = Date.now();
     // start timer
     state.timer.timerStatus = setInterval(() => {
-     //   console.log(`timer.js debug: timeRemaining was ${debugvalue}, now set to ${state.timer.timeRemaining}, start was at timestampt ${state.timer.startTime} (${new Date(state.timer.startTime).toLocaleString()}`) // REVIEW
-        // REVIEW
+        const elapsed = Date.now() - state.timer.startTime;
+        state.timer.timeRemaining = state.timer.duration - elapsed;
         io.emit(EVENTS.TIMER_UPDATE, state.timer.timeRemaining);
-        state.timer.timeRemaining -= 33; // remove one interval unit (configured at end of this function)
 
         // stop condition
         if (state.timer.timeRemaining <= 0) {
@@ -29,15 +28,13 @@ function startTimer(io) {
             stopTimer();
             resetTimer();
         }
-    }, 33) // REVIEW try with 66, 200, 1000 for performance variations
+    }, 100)
 }
 
 function stopTimer() {
     console.log("timer.js debug: stop() called, stopping timer"); // REVIEW
     clearInterval(state.timer.timerStatus);
     state.timer.timerStatus = null;
-    state.timer.timeRemaining = null;
-    state.timer.startTime = null;
 }
 
 function resetTimer() {
