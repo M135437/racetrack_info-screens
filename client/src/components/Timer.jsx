@@ -1,7 +1,9 @@
 function formatTime(ms) {
     if (ms === null || ms === undefined) return "00:00";
 
-    const totalSeconds = Math.floor(ms / 1000);
+    const positiveMs = Math.max(0, ms);
+
+    const totalSeconds = Math.floor( positiveMs / 1000);
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
 
