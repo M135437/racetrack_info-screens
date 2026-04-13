@@ -58,3 +58,20 @@
     color: #ffde00;
   }
 
+  .paddock-message {
+    background: #e67e22;
+    color: #ffffff;
+    text-align: center;
+    padding: 20px;
+    font-size: 1.4rem;
+    font-weight: bold;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.no-sessions {
+    text-align: center;
+    color: #aaaaaa;
+    font-size: 1.2rem;
+    margin-top: 40px;
+}

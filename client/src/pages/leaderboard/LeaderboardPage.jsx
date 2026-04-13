@@ -3,8 +3,9 @@ import "./LeaderboardPage.css";
 import { socket } from "../../socket/socket";
 import EVENTS from "../../shared/events";
 import { RACE_MODES } from "../../shared/types";
+import Timer from "../../components/Timer";
 
-// Mock andmed jäävad alles juhuks, kui server on maas
+// Mock andmed — kuvatakse ainult kui server ei saada andmeid
 const initialMockData = {
     racers: [
         { id: 1, car: "Car 01", driver: "Alex", lapCount: 5, fastestLap: "01:12.4" },
@@ -12,36 +13,50 @@ const initialMockData = {
         { id: 3, car: "Car 08", driver: "Kalev", lapCount: 4, fastestLap: "01:15.8" },
     ],
     status: RACE_MODES.SAFE,
-    timeLeft: "08:45"
+    timeLeft: 525000  // millisekunditena (8 min 45 sek)
 };
 
-// Leaderboardi komponent, mis kuvab sõitjate nimekirja, nende ringiaegu ja režiimi staatust
+// Leaderboardi komponent
 const Leaderboard = () => {
     const [timerData, setTimerData] = useState(initialMockData);
 
     useEffect(() => {
-        // Kuulame serveri "heartbeat" sündmust
+        // Kuulame serveri taimerit — uuendab kogu leaderboardi
         socket.on(EVENTS.TIMER_UPDATE, (newData) => {
-            console.log("Leaderboard uuendus:", newData);
+            console.log("TIMER_UPDATE saabus:", newData);
             setTimerData(newData);
         });
 
-        // Kuulame ka režiimi muutust (et taustavärv muutuks koos lippudega)
+        // Kuulame režiimi muutust — uuendab ainult staatust
         socket.on(EVENTS.MODE_CHANGED, (newMode) => {
             setTimerData(prev => ({ ...prev, status: newMode }));
         });
 
+        // Kuulame ringiaegade uuendust — uuendab ainult sõitjaid
+        socket.on(EVENTS.LAP_UPDATED, (updatedRacers) => {
+            console.log("LAP_UPDATED saabus:", updatedRacers);
+            // setTimerData(prev => ({ ...prev, racers: updatedRacers }));
+            // ⬆️ kommenteeritud kuni Mariga kokku lepime mis formaat tuleb
+        });
+
+        // Puhastame kuulajad kui komponent suletakse
         return () => {
             socket.off(EVENTS.TIMER_UPDATE);
             socket.off(EVENTS.MODE_CHANGED);
+            socket.off(EVENTS.LAP_UPDATED);
         };
     }, []);
 
-    // ✅ SORTING - kiirem ringiaeg eespool
+    // Teisendab "01:12.4" millisekunditeks — õige numbriline sortimine
+    const lapToMs = (lap) => {
+        if (!lap) return Infinity;
+        const [mins, rest] = lap.split(":");
+        return parseFloat(mins) * 60000 + parseFloat(rest) * 1000;
+    };
+
+    // Sorteerime kiireima ringiaja järgi
     const sortedRacers = [...timerData.racers].sort((a, b) => {
-        if (!a.fastestLap) return 1;
-        if (!b.fastestLap) return -1;
-        return a.fastestLap.localeCompare(b.fastestLap);
+        return lapToMs(a.fastestLap) - lapToMs(b.fastestLap);
     });
 
     return (
@@ -49,13 +64,14 @@ const Leaderboard = () => {
             <header className="leaderboard-header">
                 <h2>LEADERBOARD</h2>
 
-                {/* Dünaamiline klass vastavalt RACE_MODES tüübile */}
+                {/* Staatuse badge — värv muutub koos lipuga */}
                 <div className={`race-status ${timerData.status}`}>
                     STATUS: {timerData.status?.toUpperCase()}
                 </div>
 
+                {/* Taimer — kasutab Mihkli Timer komponenti */}
                 <div className="race-timer">
-                    TIME LEFT: {timerData.timeLeft}
+                    TIME LEFT: <Timer time={timerData.timeLeft} />
                 </div>
             </header>
 
@@ -74,7 +90,7 @@ const Leaderboard = () => {
                         <span>{racer.driver}</span>
                         <span>{racer.car}</span>
                         <span>{racer.lapCount}</span>
-
+                        {/* Esimene koht roheline highlight */}
                         <span className={index === 0 ? "best" : ""}>
                             {racer.fastestLap || "--:--.-"}
                         </span>

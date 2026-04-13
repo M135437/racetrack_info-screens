@@ -42,23 +42,17 @@ const Flags = () => {
 
   return (
     <div className={`flags-container ${getFlagClass()}`}>
-      <div className="fullscreen-btn-wrapper">
+    <div className="fullscreen-btn-wrapper">
         <button onClick={() => document.documentElement.requestFullscreen()}>
-          💻 Fullscreen
+            Fullscreen
         </button>
-      </div>
-      
-      <div className="flag-content">
-        {/* Kuvame teksti suurelt (nt SAFE, HAZARD) */}
-        <h1 className="mode-text">{currentMode.toUpperCase()}</h1>
-        
-        {/* Kui on finiš, lisame CSS-iga ruudustiku efekti */}
-        {currentMode === RACE_MODES.FINISH && (
-          <div className="chequered-overlay"></div>
-        )}
-      </div>
     </div>
-  );
+
+    {currentMode === RACE_MODES.FINISH && (
+        <div className="chequered-overlay"></div>
+    )}
+</div>
+);
 };
 
 export default Flags;
