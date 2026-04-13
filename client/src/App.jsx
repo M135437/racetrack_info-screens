@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRaceState } from "./hooks/useRaceState.js"
 import './App.css'
 
 // npm install react-router-dom (client-kaustas)
@@ -87,6 +88,12 @@ const Placeholder = ({ ajutine }) => (
 );
 
 function App() {
+    const listenSocket = useRaceState((state) => state.listenSocket);
+
+    useEffect(() => {
+        listenSocket();
+    }, []);
+
   return (
     <BrowserRouter> {/* kogu return peab olema mähitud jagajasse */}
     {/* kõik, mis jääb VÄLJAPOOLE <routes>i, on püsivalt brauseri lehel */}
