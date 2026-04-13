@@ -1,3 +1,5 @@
+import {useRaceState} from "../hooks/useRaceState.js"
+
 function formatTime(ms) {
     if (ms === null || ms === undefined) return "00:00";
 
@@ -10,7 +12,9 @@ function formatTime(ms) {
     return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 }
 
-function Timer({time}) {
+function Timer() {
+
+    const time = useRaceState((state) => state.time);
     return <div className="timer">{formatTime(time)}</div>;
 }
 
