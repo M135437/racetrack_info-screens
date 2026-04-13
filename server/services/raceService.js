@@ -16,6 +16,16 @@ function getTime(io) { // REVIEW - debug only
     })
 }
 
+function getFirstNotStartedSession() {
+  for (let i = 0; i < state.sessions.length; i++) {
+    if (state.sessions[i].status === 'notStarted') {
+      return state.sessions[i];
+    }
+  }
+  return null;
+}
+
+
 function startSession(io) {
     // check that there is no overlapping active session in motion ("protected modes")
     // PROTECTED_MODES = ['notStarted', 'safe', 'danger', 'hazard', 'finish'];
@@ -25,7 +35,12 @@ function startSession(io) {
     }
     // take current timestampt and "select"(find) the session
     const startTime = Date.now();
-    let session = state.sessions.find(s => s.id === state.runningRace);
+    const firstNotStartedSession = getFirstNotStartedSession();
+    let session = state.sessions.find(s => s.id === firstNotStartedSession.id);
+    if (!session) {
+        console.log("No session to start, function startSession(io) stopping prematurely.")
+        return 1;
+    };
     // update state and trigger timer processing
     stateUptStartSession(session); // set RACE_MODE.SAFE and increment state.nextRace
     resetTimer();
