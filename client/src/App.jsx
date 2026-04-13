@@ -24,8 +24,7 @@ import LapTracker from "./pages/lapTracker/LapTracker";
 import LeaderboardPage from "./pages/leaderboard/LeaderboardPage";
 import NextRace from "./pages/nextRace/NextRace";
 import Flags from "./pages/flags/Flags";
-
-//import Countdown from "./pages/countdown/Countdown";
+import Countdown from "./pages/countdown/Countdown";
 
 /* ajutine autentimiskuva (hiljem eraldi komponendiks?) 
 ühtlasi - sõnastus hiljem kohaldada vastaval auth.js sisule */
@@ -126,9 +125,8 @@ function App() {
         {<NextRace />} />
         <Route path="/race-flags" element=
         {<Flags/>}/>
-
-        {/* Muud arenduses olevad vaated */}
-        <Route path="/race-countdown" element={<Placeholder ajutine="Countdown"/>}/>
+        <Route path="/race-countdown" element
+        ={<Countdown/>}/>
 
       </Routes>
     </BrowserRouter>

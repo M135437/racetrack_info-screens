@@ -1,0 +1,61 @@
+.countdown-container {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    transition: background-color 0.5s ease;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* Taustavärvid vastavalt režiimile */
+.mode-waiting { background-color: #1e2f3f; }
+.mode-safe    { background-color: #1a472a; }
+.mode-hazard  { background-color: #7d6608; }
+.mode-danger  { background-color: #7b241c; }
+.mode-finish  { background-color: #1a1a1a; }
+.mode-ended   { background-color: #1e2f3f; }
+
+.countdown-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+/* Taimer — väga suur */
+.countdown-timer .timer {
+    font-size: 20rem;
+    font-weight: 900;
+    color: #ffffff;
+    font-family: 'Arial Black', sans-serif;
+    line-height: 1;
+}
+
+/* Režiimi tekst taimeri all */
+.countdown-status {
+    font-size: 2rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-family: 'Arial Black', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.fullscreen-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.fullscreen-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
