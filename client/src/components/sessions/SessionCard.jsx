@@ -123,7 +123,13 @@ export default function SessionCard({
 
             {/* ADD DRIVER */}
             {onAddDriver && (
-                <div className="add-driver">
+                <form
+                    className="add-driver"
+                    onSubmit={(e) => {
+                        e.preventDefault()
+                        onAddDriver(session.id)
+                    }}
+                >
                     <input
                         className="col name"
                         value={input.name ?? ""}
@@ -132,6 +138,7 @@ export default function SessionCard({
                         }
                         placeholder="Driver name"
                     />
+
                     <input
                         className="col car"
                         value={input.car ?? ""}
@@ -140,13 +147,15 @@ export default function SessionCard({
                         }
                         placeholder="Car"
                     />
+
                     <button
+                        type="submit"
                         className="col action add-btn"
-                        onClick={() => onAddDriver(session.id)}
+                        disabled={!input.name?.trim()}
                     >
                         Add
                     </button>
-                </div>
+                </form>
             )}
 
             {/* DELETE SESSION */}
