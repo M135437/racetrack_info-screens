@@ -59,22 +59,36 @@ export default function SessionCard({
 
             {/* HEADER */}
             <div className="session-header">
-                <div className="session-name">
-                    {session.name}
+
+                <div className="session-main">
+                    <div className="session-name">
+                        {session.name}
+                    </div>
+
+                    <div className="session-field">
+                        <span className="label">Start Planned At: </span>
+                        <span className="value">{session.startTime}</span>
+                    </div>
                 </div>
 
+                <div className="session-side">
 
-                <div className="session-time">
-                    {session.startTime}
+                    <div className="session-field">
+                        <span className="label">Free Slots: </span>
+                        <span className="value">
+                            {session.freeSlotsLeft} / {session.maxSlots}
+                        </span>
+                    </div>
+
+                    <div className="session-field">
+                        <span className="label">Status:</span>
+                        <span className={`session-status ${session.status}`}>
+                            {session.status}
+                        </span>
+                    </div>
+
                 </div>
 
-                <div className="session-meta">
-                    {session.freeSlotsLeft} / {session.maxSlots}
-                </div>
-
-                <div className={`session-status ${session.status}`}>
-                    {session.status}
-                </div>
             </div>
 
             {/* DRIVERS */}

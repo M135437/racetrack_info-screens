@@ -11,6 +11,34 @@
     margin-bottom: 12px;
 }
 
+.session-main {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.session-side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+}
+
+/* label + value */
+.session-field {
+    display: flex;
+    gap: 6px;
+    font-size: 13px;
+}
+
+.label {
+    color: #aaa;
+}
+
+.value {
+    color: white;
+}
+
 .session-name {
     font-size: 16px;
     font-weight: bold;
@@ -158,8 +186,10 @@
     padding: 6px 10px;
     border-radius: 6px;
     cursor: pointer;
+
     display: block;
     margin-left: auto;
+    margin-right: auto;
 }
 
 .delete-session:hover {
