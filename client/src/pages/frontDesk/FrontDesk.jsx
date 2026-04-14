@@ -80,7 +80,13 @@ export default function FrontDesk() {
             <h1>Front Desk</h1>
 
             {/* CREATE */}
-            <div className="create">
+            <form
+                className="create"
+                onSubmit={(e) => {
+                    e.preventDefault()
+                    createSession()
+                }}
+            >
                 <input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -92,10 +98,11 @@ export default function FrontDesk() {
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
                 />
-                <button onClick={createSession}>
+
+                <button type="submit">
                     Create
                 </button>
-            </div>
+            </form>
 
             {/* LIST */}
             <div className="sessions">
