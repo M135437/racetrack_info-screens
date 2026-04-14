@@ -4,10 +4,10 @@
     padding: 20px;
 }
 
+/* HEADER */
 .session-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
     margin-bottom: 12px;
 }
 
@@ -24,7 +24,10 @@
     gap: 4px;
 }
 
-/* label + value */
+.session-name {
+    font-weight: bold;
+}
+
 .session-field {
     display: flex;
     gap: 6px;
@@ -39,115 +42,64 @@
     color: white;
 }
 
-.session-name {
-    font-size: 16px;
-    font-weight: bold;
-    color: white;
-}
-
-.session-time {
-    font-size: 14px;
-    color: #ffde00;
-}
-
-/*??*/
-.session-time {
-    font-size: 18px;
-    font-weight: bold;
-    color: #ffde00;
-    /* accent как в leaderboard */
-}
-
-/* kas vaja? */
-.session-meta {
-    font-size: 14px;
-    color: #ccc;
-}
-
 .session-status {
     padding: 4px 10px;
     border-radius: 6px;
-    font-size: 12px;
-    font-weight: bold;
-}
-
-/* reuse leaderboard logic */
-.session-status.pending {
     background: gray;
-}
-
-.session-status.safe {
-    background: green;
-}
-
-.session-status.danger {
-    background: red;
-}
-
-.session-status.hazard {
-    background: orange;
-}
-
-.driver-list {
-    margin-top: 10px;
-}
-
-/* header row (optional) */
-.drivers-header {
-    display: grid;
-    grid-template-columns: 1fr 1fr 40px;
-    padding-bottom: 6px;
-    margin-bottom: 6px;
-    border-bottom: 1px solid #555;
-
-    color: #aaa;
     font-size: 12px;
-    text-transform: uppercase;
 }
 
-/* actual rows */
+/* GRID */
+.drivers-header,
 .driver-row {
     display: grid;
-    grid-template-columns: 1fr 1fr 40px;
+    grid-template-columns: 1fr 1fr 50px;
+    align-items: center;
+    justify-items: center;
+}
+
+/* HEADER ROW */
+.drivers-header {
+    color: #aaa;
+    font-size: 12px;
+    border-bottom: 1px solid #555;
+    padding-bottom: 6px;
+}
+
+/* ROW */
+.driver-row {
     padding: 10px;
     border-bottom: 1px solid #333;
 }
 
-/* zebra stripes */
 .driver-row:nth-child(even) {
     background-color: #1a1a1a;
 }
 
-/* hover */
-.driver-row:hover {
-    background: rgba(255, 255, 255, 0.05);
+/* COLUMNS */
+.col {
+    width: 100%;
+    text-align: center;
 }
 
-/* driver cells */
-.driver-name {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+/* INPUT */
+.driver-row input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: white;
+    text-align: center;
 }
 
-.driver-car {
-    color: #ccc;
-}
-
-/* action buttons */
+/* DELETE */
 .delete-driver {
     background: transparent;
     border: none;
     color: #ff4d4f;
     cursor: pointer;
-    font-size: 16px;
 }
 
-.delete-driver:hover {
-    color: #ff7875;
-}
-
-/* add driver */
+/* ADD DRIVER */
 .add-driver {
     display: flex;
     gap: 10px;
@@ -157,41 +109,23 @@
 .add-driver input {
     flex: 1;
     padding: 6px;
-    border-radius: 6px;
-    border: 1px solid #444;
     background: #111;
     color: white;
+    border: 1px solid #444;
 }
 
 .add-btn {
     background: #ffde00;
-    color: black;
     border: none;
     padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
 }
 
-.add-btn:hover {
-    background: #ffe95c;
-}
-
-/* delete session */
+/* DELETE SESSION */
 .delete-session {
-    margin-top: 12px;
+    display: block;
+    margin: 12px auto 0;
     background: #ff4d4f;
     color: white;
     border: none;
-    padding: 6px 10px;
-    border-radius: 6px;
-    cursor: pointer;
-
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.delete-session:hover {
-    background: #ff7875;
+    padding: 6px 12px;
 }
