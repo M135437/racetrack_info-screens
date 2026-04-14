@@ -93,7 +93,7 @@ const LapTracker = () => {
   // esmane nupuvajutusluba -
   // kui POLE ALANUD ja kui POLE SESS LÕPPENUD, siis 
   // on võistlus käimas ja nupud on kuvatud:
-  const isRaceActive = raceMode !== "notStarted" && raceMode !== "ended";
+  const isRaceActive = raceMode !== "notStarted"; // && raceMode !== "ended";
   // (st nupud on safe, hazard, danger ja finish ajal olemas) 
 
   // kuna nupud on klikatavad ÜHE KORRA ka finishi ajal, siis:

@@ -39,7 +39,17 @@ export const useRaceState = create((set) => ({
 
         // sessioonide nimekiri
         socket.on(EVENTS.SESSION_LISTED, (data) => {
-            set({ sessions: Array.isArray(data) ? data : [] });
+            // vana: set({ sessions: Array.isArray(data) ? data : [] });
+            const sessionsList = Array.isArray(data) ? data : [];
+        
+            // MARI: "käimasolev sess runningRace alusel (mis hetkel aktiivne on)"
+            const currentSession = sessionsList.find(s => s.hasStarted === true && s.isFinished === false);
+            
+                                set({
+                                    sessions: sessionsList,
+                                    leaderboard: currentSession ? currentSession.drivers : []
+                                });
+
         });
 
         // režiimi muutus — flags, countdown, leaderboard vajavad seda
