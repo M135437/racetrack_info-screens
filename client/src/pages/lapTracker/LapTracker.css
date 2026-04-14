@@ -171,8 +171,13 @@ või kui tablet ise spetsiifiliselt landscape mode-is */
   cursor: not-allowed;
 }
 
-/* komponentide jaoks klassid:
 .component-zone {
+  position:absolute;
+  top: 0;
+  right: 100px;
+  z-index: 9999;
+  display: grid;
+  gap: 3px;
 
 }
 .flag-wrapper {
@@ -180,5 +185,6 @@ või kui tablet ise spetsiifiliselt landscape mode-is */
   height: 30px;
 }
 .timer-wrapper {
+  width: 60px;
+  height: 30px;
 }
-*/

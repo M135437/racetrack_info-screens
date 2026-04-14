@@ -52,7 +52,8 @@ function startSession(io) {
     io.emit(EVENTS.SESSION_STARTED, {
         startTime,
         raceId: state.runningRace,
-        raceMode: RACE_MODES.SAFE
+        raceMode: RACE_MODES.SAFE,
+        leaderboard: state.leaderboard
     });
 }
 

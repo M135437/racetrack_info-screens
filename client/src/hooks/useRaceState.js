@@ -15,6 +15,11 @@ export const useRaceState = create((set) => ({
     setRaceMode: (raceMode) => set({ raceMode }),
     setLeaderboard: (leaderboard) => set({ leaderboard }),
 
+    recordLap: (carId) => {
+    console.log("Emitting LAP_UPDATE for car:", carId);
+    socket.emit(EVENTS.LAP_UPDATE, carId);
+    },
+
     listenSocket: () => {
         if (isListening) {
             console.log("Socket listeners already active");
@@ -52,9 +57,11 @@ export const useRaceState = create((set) => ({
             set({ leaderboard: Array.isArray(data) ? data : [] });
         });
 
-        // sessioon algas — NextRace peab uuenema
-        socket.on(EVENTS.SESSION_STARTED, () => {
-            set({ raceMode: 'safe' });
+        // sessioon algas — NextRace/RaceFlag/RaceControl/FrontDesk/LapTracker/Leaderboard peavad uuenema
+        socket.on(EVENTS.SESSION_STARTED, (data) => {
+            set({ raceMode: 'safe',
+                leaderboard: Array.isArray(data.leaderboard) ? data.leaderboard : []
+             });
             socket.emit(EVENTS.SESSION_GET);
         });
 

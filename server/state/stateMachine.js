@@ -36,6 +36,7 @@ export function stateUptStartSession(session) {
     session.startTime = Date.now();
     session.status = 'started';
     state.nextRace = getNextRaceId();
+    state.leaderboard.push(...session.drivers);
     console.log("state.raceMode pärast: ",state.raceMode);
 }
 
@@ -52,5 +53,6 @@ export function stateUptFinishMode(mode) {
 export function stateUptEndSession() {
     state.raceMode = RACE_MODES.ENDED;
     state.runningRace = null;
+    state.leaderboard = [];
     state.nextRace = getNextRaceId();
 }
