@@ -2,20 +2,20 @@ import { create } from "zustand";
 import { socket } from "../socket/socket";
 import EVENTS from "../shared/events";
 
-// 🔒 private flag (ei kuulu React state’i)
 let isListening = false;
 
 export const useRaceState = create((set) => ({
     time: null,
     sessions: [],
+    raceMode: 'notStarted',
+    leaderboard: [],
 
-    // setters for (re-) setting values
     setTime: (time) => set({ time }),
     setSessions: (sessions) => set({ sessions }),
+    setRaceMode: (raceMode) => set({ raceMode }),
+    setLeaderboard: (leaderboard) => set({ leaderboard }),
 
-    // scoket
     listenSocket: () => {
-        // protect from attaching sockets twice
         if (isListening) {
             console.log("Socket listeners already active");
             return;
@@ -24,21 +24,63 @@ export const useRaceState = create((set) => ({
         isListening = true;
         console.log("Attaching socket listeners");
 
-        // cleanup (protect from hot reload bugs)
+        // cleanup
         socket.off(EVENTS.TIMER_UPDATE);
         socket.off(EVENTS.SESSION_LISTED);
+        socket.off(EVENTS.MODE_CHANGED);
+        socket.off(EVENTS.LAP_UPDATED);
+        socket.off(EVENTS.SESSION_STARTED);
+        socket.off(EVENTS.SESSION_ENDED);
 
-        // listen: "timer:update"
+        // taimer
         socket.on(EVENTS.TIMER_UPDATE, (ms) => {
             set({ time: ms });
         });
 
-        // listen: "session:listed"
+        // sessioonide nimekiri
         socket.on(EVENTS.SESSION_LISTED, (data) => {
             set({ sessions: Array.isArray(data) ? data : [] });
         });
 
-        // trigger: initial data fetch "session:get"
+        // režiimi muutus — flags, countdown, leaderboard vajavad seda
+        socket.on(EVENTS.MODE_CHANGED, (newMode) => {
+            set({ raceMode: newMode });
+        });
+
+        // ringiaegade uuendus — leaderboard vajab seda
+        socket.on(EVENTS.LAP_UPDATED, (data) => {
+            set({ leaderboard: Array.isArray(data) ? data : [] });
+        });
+
+        // sessioon algas — NextRace peab uuenema
+        socket.on(EVENTS.SESSION_STARTED, () => {
+            set({ raceMode: 'safe' });
+            socket.emit(EVENTS.SESSION_GET);
+        });
+
+        // sessioon lõppes — NextRace paddock sõnum
+        socket.on(EVENTS.SESSION_ENDED, () => {
+            set({ raceMode: 'ended' });
+            socket.emit(EVENTS.SESSION_GET);
+        });
+
+        // küsi kohe algandmed
         socket.emit(EVENTS.SESSION_GET);
+
+        // AJUTINE TEST — kustuta pärast!
+setTimeout(() => {
+    console.log("TEST: simuleerime race start");
+    set({ raceMode: 'safe', time: 45000 });
+}, 3000);
+
+setTimeout(() => {
+    console.log("TEST: simuleerime hazard");
+    set({ raceMode: 'hazard' });
+}, 6000);
+
+setTimeout(() => {
+    console.log("TEST: simuleerime finish");
+    set({ raceMode: 'finish' });
+}, 9000);
     }
 }));
