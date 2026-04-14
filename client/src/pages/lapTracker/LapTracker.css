@@ -174,7 +174,7 @@ või kui tablet ise spetsiifiliselt landscape mode-is */
 .component-zone {
   position:absolute;
   top: 0;
-  right: 60px;
+  right: 100px;
   z-index: 9999;
   display: grid;
   gap: 3px;

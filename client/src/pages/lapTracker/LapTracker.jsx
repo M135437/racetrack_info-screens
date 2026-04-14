@@ -7,8 +7,8 @@ import { useState, useEffect, useRef } from "react";
 import { useRaceState } from "../../hooks/useRaceState";
 import "./LapTracker.css";
 
-import FlagDisplay from "../components/FlagDisplay";
-import Timer from "../components/Timer";
+// import FlagDisplay from "../../components/FlagDisplay";
+import Timer from "../../components/Timer";
 
 const LapTracker = () => {
 
@@ -21,7 +21,7 @@ const LapTracker = () => {
     // kui vahepeal mõnd muud nuppu vajutada
 
     // "laadimine", kui pole andmeid - vajab uut definitsiooni:
-    // const isLoading = !incomingStateData;
+    // const isLoading = !leaderboard;
 
 
    /* const mockData = {
@@ -109,7 +109,7 @@ const LapTracker = () => {
     }
 
     // pärisandmed vs võltsandmed:
-const displayData = incomingStateData || mockData;
+//const displayData = incomingStateData || mockData;
 
     return (
         <div className="lap-container">
@@ -118,22 +118,21 @@ const displayData = incomingStateData || mockData;
                 className="fullscreen">Fullscreen</button>
             </div>
             <div className="component-zone">
-                <div className="flag-wrapper">
+                {/*<div className="flag-wrapper">
                     <FlagDisplay status={raceMode} />
-                </div>
+                </div> */}
                 <div className="timer-wrapper">
                     <Timer />
                 </div>
             </div>
             {/* kontrollime, kas nii taimer kui stopper töötavad */}
             <div className="debug-timer">
-                <h2>Time left: {displayData?.secondsLeft ?? "--:--"}s</h2>
                 <p>Local high-res: {formatLapDisplay(now / 1000)}</p>
-                <p>Mode: {displayData.status || displayData.raceMode || "N/A"}</p>
-                <p>Status: {isLoading ? "Syncing with server.." : "Connected"}</p>
+                <p>Mode: {raceMode || "N/A"}</p>
+                {/*<p>Status: {isLoading ? "Syncing with server.." : "Connected"}</p>*/}
             </div>
             {/* nö ootereiim kui sess pole alanud: */}
-            {!displayData?.hasStarted ? ( // ternary et nuppude asemel oleks
+            {!isRaceActive ? ( // ternary et nuppude asemel oleks
             // sessioonide vahel tekst:
                 <div className="waiting-screen">
                     <p>Waiting for the next race to begin..</p>
@@ -145,23 +144,19 @@ const displayData = incomingStateData || mockData;
                 <div key={driver.id} className="lap-tracker-ui">
 
                     <button
-                        onClick={() => handleRecordLap(driver.id)} // kasutame ülapool ära
-                        // märgitud uut const-i, mis edastaks socketile emit-i
-                        // (VANA single-ui vers: peame siin info
-                        // emit-i välja kirjutama; nb! serveris argument "racerId", aga siin map-i kaudu objektist saadud "racer.id"
-                        /* enne mitmiknupuversiooni oli disabled={!incomingStateData?.canLap} )*/
-                        disabled={!isRaceActive || 
+                        onClick={() => handleRecordLap(driver.id)}
+                        disabled={!isRaceActive || // obsolete?
                             driver.isFinished ||
                             cooldowns.includes(driver.id)}
                         
                         className={`lap-button ${
-                            !displayData.hasStarted || /* hiljem !isRaceActive. testimiseks jätan klikatavaks */
+                            !isRaceActive || 
                             driver.isFinished ||
                             cooldowns.includes(driver.id) ? "disabled" : "active"}`}
                     >
                         {driver.isFinished ? `${driver.car} FINISHED` : `car ${driver.car} | `}
                         {/* nupud peavad kuvama SÕIDUKI NR, mitte sõitja nime */}
-                        <span>Laps: {driver.lapCount} | Last time: {driver.latestLapTime} | Best: {driver.fastestLap || "--"}
+                        <span>Laps: {driver.lapCount} | Last time: {formatLapDisplay(driver.latestLapTime / 1000)} | Best: {formatLapDisplay(driver.fastestLap / 1000) || "--"}
                         </span>
                     </button>
                 </div>
