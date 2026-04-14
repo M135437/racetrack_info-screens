@@ -5,12 +5,12 @@ import * as stateMachine from "../state/stateMachine.js"
 let sessions = state.sessions;
 
 function getLastNotStartedSession() {
-  for (let i = state.sessions.length - 1; i >= 0; i--) {
-    if (state.sessions[i].status === 'notStarted') {
-      return state.sessions[i];
+    for (let i = state.sessions.length - 1; i >= 0; i--) {
+        if (state.sessions[i].status === 'notStarted') {
+            return state.sessions[i];
+        }
     }
-  }
-  return null;
+    return null;
 }
 
 //defining session-model (id, name, drivers, cars, status)
@@ -126,6 +126,32 @@ function removeDriver(sessionId, driverId) {
     return { message: "Driver removed" }
 }
 
+function updateDriver(sessionId, driverId, name, car) {
+    const session = state.sessions.find(s => s.id === sessionId)
+
+    if (!session) {
+        throw new Error("Session not found")
+    }
+
+    const driver = session.drivers.find(d => d.id === driverId)
+
+    if (!driver) {
+        throw new Error("Driver not found")
+    }
+
+    // update driver info if new values are provided, 
+    // otherwise keep existing values
+    if (typeof name === "string" && name.trim() !== "") {
+        driver.name = name.trim()
+    }
+
+    if (typeof car === "string" && car.trim() !== "") {
+        driver.car = car.trim()
+    }
+
+    return driver
+}
+
 
 //EXPORTING functions
 export {
@@ -134,5 +160,6 @@ export {
     createSession,
     deleteSession,
     addDriver,
-    removeDriver
+    removeDriver,
+    updateDriver
 }

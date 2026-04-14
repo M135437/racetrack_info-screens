@@ -64,4 +64,17 @@ export default function sessionHandler(io, socket) {
         }
     })
 
+    //UPDATE driver
+    socket.on(EVENTS.DRIVER_UPDATE, ({ sessionId, driverId, name, car }) => {
+        try {
+            sessionService.updateDriver(sessionId, driverId, name, car)
+
+            const sessions = sessionService.getUpcomingSessions()
+            io.emit(EVENTS.SESSION_LISTED, sessions)
+
+        } catch (err) {
+            socket.emit(EVENTS.SESSION_ERROR, err.message)
+        }
+    })
+
 }
