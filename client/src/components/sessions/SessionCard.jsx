@@ -1,3 +1,7 @@
+import { useState } from "react"
+import { socket } from "../../socket/socket"
+import EVENTS from "../../shared/events"
+
 export default function SessionCard({
     session,
     onDelete,
@@ -6,6 +10,49 @@ export default function SessionCard({
     input = {},
     updateInput
 }) {
+
+    //local state to manage edited driver info before sending update to server
+    const [editedDrivers, setEditedDrivers] = useState({})
+
+    //field change handler for driver info update (name, car) 
+    const updateDriverField = (driverId, field, value) => {
+        setEditedDrivers(prev => ({
+            ...prev,
+            [driverId]: {
+                ...prev[driverId],
+                [field]: value
+            }
+        }))
+    }
+
+    // saving driver updates (name, car) by emitting update event to server
+    const saveDriver = (driverId) => {
+        const updated = editedDrivers?.[driverId]
+        if (!updated) return
+
+        const original = session.drivers.find(d => d.id === driverId)
+        if (!original) return
+
+        // if no changes were made, do not emit update event to server
+        if (
+            updated.name === original.name &&
+            updated.car === original.car
+        ) return
+
+        socket.emit(EVENTS.DRIVER_UPDATE, {
+            sessionId: session.id,
+            driverId,
+            ...updated
+        })
+
+        // clean up editedDrivers state for the driver after saving changes
+        setEditedDrivers(prev => {
+            const copy = { ...prev }
+            delete copy[driverId]
+            return copy
+        })
+    }
+
     return (
         <div className="card">
 
@@ -15,7 +62,7 @@ export default function SessionCard({
                 <span>{session.startTime}</span>
             </div>
 
-            {/* TABLE */}
+            {/* DRIVERS */}
             <div className="drivers">
 
                 {/* columns */}
@@ -28,8 +75,38 @@ export default function SessionCard({
                 {/* rows */}
                 {session.drivers?.map(d => (
                     <div key={d.id} className="driver-row">
-                        <span className="col name">{d.name}</span>
-                        <span className="col car">{d.car}</span>
+
+                        <input
+                            className="col name"
+                            value={editedDrivers?.[d.id]?.name ?? d.name}
+                            onChange={(e) =>
+                                updateDriverField(d.id, "name", e.target.value)
+                            }
+                            onBlur={() => saveDriver(d.id)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    e.preventDefault()
+                                    saveDriver(d.id)
+                                    e.target.blur()
+                                }
+                            }}
+                        />
+
+                        <input
+                            className="col car"
+                            value={editedDrivers?.[d.id]?.car ?? d.car}
+                            onChange={(e) =>
+                                updateDriverField(d.id, "car", e.target.value)
+                            }
+                            onBlur={() => saveDriver(d.id)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    e.preventDefault()
+                                    saveDriver(d.id)
+                                    e.target.blur()
+                                }
+                            }}
+                        />
 
                         {onRemoveDriver && (
                             <button
