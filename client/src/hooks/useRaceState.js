@@ -66,21 +66,6 @@ export const useRaceState = create((set) => ({
 
         // küsi kohe algandmed
         socket.emit(EVENTS.SESSION_GET);
-
-        // AJUTINE TEST — kustuta pärast!
-setTimeout(() => {
-    console.log("TEST: simuleerime race start");
-    set({ raceMode: 'safe', time: 45000 });
-}, 3000);
-
-setTimeout(() => {
-    console.log("TEST: simuleerime hazard");
-    set({ raceMode: 'hazard' });
-}, 6000);
-
-setTimeout(() => {
-    console.log("TEST: simuleerime finish");
-    set({ raceMode: 'finish' });
-}, 9000);
     }
+        
 }));
