@@ -66,6 +66,7 @@ export const useRaceState = create((set) => ({
 
         // küsi kohe algandmed
         socket.emit(EVENTS.SESSION_GET);
+        
     }
         
 }));
