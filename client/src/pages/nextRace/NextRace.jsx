@@ -1,71 +1,61 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import "./NextRace.css";
+import { useRaceState } from "../../hooks/useRaceState";
 import { socket } from "../../socket/socket";
 import EVENTS from "../../shared/events";
 
-const mockNextRace = {
-  name: "Italian Grand Prix race 2",
-  drivers: [
-    { id: 1, name: "Alice", car: "N°6" },
-    { id: 2, name: "Dave", car: "N°8" }
-  ]
-};
-
 const NextRace = () => {
-  const [nextRace, setNextRace] = useState(null);
+    // kõik andmed tulevad hookist
+    const { sessions, raceMode, listenSocket } = useRaceState();
 
-  useEffect(() => {
-    // 1. Küsime kohe avamisel serverilt sessioone
-    socket.emit(EVENTS.SESSION_GET);
+    useEffect(() => {
+        // käivita socket kuulajad
+        listenSocket();
+        // küsi sessioonid kohe kui leht avaneb
+        socket.emit(EVENTS.SESSION_GET);
+    }, []);
 
-    // 2. Kuulame serveri vastust
-    socket.on(EVENTS.SESSION_LISTED, (sessions) => {
-      console.log("Saadud sessioonid:", sessions);
+    // leia järgmine sessioon — esimene mis pole veel alanud
+    const nextSession = sessions.find(s => s.status === 'notStarted');
 
-      if (Array.isArray(sessions) && sessions.length > 0) {
-        // Võtame esimese sessiooni, mis pole veel "finished"
-        const upcoming = sessions.find(s => s.status !== "finished") || sessions[0];
-        setNextRace(upcoming);
-      }
-    });
+    // kas sessioon on lõppenud — näita paddock sõnumit
+    const showPaddockMessage = raceMode === 'ended';
 
-    // 3. Kuulame ka uue sessiooni loomist reaalajas
-    socket.on(EVENTS.SESSION_CREATED, (newSession) => {
-      setNextRace(newSession);
-    });
+    return (
+        <div className="next-race-container">
+            <h1>NEXT RACE</h1>
 
-    return () => {
-      socket.off(EVENTS.SESSION_LISTED);
-      socket.off(EVENTS.SESSION_CREATED);
-    };
-  }, []);
+            {/* Paddock sõnum kui sessioon lõppes */}
+            {showPaddockMessage && (
+                <div className="paddock-message">
+                    Drivers — please proceed to the paddock
+                </div>
+            )}
 
-  const race = nextRace || mockNextRace;
+            {/* Järgmine sessioon */}
+            {nextSession ? (
+                <div className="race-card">
+                    <h2 className="race-title">
+                        {nextSession.name || "Upcoming session"}
+                    </h2>
 
-  return (
-    <div className="next-race-container">
-      <h1>NEXT RACE</h1>
-
-      {!nextRace && (
-        <div className="debug-notice">
-          <p>⚠️ Ühendus serveriga puudub - kuvatakse demoandmed</p>
+                    <div className="driver-list">
+                        {nextSession.drivers && nextSession.drivers.map((d, index) => (
+                            <div key={d.id || index} className="driver-row">
+                                <span className="driver-name">{d.name}</span>
+                                <span className="driver-car">
+                                    Car {d.car}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ) : (
+                // kui järgmist sessiooni pole
+                <p className="no-sessions">No upcoming sessions</p>
+            )}
         </div>
-      )}
-
-      <div className="race-card">
-        <h2 className="race-title">{race.name || "Nimetu sessioon"}</h2>
-
-        <div className="driver-list">
-          {race.drivers && race.drivers.map((d, index) => (
-            <div key={d.id || index} className="driver-row">
-              <span className="driver-name">{d.name}</span>
-              <span className="driver-car">{d.car}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default NextRace;
