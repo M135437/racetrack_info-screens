@@ -30,7 +30,8 @@ function startSession(io) {
     // check that there is no overlapping active session in motion ("protected modes")
     // PROTECTED_MODES = ['notStarted', 'safe', 'danger', 'hazard', 'finish'];
     if (Object.values(PROTECTED_MODES).includes(state.raceMode)) { 
-        io.emit(EVENTS.SESSION_ERROR, "Unable to start a new race - safety alert! Previous race has not ended gracefully!");
+        io.emit(EVENTS.SESSION_ERROR, "Unable to start a new race - safety alert! Previous race has not ended gracefully! Setting raceMode to 'safe' ");
+        changeMode(io, PROTECTED_MODES.SAFE);
         return 1;
     }
     // take current timestampt and "select"(find) the session
@@ -56,11 +57,9 @@ function startSession(io) {
 function changeMode(io, mode) {
     if (state.raceMode !== RACE_MODES.FINISH) {  // a session already taken to 'finish' mode 
     // should not get let back to hazard nor danger mode as per requirements
-    stateUptChangeMode(mode); 
+    stateUptChangeMode(mode);
     // any other checks this fuction should do before trusting to emit? REVIEW
-    io.emit(EVENTS.SESSION_STARTED, {
-        raceMode: state.raceMode
-    });
+    io.emit(EVENTS.MODE_CHANGED, state.raceMode);
     } else {
         // Once the race mode changes to "Finished", it cannot be changed to any other mode.
             // any control measures to take here? REVIEW
