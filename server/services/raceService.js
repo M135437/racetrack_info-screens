@@ -71,17 +71,13 @@ function changeMode(io, mode) {
 function finishMode(io) {
     stateUptFinishMode()
 
-    io.emit(EVENTS.SESSION_MODE, {
-        raceMode: RACE_MODES.FINISH
-    });
+    io.emit(EVENTS.MODE_CHANGED, state.raceMode);
 }
 
 function endSession(io) {
     stateUptEndSession()
 
-    io.emit(EVENTS.SESSION_END, {
-        raceMode: RACE_MODES.ENDED
-    });
+    io.emit(EVENTS.SESSION_END, state.raceMode);
     stopTimer();
 }
 
