@@ -1,0 +1,156 @@
+.session-card {
+    background: #2c3e50;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.session-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+/*??*/
+.session-time {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffde00;
+    /* accent как в leaderboard */
+}
+
+/* kas vaja? */
+.session-meta {
+    font-size: 14px;
+    color: #ccc;
+}
+
+.session-status {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* reuse leaderboard logic */
+.session-status.pending {
+    background: gray;
+}
+
+.session-status.safe {
+    background: green;
+}
+
+.session-status.danger {
+    background: red;
+}
+
+.session-status.hazard {
+    background: orange;
+}
+
+.driver-list {
+    margin-top: 10px;
+}
+
+/* header row (optional) */
+.drivers-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr 40px;
+    padding-bottom: 6px;
+    margin-bottom: 6px;
+    border-bottom: 1px solid #555;
+
+    color: #aaa;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+/* actual rows */
+.driver-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 40px;
+    padding: 10px;
+    border-bottom: 1px solid #333;
+}
+
+/* zebra stripes */
+.driver-row:nth-child(even) {
+    background-color: #1a1a1a;
+}
+
+/* hover */
+.driver-row:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* driver cells */
+.driver-name {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.driver-car {
+    color: #ccc;
+}
+
+/* action buttons */
+.delete-driver {
+    background: transparent;
+    border: none;
+    color: #ff4d4f;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.delete-driver:hover {
+    color: #ff7875;
+}
+
+/* add driver */
+.add-driver {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.add-driver input {
+    flex: 1;
+    padding: 6px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background: #111;
+    color: white;
+}
+
+.add-btn {
+    background: #ffde00;
+    color: black;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.add-btn:hover {
+    background: #ffe95c;
+}
+
+/* delete session */
+.delete-session {
+    margin-top: 12px;
+    background: #ff4d4f;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: block;
+    margin-left: auto;
+}
+
+.delete-session:hover {
+    background: #ff7875;
+}
