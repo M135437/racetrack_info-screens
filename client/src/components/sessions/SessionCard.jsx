@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { socket } from "../../socket/socket"
 import EVENTS from "../../shared/events"
+import "./SessionCard.css"
 
 export default function SessionCard({
     session,
@@ -54,30 +55,42 @@ export default function SessionCard({
     }
 
     return (
-        <div className="card">
+        <div className="session-card">
 
             {/* HEADER */}
-            <div className="card-header">
-                <span>{session.name}</span>
-                <span>{session.startTime}</span>
+            <div className="session-header">
+                <div className="session-name">
+                    {session.name}
+                </div>
+
+
+                <div className="session-time">
+                    {session.startTime}
+                </div>
+
+                <div className="session-meta">
+                    {session.freeSlotsLeft} / {session.maxSlots}
+                </div>
+
+                <div className={`session-status ${session.status}`}>
+                    {session.status}
+                </div>
             </div>
 
             {/* DRIVERS */}
-            <div className="drivers">
+            <div className="driver-list">
 
-                {/* columns */}
                 <div className="drivers-header">
-                    <span className="col name">Name</span>
-                    <span className="col car">Car</span>
-                    <span className="col action"></span>
+                    <span>Name</span>
+                    <span>Car</span>
+                    <span></span>
                 </div>
 
-                {/* rows */}
                 {session.drivers?.map(d => (
                     <div key={d.id} className="driver-row">
 
                         <input
-                            className="col name"
+                            className="driver-name"
                             value={editedDrivers?.[d.id]?.name ?? d.name}
                             onChange={(e) =>
                                 updateDriverField(d.id, "name", e.target.value)
@@ -93,7 +106,7 @@ export default function SessionCard({
                         />
 
                         <input
-                            className="col car"
+                            className="driver-car"
                             value={editedDrivers?.[d.id]?.car ?? d.car}
                             onChange={(e) =>
                                 updateDriverField(d.id, "car", e.target.value)
@@ -110,7 +123,7 @@ export default function SessionCard({
 
                         {onRemoveDriver && (
                             <button
-                                className="col action delete-driver"
+                                className="delete-driver"
                                 onClick={() => onRemoveDriver(session.id, d.id)}
                             >
                                 ❌
@@ -131,7 +144,6 @@ export default function SessionCard({
                     }}
                 >
                     <input
-                        className="col name"
                         value={input.name ?? ""}
                         onChange={(e) =>
                             updateInput(session.id, "name", e.target.value)
@@ -140,7 +152,6 @@ export default function SessionCard({
                     />
 
                     <input
-                        className="col car"
                         value={input.car ?? ""}
                         onChange={(e) =>
                             updateInput(session.id, "car", e.target.value)
@@ -150,7 +161,7 @@ export default function SessionCard({
 
                     <button
                         type="submit"
-                        className="col action add-btn"
+                        className="add-btn"
                         disabled={!input.name?.trim()}
                     >
                         Add

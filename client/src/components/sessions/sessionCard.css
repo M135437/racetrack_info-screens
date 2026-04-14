@@ -11,6 +11,17 @@
     margin-bottom: 12px;
 }
 
+.session-name {
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+}
+
+.session-time {
+    font-size: 14px;
+    color: #ffde00;
+}
+
 /*??*/
 .session-time {
     font-size: 18px;
