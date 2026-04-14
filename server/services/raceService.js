@@ -28,20 +28,22 @@ function getFirstNotStartedSession() {
 
 function startSession(io) {
     // check that there is no overlapping active session in motion ("protected modes")
-    // PROTECTED_MODES = ['notStarted', 'safe', 'danger', 'hazard', 'finish'];
-    if (Object.values(PROTECTED_MODES).includes(state.raceMode)) { 
+    // PROTECTED_MODES = ['safe', 'danger', 'hazard', 'finish'];
+    if (Object.values(PROTECTED_MODES).includes(state.raceMode)) {
         io.emit(EVENTS.SESSION_ERROR, "Unable to start a new race - safety alert! Previous race has not ended gracefully! Setting raceMode to 'safe' ");
         changeMode(io, PROTECTED_MODES.SAFE);
         return 1;
     }
-    // take current timestampt and "select"(find) the session
-    const startTime = Date.now();
-    const firstNotStartedSession = getFirstNotStartedSession();
-    let session = state.sessions.find(s => s.id === firstNotStartedSession.id);
+
+    const session = getFirstNotStartedSession();
+    // check if there are no sessions available with status 'notStarted'
     if (!session) {
-        console.log("No session to start, function startSession(io) stopping prematurely.")
-        return 1;
-    };
+        console.log("No notStarted sessions available");
+        io.emit(EVENTS.SESSION_ERROR, "No upcoming sessions");
+        return;
+    }
+    // take current timestampt
+    const startTime = Date.now();
     // update state and trigger timer processing
     stateUptStartSession(session); // set RACE_MODE.SAFE and increment state.nextRace
     resetTimer();
@@ -50,12 +52,13 @@ function startSession(io) {
     io.emit(EVENTS.SESSION_STARTED, {
         startTime,
         raceId: state.runningRace,
-        raceMode: RACE_MODES.SAFE
+        raceMode: RACE_MODES.SAFE,
+        leaderboard: state.leaderboard
     });
 }
 
 function changeMode(io, mode) {
-    if (state.raceMode !== RACE_MODES.FINISH) {  // a session already taken to 'finish' mode 
+    if (state.raceMode !== RACE_MODES.FINISH) {  // a session already taken to 'finish' mode
     // should not get let back to hazard nor danger mode as per requirements
     stateUptChangeMode(mode);
     // any other checks this fuction should do before trusting to emit? REVIEW
@@ -77,7 +80,7 @@ function finishMode(io) {
 function endSession(io) {
     stateUptEndSession()
 
-    io.emit(EVENTS.SESSION_END, state.raceMode);
+    io.emit(EVENTS.SESSION_ENDED, state.raceMode);
     stopTimer();
 }
 

@@ -15,6 +15,11 @@ export const useRaceState = create((set) => ({
     setRaceMode: (raceMode) => set({ raceMode }),
     setLeaderboard: (leaderboard) => set({ leaderboard }),
 
+    recordLap: (carId) => {
+    console.log("Emitting LAP_UPDATE for car:", carId);
+    socket.emit(EVENTS.LAP_UPDATE, carId);
+    },
+
     listenSocket: () => {
         if (isListening) {
             console.log("Socket listeners already active");
@@ -39,17 +44,7 @@ export const useRaceState = create((set) => ({
 
         // sessioonide nimekiri
         socket.on(EVENTS.SESSION_LISTED, (data) => {
-            // vana: set({ sessions: Array.isArray(data) ? data : [] });
-            const sessionsList = Array.isArray(data) ? data : [];
-        
-            // MARI: "käimasolev sess runningRace alusel (mis hetkel aktiivne on)"
-            const currentSession = sessionsList.find(s => s.hasStarted === true && s.isFinished === false);
-            
-                                set({
-                                    sessions: sessionsList,
-                                    leaderboard: currentSession ? currentSession.drivers : []
-                                });
-
+            set({ sessions: Array.isArray(data) ? data : [] });
         });
 
         // režiimi muutus — flags, countdown, leaderboard vajavad seda
@@ -62,9 +57,11 @@ export const useRaceState = create((set) => ({
             set({ leaderboard: Array.isArray(data) ? data : [] });
         });
 
-        // sessioon algas — NextRace peab uuenema
-        socket.on(EVENTS.SESSION_STARTED, () => {
-            set({ raceMode: 'safe' });
+        // sessioon algas — NextRace/RaceFlag/RaceControl/FrontDesk/LapTracker/Leaderboard peavad uuenema
+        socket.on(EVENTS.SESSION_STARTED, (data) => {
+            set({ raceMode: 'safe',
+                leaderboard: Array.isArray(data.leaderboard) ? data.leaderboard : []
+             });
             socket.emit(EVENTS.SESSION_GET);
         });
 
@@ -76,7 +73,6 @@ export const useRaceState = create((set) => ({
 
         // küsi kohe algandmed
         socket.emit(EVENTS.SESSION_GET);
-        
     }
         
 }));

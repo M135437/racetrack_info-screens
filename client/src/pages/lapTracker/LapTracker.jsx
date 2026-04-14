@@ -1,6 +1,8 @@
 // IMPORDID
 // react-tööriistad kuva kirjutamaks:
 import { useState, useEffect, useRef } from "react"; 
+import EVENTS from "../../shared/events.js"
+import { socket } from "../../socket/socket";
 // useRef on nuppude cooldown tarbeks
 
 // HOOK saamaks taimeri-stopperi infot (lb saab sealt ka stopperi kuva)
@@ -101,6 +103,33 @@ const LapTracker = () => {
 
   // sõitjate leidmine:
   const drivers = leaderboard || [];
+//   const drivers = [{
+//     id: 1,
+//     name: "Pauli vend",
+//     car: "11",
+//     lapCount: 0,
+//     latestLapTime: null,
+//     fastestLap: null,
+//     isFinished: false
+//   },
+//   {
+//     id: 2,
+//     name: "Pauli õde",
+//     car: "22",
+//     lapCount: 0,
+//     latestLapTime: null,
+//     fastestLap: null,
+//     isFinished: false
+//   },
+//   {
+//     id: 3,
+//     name: "Pauli nõbu",
+//     car: "33",
+//     lapCount: 0,
+//     latestLapTime: null,
+//     fastestLap: null,
+//     isFinished: false
+//   }];
 
   // ajutine laptracker-ui-spetsiifiline täisekraaninupp
     function toggleFullScreen() {
