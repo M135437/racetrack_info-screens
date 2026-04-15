@@ -60,29 +60,12 @@ function removeDriver(sessionId, driverId) {
 }
 
 function updateDriver(sessionId, driverId, name, car) {
-    const session = state.sessions.find(s => s.id === sessionId)
-
-    if (!session) {
-        throw new Error("Session not found")
-    }
-
-    const driver = session.drivers.find(d => d.id === driverId)
-
-    if (!driver) {
-        throw new Error("Driver not found")
-    }
-
-    // update driver info if new values are provided, 
-    // otherwise keep existing values
-    if (typeof name === "string" && name.trim() !== "") {
-        driver.name = name.trim()
-    }
-
-    if (typeof car === "string" && car.trim() !== "") {
-        driver.car = car.trim()
-    }
-
-    return driver
+    return stateMachine.updateDriver(state, {
+        sessionId,
+        driverId,
+        name,
+        car
+    })
 }
 
 

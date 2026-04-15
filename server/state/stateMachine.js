@@ -153,3 +153,28 @@ export function deleteSession(state, { sessionId }) {
 
     return { message: `Session ${sessionId} deleted` }
 }
+
+export function updateDriver(state, { sessionId, driverId, name, car }) {
+
+    const session = state.sessions.find(s => s.id === sessionId)
+
+    if (!session) {
+        throw new Error("Session not found")
+    }
+
+    const driver = session.drivers.find(d => d.id === driverId)
+
+    if (!driver) {
+        throw new Error("Driver not found")
+    }
+
+    if (typeof name === "string" && name.trim() !== "") {
+        driver.name = name.trim()
+    }
+
+    if (typeof car === "string" && car.trim() !== "") {
+        driver.car = car.trim()
+    }
+
+    return driver
+}
