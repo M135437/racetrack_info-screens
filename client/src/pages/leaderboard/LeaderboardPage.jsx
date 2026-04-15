@@ -14,9 +14,9 @@ const Leaderboard = () => {
 
   // sorteerime kiireima ringiaja järgi
   const sortedLeaderboard = [...(leaderboard || [])].sort((a, b) => {
-    if (!a.bestLapTime) return 1;
-    if (!b.bestLapTime) return -1;
-    return a.bestLapTime - b.bestLapTime; // millisekundid — lihtne numbriline sort!
+    if (!a.fastestLap) return 1;
+    if (!b.fastestLap) return -1;
+    return a.fastestLap - b.fastestLap; // millisekundid — lihtne numbriline sort!
   });
 
   return (
@@ -58,14 +58,14 @@ const Leaderboard = () => {
               <span>{racer.car}</span>
               <span>{racer.lapCount}</span>
               <span className={index === 0 ? "best" : ""}>
-                {racer.bestLapTime
-                  ? `${String(Math.floor(racer.bestLapTime / 60000)).padStart(
+                {racer.fastestLap
+                  ? `${String(Math.floor(racer.fastestLap / 60000)).padStart(
                       2,
                       "0"
                     )}:${String(
-                      Math.floor((racer.bestLapTime % 60000) / 1000)
+                      Math.floor((racer.fastestLap % 60000) / 1000)
                     ).padStart(2, "0")}.${String(
-                      racer.bestLapTime % 1000
+                      racer.fastestLap % 1000
                     ).slice(0, 1)}`
                   : "--:--.-"}
               </span>

@@ -152,7 +152,7 @@ const LapTracker = () => {
                 <div key={driver.id} className="lap-tracker-ui">
 
                     <button
-                        onClick={() => handleRecordLap(driver.id)}
+                        onClick={() => recordLap(driver.id)/*handleRecordLap(driver.id)*/}
                         disabled={!isRaceActive || // obsolete?
                             driver.isFinished ||
                             cooldowns.includes(driver.id)}

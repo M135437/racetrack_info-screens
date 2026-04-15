@@ -1,10 +1,13 @@
 import state from "../state/state.js";
+import * as stateMachine from "../state/stateMachine.js";
 
 export const recordLap = (driverId) => {
     // testimiseks:
     console.log(`Server received lap for Driver ID: ${driverId}`);
 
-    const driversList = state.drivers || state.activeSession?.drivers;
+    const activeSession = stateMachine.stateUptStartSession;
+
+    const driversList = activeSession.drivers;
     if (!driversList) {
         console.error("could not find a drivers list inside state object");
         return null;
@@ -13,7 +16,7 @@ export const recordLap = (driverId) => {
     // konkreetse sõitja info saamine find()-ga:
     const driver = driversList.find(d => d.id === driverId);
 
-    const hasStarted = state.hasStarted || state.activeSession?.hasStarted;
+    const hasStarted = state.runningRace;
 
     // errori/puuduliku info käsitlus ja ringiaja salvestamise
     // õiguse valideerimine:
@@ -73,14 +76,3 @@ export const recordLap = (driverId) => {
     driver.lastLapTimestamp = now; // nupuvajutusel uue ajaarvamise alguse määramine
     return driver; // objekti tagastamine
 };
-
-/* testfaasi ajutine taimer:
-// testimiseks ise sandboxi loodud taimer info vahendamine
-export const temporaryTimer = () => {
-    if (mockState.hasStarted && mockState.secondsLeft > 0) {
-        mockState.secondsLeft--;
-        return true; // kui kell liikus, siis tõene (ON sekundeid alles)
-    }
-    return false;
-};
-*/

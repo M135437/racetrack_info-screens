@@ -3,10 +3,9 @@ import EVENTS from "../../../client/src/shared/events.js";
 
 export default (io, socket) => {
 
-    // ühendusprobleemi kontroll:
     console.log("LAP HANDLER TÖÖTAB SOCKETIGA:", socket.id);
 
-    // nupuvajutusel:
+    // nupuvajutusel clienti event:
     socket.on(EVENTS.LAP_UPDATE, (driverId) => {
         const updatedDriver = recordLap(driverId);
 
