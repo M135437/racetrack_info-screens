@@ -121,3 +121,22 @@ export function addDriver(state, { sessionId, driverName, car }) {
 
     return driver
 }
+
+export function removeDriver(state, { sessionId, driverId }) {
+
+    const session = state.sessions.find(s => s.id === sessionId)
+
+    if (!session) {
+        throw new Error("Session not found")
+    }
+
+    const initialLength = session.drivers.length
+
+    session.drivers = session.drivers.filter(d => d.id !== driverId)
+
+    if (session.drivers.length < initialLength) {
+        session.freeSlotsLeft++
+    }
+
+    return { message: "Driver removed" }
+}

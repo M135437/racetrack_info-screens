@@ -52,22 +52,10 @@ function addDriver(sessionId, driverName, car) {
 
 //remove driver from session (not implemented yet, but can be added later when implementing driver management)
 function removeDriver(sessionId, driverId) {
-    const session = state.sessions.find(s => s.id === sessionId) // find session by id
-
-    if (!session) {
-        throw new Error("Session not found")
-    }
-
-    const initialLength = session.drivers.length
-
-    session.drivers = session.drivers.filter(d => d.id !== driverId) // remove driver from session's drivers array 
-    // by filtering out the driver with the given id
-
-    if (session.drivers.length < initialLength) {
-        session.freeSlotsLeft++
-    }
-
-    return { message: "Driver removed" }
+    return stateMachine.removeDriver(state, {
+        sessionId,
+        driverId
+    })
 }
 
 function updateDriver(sessionId, driverId, name, car) {
