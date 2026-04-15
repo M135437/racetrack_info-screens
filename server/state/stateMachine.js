@@ -6,19 +6,19 @@ export function setDuration(RACE_DURATION) {
     state.timer.duration = RACE_DURATION;
 }
 
-    // utility functions to support state update
+// utility functions to support state update
 export function getNextRaceId() {                   // goes through the array state.sessions[]
-  const next = state.sessions.find((session) => {   // and returns the first with status 'notStarted'
-    return  session.status === 'notStarted';
-  });
-  return next ? next.id : null;
+    const next = state.sessions.find((session) => {   // and returns the first with status 'notStarted'
+        return session.status === 'notStarted';
+    });
+    return next ? next.id : null;
 }
 
 function getAllNotStartedRacesId() {           //REVIEW - not in use yet
-  const allNextRaces = state.sessions.filter((session) => {
-    return  session.status === 'notStarted';
-  });
-  return allNextRaces;
+    const allNextRaces = state.sessions.filter((session) => {
+        return session.status === 'notStarted';
+    });
+    return allNextRaces;
 }
 
 export function stateUptNextRaceId(id) {
@@ -31,13 +31,13 @@ export function stateUptStartSession(session) {
         return;
     }
     state.runningRace = session.id;
-        console.log("state.raceMode enne: ",state.raceMode);
+    console.log("state.raceMode enne: ", state.raceMode);
     state.raceMode = RACE_MODES.SAFE;
     session.startTime = Date.now();
     session.status = 'started';
     state.nextRace = getNextRaceId();
     state.leaderboard.push(...session.drivers);
-    console.log("state.raceMode pärast: ",state.raceMode);
+    console.log("state.raceMode pärast: ", state.raceMode);
 }
 
 
@@ -55,4 +55,31 @@ export function stateUptEndSession() {
     state.runningRace = null;
     state.leaderboard = [];
     state.nextRace = getNextRaceId();
+}
+
+export function createSession(state, { name, startTime }) {
+
+    if (!name || name.trim() === "") {
+        throw new Error('Session name is required')
+    }
+
+    if (!startTime) {
+        throw new Error('Start time is required')
+    }
+
+    const session = {
+        id: Date.now(),
+        name: name.trim(),
+        startTime,
+
+        maxSlots: 8,
+        freeSlotsLeft: 8,
+        status: 'notStarted',
+
+        drivers: []
+    }
+
+    state.sessions.push(session)
+
+    return session
 }
