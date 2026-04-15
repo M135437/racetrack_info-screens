@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { socket } from "../../socket/socket"
 import EVENTS from "../../shared/events"
+import "./SessionCard.css"
 
 export default function SessionCard({
     session,
@@ -11,10 +12,8 @@ export default function SessionCard({
     updateInput
 }) {
 
-    //local state to manage edited driver info before sending update to server
     const [editedDrivers, setEditedDrivers] = useState({})
 
-    //field change handler for driver info update (name, car) 
     const updateDriverField = (driverId, field, value) => {
         setEditedDrivers(prev => ({
             ...prev,
@@ -25,7 +24,6 @@ export default function SessionCard({
         }))
     }
 
-    // saving driver updates (name, car) by emitting update event to server
     const saveDriver = (driverId) => {
         const updated = editedDrivers?.[driverId]
         if (!updated) return
@@ -33,7 +31,6 @@ export default function SessionCard({
         const original = session.drivers.find(d => d.id === driverId)
         if (!original) return
 
-        // if no changes were made, do not emit update event to server
         if (
             updated.name === original.name &&
             updated.car === original.car
@@ -45,7 +42,6 @@ export default function SessionCard({
             ...updated
         })
 
-        // clean up editedDrivers state for the driver after saving changes
         setEditedDrivers(prev => {
             const copy = { ...prev }
             delete copy[driverId]
@@ -54,68 +50,77 @@ export default function SessionCard({
     }
 
     return (
-        <div className="card">
+        <div className="session-card">
 
             {/* HEADER */}
-            <div className="card-header">
-                <span>{session.name}</span>
-                <span>{session.startTime}</span>
+            <div className="session-header">
+
+                <div className="session-main">
+                    <div className="session-name">{session.name}</div>
+
+                    <div className="session-field">
+                        <span className="label">Start Planned At:</span>
+                        <span className="value">{session.startTime}</span>
+                    </div>
+                </div>
+
+                <div className="session-side">
+
+                    <div className="session-field">
+                        <span className="label">Free Slots:</span>
+                        <span className="value">
+                            {session.freeSlotsLeft} / {session.maxSlots}
+                        </span>
+                    </div>
+
+                    <div className="session-field">
+                        <span className="label">Status:</span>
+                        <span className={`session-status ${session.status}`}>
+                            {session.status}
+                        </span>
+                    </div>
+
+                </div>
+
             </div>
 
             {/* DRIVERS */}
-            <div className="drivers">
+            <div className="driver-list">
 
-                {/* columns */}
                 <div className="drivers-header">
-                    <span className="col name">Name</span>
-                    <span className="col car">Car</span>
-                    <span className="col action"></span>
+                    <div className="col">NAME</div>
+                    <div className="col">CAR</div>
+                    <div className="col"></div>
                 </div>
 
-                {/* rows */}
                 {session.drivers?.map(d => (
                     <div key={d.id} className="driver-row">
 
                         <input
-                            className="col name"
+                            className="col"
                             value={editedDrivers?.[d.id]?.name ?? d.name}
                             onChange={(e) =>
                                 updateDriverField(d.id, "name", e.target.value)
                             }
                             onBlur={() => saveDriver(d.id)}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                    e.preventDefault()
-                                    saveDriver(d.id)
-                                    e.target.blur()
-                                }
-                            }}
                         />
 
                         <input
-                            className="col car"
+                            className="col"
                             value={editedDrivers?.[d.id]?.car ?? d.car}
                             onChange={(e) =>
                                 updateDriverField(d.id, "car", e.target.value)
                             }
                             onBlur={() => saveDriver(d.id)}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                    e.preventDefault()
-                                    saveDriver(d.id)
-                                    e.target.blur()
-                                }
-                            }}
                         />
 
-                        {onRemoveDriver && (
-                            <button
-                                className="col action delete-driver"
-                                onClick={() => onRemoveDriver(session.id, d.id)}
-                            >
-                                ❌
-                            </button>
-                        )}
+                        <button
+                            className="col delete-driver"
+                            onClick={() => onRemoveDriver(session.id, d.id)}
+                        >
+                            ❌
+                        </button>
+
                     </div>
                 ))}
 
@@ -131,7 +136,6 @@ export default function SessionCard({
                     }}
                 >
                     <input
-                        className="col name"
                         value={input.name ?? ""}
                         onChange={(e) =>
                             updateInput(session.id, "name", e.target.value)
@@ -140,7 +144,6 @@ export default function SessionCard({
                     />
 
                     <input
-                        className="col car"
                         value={input.car ?? ""}
                         onChange={(e) =>
                             updateInput(session.id, "car", e.target.value)
@@ -148,11 +151,7 @@ export default function SessionCard({
                         placeholder="Car"
                     />
 
-                    <button
-                        type="submit"
-                        className="col action add-btn"
-                        disabled={!input.name?.trim()}
-                    >
+                    <button type="submit" className="add-btn">
                         Add
                     </button>
                 </form>
