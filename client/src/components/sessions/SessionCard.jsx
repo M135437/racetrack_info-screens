@@ -1,6 +1,4 @@
 import { useState } from "react"
-import { socket } from "../../socket/socket"
-import EVENTS from "../../shared/events"
 import "./SessionCard.css"
 
 export default function SessionCard({
@@ -8,9 +6,11 @@ export default function SessionCard({
     onDelete,
     onAddDriver,
     onRemoveDriver,
-    input = {},
-    updateInput
+    onUpdateDriver
 }) {
+
+    const [driverName, setDriverName] = useState("")
+    const [car, setCar] = useState("")
 
     const [editedDrivers, setEditedDrivers] = useState({})
 
@@ -36,11 +36,7 @@ export default function SessionCard({
             updated.car === original.car
         ) return
 
-        socket.emit(EVENTS.DRIVER_UPDATE, {
-            sessionId: session.id,
-            driverId,
-            ...updated
-        })
+        onUpdateDriver(session.id, driverId, updated)
 
         setEditedDrivers(prev => {
             const copy = { ...prev }
@@ -132,22 +128,23 @@ export default function SessionCard({
                     className="add-driver"
                     onSubmit={(e) => {
                         e.preventDefault()
-                        onAddDriver(session.id)
+                        if (!driverName.trim()) return
+
+                        onAddDriver(session.id, driverName, car)
+
+                        setDriverName("")
+                        setCar("")
                     }}
                 >
                     <input
-                        value={input.name ?? ""}
-                        onChange={(e) =>
-                            updateInput(session.id, "name", e.target.value)
-                        }
+                        value={driverName}
+                        onChange={(e) => setDriverName(e.target.value)}
                         placeholder="Driver name"
                     />
 
                     <input
-                        value={input.car ?? ""}
-                        onChange={(e) =>
-                            updateInput(session.id, "car", e.target.value)
-                        }
+                        value={car}
+                        onChange={(e) => setCar(e.target.value)}
                         placeholder="Car"
                     />
 

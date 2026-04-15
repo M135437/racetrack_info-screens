@@ -7,7 +7,6 @@ import SessionCard from "../../components/sessions/SessionCard"
 
 export default function FrontDesk() {
     const [sessions, setSessions] = useState([])
-    const [inputs, setInputs] = useState({})
     const [name, setName] = useState("")
     const [startTime, setStartTime] = useState("")
 
@@ -25,7 +24,7 @@ export default function FrontDesk() {
         }
     }, [])
 
-    // SESSION
+    // CREATE SESSION
     const createSession = () => {
         if (!name.trim() || !startTime) return
 
@@ -38,48 +37,44 @@ export default function FrontDesk() {
         setStartTime("")
     }
 
+    // DELETE SESSION
     const deleteSession = (id) => {
         socket.emit(EVENTS.SESSION_DELETE, { id })
     }
 
-    // INPUT
-    const updateInput = (sessionId, field, value) => {
-        setInputs(prev => ({
-            ...prev,
-            [sessionId]: {
-                ...(prev[sessionId] || {}),
-                [field]: value
-            }
-        }))
-    }
-
-    // DRIVER
-    const addDriver = (sessionId) => {
-        const data = inputs[sessionId] || {}
-        if (!data.name?.trim()) return
+    // ADD DRIVER
+    const addDriver = (sessionId, name, car) => {
+        if (!name?.trim()) return
 
         socket.emit(EVENTS.DRIVER_ADD, {
             sessionId,
-            name: data.name,
-            car: data.car
-        })
-
-        setInputs(prev => {
-            const copy = { ...prev }
-            delete copy[sessionId]
-            return copy
+            name,
+            car
         })
     }
 
+    // UPDATE DRIVER
+    const updateDriver = (sessionId, driverId, updated) => {
+        socket.emit(EVENTS.DRIVER_UPDATE, {
+            sessionId,
+            driverId,
+            ...updated
+        })
+    }
+
+    // REMOVE DRIVER
     const removeDriver = (sessionId, driverId) => {
-        socket.emit(EVENTS.DRIVER_REMOVE, { sessionId, driverId })
+        socket.emit(EVENTS.DRIVER_REMOVE, {
+            sessionId,
+            driverId
+        })
     }
 
     return (
         <div className="container">
             <h1>Front Desk</h1>
 
-            {/* CREATE */}
+            {/* CREATE SESSION */}
             <form
                 className="create"
                 onSubmit={(e) => {
@@ -104,7 +99,7 @@ export default function FrontDesk() {
                 </button>
             </form>
 
-            {/* LIST */}
+            {/* SESSIONS LIST */}
             <div className="sessions">
                 {sessions.map(s => (
                     <SessionCard
@@ -113,8 +108,7 @@ export default function FrontDesk() {
                         onDelete={deleteSession}
                         onAddDriver={addDriver}
                         onRemoveDriver={removeDriver}
-                        input={inputs[s.id] || {}}
-                        updateInput={updateInput}
+                        onUpdateDriver={updateDriver}
                     />
                 ))}
             </div>
