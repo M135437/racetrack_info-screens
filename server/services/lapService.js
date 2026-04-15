@@ -1,68 +1,9 @@
-// NB! esialgu jätan õpikommentaarid sisse, aga enne main-i
-// merge-i võtan maha (mul on nii lihtsam õppida)
-
-/* tõstan siia vanast versioonist üle nupuloogika, mille alusel
-toimis jooneületuse loogika:
-- ajaarvestus algab esmaületuse ehk esmase nupuvajutusega
-- praegu puudub nupul mõju, kui sõitjal on isFinished tõene
-või taimeril hasStarted väär (pean küsima state-info
-nime/vormingut)
-NB! ei kopeeri emit-e, sest see töö kuulub socket handleri alla!
-service-failid jätkuvalt PUHAS LOOGIKA!
-*/
-
-// NB! lisa hiljem nupule cooldown (et ei saaks u kogemata kohe
-// uuesti vajutada! keegi neist ei tee kogu ringi stiilis 10 sek-ga)
-
-
-// -> IMPORT
 import state from "../state/state.js";
 
-// NB! tehtud muudatus, kus:
-// võistlus ise -> session
-// racer -> driver
-
-/* TESTFAASI liba-andmed
-// test-andmed
-let mockState = {
-    hasStarted: false,
-    secondsLeft: 60,
-    raceStartTime: null,
-    racers: [
-        { id: 1, name: "racer 1", car: "1", lapCount: 0, latestLapTime: null, fastestLap: null, lastLapTimestamp: null, isFinished: false },
-        { id: 2, name: "racer 2", car: "2", lapCount: 0, latestLapTime: null, fastestLap: null, lastLapTimestamp: null, isFinished: false },
-        { id: 3, name: "racer 3", car: "3", lapCount: 0, latestLapTime: null, fastestLap: null, lastLapTimestamp: null, isFinished: false },
-        { id: 4, name: "racer 4", car: "4", lapCount: 0, latestLapTime: null, fastestLap: null, lastLapTimestamp: null, isFinished: false },
-        { id: 5, name: "racer 5", car: "5", lapCount: 0, latestLapTime: null, fastestLap: null, lastLapTimestamp: null, isFinished: false },
-        { id: 6, name: "racer 6", car: "6", lapCount: 0, latestLapTime: null, fastestLap: null, lastLapTimestamp: null, isFinished: false },
-        { id: 7, name: "racer 7", car: "7", lapCount: 0, latestLapTime: null, fastestLap: null, lastLapTimestamp: null, isFinished: false },
-        { id: 8, name: "racer 8", car: "8", lapCount: 0, latestLapTime: null, fastestLap: null, lastLapTimestamp: null, isFinished: false }
-    ],
-    status: "safe"
-};
-*/
-
-/* TESTFAASI KÄIVITI:
-// helper mock-state sisu edastamiseks:
-export const getMockState = () => mockState;
-
-// helper testsõidu "alustamiseks":
-export const startMockRace = () => {
-    mockState.hasStarted = true;
-    mockState.raceStartTime = Date.now();
-    // igaks juhuks konsooliteavitus ka:
-    console.log("Mock-race started!");
-}
-*/
-
-// kogu süsteemile ekspordi abil kättesaadavaks
-// -> NUPUVAJUTUSE LOOGIKA
 export const recordLap = (driverId) => {
     // testimiseks:
     console.log(`Server received lap for Driver ID: ${driverId}`);
 
-    // nii nagu .jsx-is, loon ka siin const-i, mis lubaks kasutada nii ühe
-    // kui mitmekordset nestimist (activeSession):
     const driversList = state.drivers || state.activeSession?.drivers;
     if (!driversList) {
         console.error("could not find a drivers list inside state object");
@@ -71,10 +12,7 @@ export const recordLap = (driverId) => {
 
     // konkreetse sõitja info saamine find()-ga:
     const driver = driversList.find(d => d.id === driverId);
-    // kui tahta leida otse id-alusel (nb!indeksid!!), siis:
-    // const racer = racers[racerId];
 
-    // topeltkontroll algusstaatuse osas:
     const hasStarted = state.hasStarted || state.activeSession?.hasStarted;
 
     // errori/puuduliku info käsitlus ja ringiaja salvestamise
