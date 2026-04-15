@@ -51,21 +51,21 @@ const Leaderboard = () => {
             <span>--:--.-</span>
           </div>
         ) : (
-          sortedLeaderboard.map((racer, index) => (
-            <div className="table-row" key={racer.id || index}>
+          sortedLeaderboard.map((driver, index) => (
+            <div className="table-row" key={driver.id || index}>
               <span>{index + 1}</span>
-              <span>{racer.name}</span>
-              <span>{racer.car}</span>
-              <span>{racer.lapCount}</span>
+              <span>{driver.name}</span>
+              <span>{driver.car}</span>
+              <span>{driver.lapCount}</span>
               <span className={index === 0 ? "best" : ""}>
-                {racer.fastestLap
-                  ? `${String(Math.floor(racer.fastestLap / 60000)).padStart(
+                {driver.fastestLap
+                  ? `${String(Math.floor(driver.fastestLap / 60000)).padStart(
                       2,
                       "0"
                     )}:${String(
-                      Math.floor((racer.fastestLap % 60000) / 1000)
+                      Math.floor((driver.fastestLap % 60000) / 1000)
                     ).padStart(2, "0")}.${String(
-                      racer.fastestLap % 1000
+                      driver.fastestLap % 1000
                     ).slice(0, 1)}`
                   : "--:--.-"}
               </span>

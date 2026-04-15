@@ -1,13 +1,18 @@
 import state from "../state/state.js";
-import * as stateMachine from "../state/stateMachine.js";
 
 export const recordLap = (driverId) => {
     // testimiseks:
     console.log(`Server received lap for Driver ID: ${driverId}`);
 
-    const activeSession = stateMachine.stateUptStartSession;
+    const activeSession = state.sessions.find(s => s.id === state.runningRace);
+    
+    
+    if (!activeSession) {
+        console.error("no active session found for ID: ", state.runningRace);
+    }
 
     const driversList = activeSession.drivers;
+
     if (!driversList) {
         console.error("could not find a drivers list inside state object");
         return null;
@@ -28,7 +33,7 @@ export const recordLap = (driverId) => {
     // sõitjaga, et ühe sõitja finallap ei lukustaks KÕIKIDE lap-nuppe)
 
     // mitmikkontrolliga taimeriinfo:
-    const secondsLeft = state.secondsLeft ?? state.timer?.secondsLeft ?? 0;
+    const secondsLeft = state.timer.timeRemaining || 0;
     // (?? puhul vastavalt tingimusele märkidest vasak- v parempoolne väärtus)
     
     // vana: const secondsLeft = state.secondsLeft; // <- TAIMERI INFO 

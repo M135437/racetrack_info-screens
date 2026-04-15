@@ -3,7 +3,6 @@ import EVENTS from "../../shared/events.js"
 import { socket } from "../../socket/socket";
 // useRef on nuppude cooldown tarbeks
 
-// HOOK saamaks taimeri-stopperi infot (lb saab sealt ka stopperi kuva)
 import { useRaceState } from "../../hooks/useRaceState";
 import "./LapTracker.css";
 
@@ -164,7 +163,7 @@ const LapTracker = () => {
                     >
                         {driver.isFinished ? `${driver.car} FINISHED` : `car ${driver.car} | `}
                         {/* nupud peavad kuvama SÕIDUKI NR, mitte sõitja nime */}
-                        <span>Laps: {driver.lapCount} | Last time: {formatLapDisplay(driver.latestLapTime / 1000)} | Best: {formatLapDisplay(driver.fastestLap / 1000) || "--"}
+                        <span>Laps: {driver.lapCount} | Last time: {formatLapDisplay(driver.latestLapTime)} | Best: {formatLapDisplay(driver.fastestLap) || "--"}
                         </span>
                     </button>
                 </div>
