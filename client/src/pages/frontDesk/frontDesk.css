@@ -1,150 +1,34 @@
-/*base*/
-body {
-    background: #0f0f1a;
-    color: white;
-    font-family: sans-serif;
+/* layout */
+.frontdesk-container {
+    height: 100vh;
+    width: 100vw;
+    background-color: #1e2f3f;
+    color: #ffffff;
+    font-family: 'Arial Black', sans-serif;
+    padding: 40px;
+    box-sizing: border-box;
 }
 
-input {
-    padding: 6px;
-    border-radius: 6px;
-    border: 1px solid #444;
-    background: #111;
-    color: white;
-}
-
-button {
-    padding: 6px 10px;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-}
-
-
-/*layout*/
-.container {
-    padding: 20px;
-}
-
-.create {
-    margin-bottom: 20px;
+.frontdesk-header {
     display: flex;
-    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 4px solid #ffde00;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
 }
 
+/* session cards list */
 .sessions {
     display: flex;
     flex-direction: column;
     gap: 14px;
 }
 
-
-/* card */
-.card {
-    background: #1e1e2f;
-    border: 1px solid #333;
-    border-radius: 10px;
-    padding: 16px;
-}
-
-.card-header {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-
-/*table flex version*/
-
-.drivers,
-.drivers-header,
-.driver-row,
-.add-driver {
+/* create section */
+.create {
+    margin-bottom: 20px;
     display: flex;
-    align-items: center;
     gap: 10px;
-}
-
-/*column base*/
-.col {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-
-/*NAME*/
-.col.name {
-    flex: 1;
-    min-width: 0;
-}
-
-/*CAR*/
-.col.car {
-    width: 120px;
-    flex-shrink: 0;
-}
-
-/*ACTION*/
-.col.action {
-    width: 60px;
-    flex-shrink: 0;
-    text-align: right;
-}
-
-
-/*header*/
-.drivers-header {
-    border-bottom: 1px solid #555;
-    padding-bottom: 6px;
-    margin-bottom: 6px;
-
-    color: #aaa;
-    font-size: 12px;
-    text-transform: uppercase;
-}
-
-
-/*row*/
-.driver-row {
-    padding: 6px 0;
-    border-bottom: 1px solid #333;
-}
-
-.driver-row:hover {
-    background: rgba(255, 255, 255, 0.05);
-}
-
-
-/*buttons*/
-.delete-driver {
-    background: transparent;
-    color: #ff4d4f;
-    font-size: 16px;
-}
-
-.delete-driver:hover {
-    color: #ff7875;
-}
-
-.add-btn {
-    background: #1890ff;
-    color: white;
-}
-
-.add-btn:hover {
-    background: #40a9ff;
-}
-
-
-/*delete session*/
-.delete-session {
-    margin-top: 12px;
-    background: #ff4d4f;
-    color: white;
-    display: block;
-    margin-left: auto;
-}
-
-.delete-session:hover {
-    background: #ff7875;
+    justify-content: center;
 }
