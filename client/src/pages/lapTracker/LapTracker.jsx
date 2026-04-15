@@ -110,22 +110,22 @@ const LapTracker = () => {
             ) : (
                 <div className="cars-grid">
                     {/* nb! lisa ka vastav klass css-i, ühes display:flex-iga!! */}
-                    {cars.map((driver) => (
-                        <div key={driver.id} className="lap-tracker-ui">
+                    {cars.map((car) => (
+                        <div key={car.id} className="lap-tracker-ui">
 
                             <button
-                                onClick={() => handleRecordLap(driver.id)/*handleRecordLap(driver.id)*/}
+                                onClick={() => handleRecordLap(car.id)/*handleRecordLap(car.id)*/}
                                 disabled={!isRaceActive || // obsolete?
-                                    driver.isFinished ||
-                                    cooldowns.includes(driver.id)}
+                                    car.isFinished ||
+                                    cooldowns.includes(car.id)}
 
                                 className={`lap-button ${!isRaceActive ||
-                                    driver.isFinished ||
-                                    cooldowns.includes(driver.id) ? "disabled" : "active"}`}
+                                    car.isFinished ||
+                                    cooldowns.includes(car.id) ? "disabled" : "active"}`}
                             >
-                                {driver.isFinished ? `${driver.car} FINISHED` : `car ${driver.car} | `}
+                                {car.isFinished ? `${car.car} FINISHED` : `car ${car.car} | `}
                                 {/* nupud peavad kuvama SÕIDUKI NR, mitte sõitja nime */}
-                                <span>Laps: {driver.lapCount} | Last time: {formatLapDisplay(driver.latestLapTime)} | Best: {formatLapDisplay(driver.fastestLap) || "--"}
+                                <span>Laps: {car.lapCount} | Last time: {formatLapDisplay(car.latestLapTime)} | Best: {formatLapDisplay(car.fastestLap) || "--"}
                                 </span>
                             </button>
                         </div>
