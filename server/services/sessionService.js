@@ -42,41 +42,11 @@ function deleteSession(id) {
 
 //ADD driver to session (not implemented yet, but can be added later when implementing driver management)
 function addDriver(sessionId, driverName, car) {
-    const session = state.sessions.find(s => s.id === sessionId) //
-
-    if (!session) {
-        throw new Error("Session not found")
-    }
-
-    if (session.freeSlotsLeft <= 0) {
-        throw new Error("No free slots left")
-    }
-
-    if (!driverName || driverName.trim() === "") {
-        throw new Error("Driver name is required")
-    }
-
-    // prevent adding drivers with duplicate names in the same session, can be improved to allow duplicates if needed, but for now it will just throw an error if a driver with the same name already exists in the session
-    if (session.drivers.some(d => d.name === driverName)) {
-        throw new Error("Driver with this name already exists")
-    }
-
-    const driver = {
-        id: Date.now(), // simple unique id generator, can be improved to use a better method for generating unique ids
-        name: driverName,
-        car: car || "—",
-        lastLapTimestamp: null,
-        lapCount: null,
-        latestLapTime: null,
-        currentLap: null,
-        fastestLap: null,
-        isFinished: false
-    }
-
-    session.drivers.push(driver) // add driver to session's drivers array
-    session.freeSlotsLeft-- // decrease free slots left by 1
-
-    return driver
+    return stateMachine.addDriver(state, {
+        sessionId,
+        driverName,
+        car
+    })
 }
 
 

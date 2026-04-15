@@ -83,3 +83,41 @@ export function createSession(state, { name, startTime }) {
 
     return session
 }
+
+export function addDriver(state, { sessionId, driverName, car }) {
+
+    const session = state.sessions.find(s => s.id === sessionId)
+
+    if (!session) {
+        throw new Error("Session not found")
+    }
+
+    if (session.freeSlotsLeft <= 0) {
+        throw new Error("No free slots left")
+    }
+
+    if (!driverName || driverName.trim() === "") {
+        throw new Error("Driver name is required")
+    }
+
+    if (session.drivers.some(d => d.name === driverName)) {
+        throw new Error("Driver with this name already exists")
+    }
+
+    const driver = {
+        id: Date.now(),
+        name: driverName.trim(),
+        car: car || "—",
+        lastLapTimestamp: null,
+        lapCount: null,
+        latestLapTime: null,
+        currentLap: null,
+        fastestLap: null,
+        isFinished: false
+    }
+
+    session.drivers.push(driver)
+    session.freeSlotsLeft--
+
+    return driver
+}
