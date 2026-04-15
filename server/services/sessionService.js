@@ -41,30 +41,27 @@ function deleteSession(id) {
 }
 
 
-//ADD driver to session (not implemented yet, but can be added later when implementing driver management)
-function addDriver(sessionId, driverName, car) {
-    return stateMachine.addDriver(state, {
+//CARS (ex-drivers) management
+function addCar(sessionId, name, car) {
+    return stateMachine.addCar(state, {
         sessionId,
-        driverName,
-        car
-    })
-}
-
-
-//remove driver from session (not implemented yet, but can be added later when implementing driver management)
-function removeDriver(sessionId, driverId) {
-    return stateMachine.removeDriver(state, {
-        sessionId,
-        driverId
-    })
-}
-
-function updateDriver(sessionId, driverId, name, car) {
-    return stateMachine.updateDriver(state, {
-        sessionId,
-        driverId,
         name,
         car
+    })
+}
+
+function removeCar(sessionId, carId) {
+    return stateMachine.removeCar(state, {
+        sessionId,
+        carId
+    })
+}
+
+function updateCar(sessionId, carId, updates) {
+    return stateMachine.updateCar(state, {
+        sessionId,
+        carId,
+        ...updates
     })
 }
 
@@ -75,7 +72,7 @@ export {
     getAllSessions,
     createSession,
     deleteSession,
-    addDriver,
-    removeDriver,
-    updateDriver
+    addCar,
+    removeCar,
+    updateCar
 }

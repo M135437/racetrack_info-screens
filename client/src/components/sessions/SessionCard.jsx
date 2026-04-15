@@ -4,31 +4,33 @@ import "./SessionCard.css"
 export default function SessionCard({
     session,
     onDelete,
-    onAddDriver,
-    onRemoveDriver,
-    onUpdateDriver
+    onAddCar,
+    onRemoveCar,
+    onUpdateCar
 }) {
 
-    const [driverName, setDriverName] = useState("")
+    // локальный state для добавления машины
+    const [name, setName] = useState("")
     const [car, setCar] = useState("")
 
-    const [editedDrivers, setEditedDrivers] = useState({})
+    // локальный state для редактирования
+    const [editedCars, setEditedCars] = useState({})
 
-    const updateDriverField = (driverId, field, value) => {
-        setEditedDrivers(prev => ({
+    const updateCarField = (carId, field, value) => {
+        setEditedCars(prev => ({
             ...prev,
-            [driverId]: {
-                ...prev[driverId],
+            [carId]: {
+                ...prev[carId],
                 [field]: value
             }
         }))
     }
 
-    const saveDriver = (driverId) => {
-        const updated = editedDrivers?.[driverId]
+    const saveCar = (carId) => {
+        const updated = editedCars?.[carId]
         if (!updated) return
 
-        const original = session.drivers.find(d => d.id === driverId)
+        const original = session.cars.find(c => c.id === carId)
         if (!original) return
 
         if (
@@ -36,11 +38,11 @@ export default function SessionCard({
             updated.car === original.car
         ) return
 
-        onUpdateDriver(session.id, driverId, updated)
+        onUpdateCar(session.id, carId, updated)
 
-        setEditedDrivers(prev => {
+        setEditedCars(prev => {
             const copy = { ...prev }
-            delete copy[driverId]
+            delete copy[carId]
             return copy
         })
     }
@@ -80,7 +82,7 @@ export default function SessionCard({
 
             </div>
 
-            {/* DRIVERS */}
+            {/* CARS */}
             <div className="driver-list">
 
                 <div className="drivers-header">
@@ -89,30 +91,30 @@ export default function SessionCard({
                     <div className="col"></div>
                 </div>
 
-                {session.drivers?.map(d => (
-                    <div key={d.id} className="driver-row">
+                {session.cars?.map(c => (
+                    <div key={c.id} className="driver-row">
 
                         <input
                             className="col"
-                            value={editedDrivers?.[d.id]?.name ?? d.name}
+                            value={editedCars?.[c.id]?.name ?? c.name}
                             onChange={(e) =>
-                                updateDriverField(d.id, "name", e.target.value)
+                                updateCarField(c.id, "name", e.target.value)
                             }
-                            onBlur={() => saveDriver(d.id)}
+                            onBlur={() => saveCar(c.id)}
                         />
 
                         <input
                             className="col"
-                            value={editedDrivers?.[d.id]?.car ?? d.car}
+                            value={editedCars?.[c.id]?.car ?? c.car}
                             onChange={(e) =>
-                                updateDriverField(d.id, "car", e.target.value)
+                                updateCarField(c.id, "car", e.target.value)
                             }
-                            onBlur={() => saveDriver(d.id)}
+                            onBlur={() => saveCar(c.id)}
                         />
 
                         <button
                             className="col delete-driver"
-                            onClick={() => onRemoveDriver(session.id, d.id)}
+                            onClick={() => onRemoveCar(session.id, c.id)}
                         >
                             ❌
                         </button>
@@ -122,23 +124,23 @@ export default function SessionCard({
 
             </div>
 
-            {/* ADD DRIVER */}
-            {onAddDriver && (
+            {/* ADD CAR */}
+            {onAddCar && (
                 <form
                     className="add-driver"
                     onSubmit={(e) => {
                         e.preventDefault()
-                        if (!driverName.trim()) return
+                        if (!name.trim()) return
 
-                        onAddDriver(session.id, driverName, car)
+                        onAddCar(session.id, name, car)
 
-                        setDriverName("")
+                        setName("")
                         setCar("")
                     }}
                 >
                     <input
-                        value={driverName}
-                        onChange={(e) => setDriverName(e.target.value)}
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
                         placeholder="Driver name"
                     />
 

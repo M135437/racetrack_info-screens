@@ -9,9 +9,9 @@ const EVENTS = {
     SESSION_FINISH: "session:finish",     // race control asks to set finish flag (state.raceMode.finish) and finishes race (state.races.${id} -> status:'finished')
     SESSION_END: "session:endSession",    // race control asks to end session
 
-    DRIVER_ADD: "driver:add",
-    DRIVER_REMOVE: "driver:remove",
-    DRIVER_UPDATE: "driver:update",   // for future use, in case we want to update driver info (name, car) without having to delete and re-add them
+    CAR_ADD: "car:add",
+    CAR_REMOVE: "car:remove",
+    CAR_UPDATE: "car:update",   // for future use, in case we want to update car info (name, model) without having to delete and re-add them
 
     LAP_INIT: "lap:init",                 // lap tracker initialization ||REVIEW - needed during dev for laptracker test
     LAP_UPDATE: "lap:update",             // lap tracker asks to update lap time

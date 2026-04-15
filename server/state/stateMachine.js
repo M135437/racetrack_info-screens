@@ -36,12 +36,12 @@ export function stateUptStartSession(session) {
     session.startTime = Date.now();
     session.status = 'started';
     state.nextRace = getNextRaceId();
-    state.leaderboard.push(...session.drivers);
+    state.leaderboard.push(...session.cars);
     console.log("state.raceMode pärast: ", state.raceMode);
 }
 
 
-
+// RACE MANAGEMENT
 export function stateUptChangeMode(mode) {
     state.raceMode = mode;
 }
@@ -57,6 +57,8 @@ export function stateUptEndSession() {
     state.nextRace = getNextRaceId();
 }
 
+
+//SESSION MANAGEMENT
 export function createSession(state, { name, startTime }) {
 
     if (!name || name.trim() === "") {
@@ -76,69 +78,12 @@ export function createSession(state, { name, startTime }) {
         freeSlotsLeft: 8,
         status: 'notStarted',
 
-        drivers: []
+        cars: [] // ✅ уже cars
     }
 
     state.sessions.push(session)
 
     return session
-}
-
-export function addDriver(state, { sessionId, driverName, car }) {
-
-    const session = state.sessions.find(s => s.id === sessionId)
-
-    if (!session) {
-        throw new Error("Session not found")
-    }
-
-    if (session.freeSlotsLeft <= 0) {
-        throw new Error("No free slots left")
-    }
-
-    if (!driverName || driverName.trim() === "") {
-        throw new Error("Driver name is required")
-    }
-
-    if (session.drivers.some(d => d.name === driverName)) {
-        throw new Error("Driver with this name already exists")
-    }
-
-    const driver = {
-        id: Date.now(),
-        name: driverName.trim(),
-        car: car || "—",
-        lastLapTimestamp: null,
-        lapCount: null,
-        latestLapTime: null,
-        currentLap: null,
-        fastestLap: null,
-        isFinished: false
-    }
-
-    session.drivers.push(driver)
-    session.freeSlotsLeft--
-
-    return driver
-}
-
-export function removeDriver(state, { sessionId, driverId }) {
-
-    const session = state.sessions.find(s => s.id === sessionId)
-
-    if (!session) {
-        throw new Error("Session not found")
-    }
-
-    const initialLength = session.drivers.length
-
-    session.drivers = session.drivers.filter(d => d.id !== driverId)
-
-    if (session.drivers.length < initialLength) {
-        session.freeSlotsLeft++
-    }
-
-    return { message: "Driver removed" }
 }
 
 export function deleteSession(state, { sessionId }) {
@@ -154,27 +99,72 @@ export function deleteSession(state, { sessionId }) {
     return { message: `Session ${sessionId} deleted` }
 }
 
-export function updateDriver(state, { sessionId, driverId, name, car }) {
+// =========================
+// CARS (бывшие drivers)
+// =========================
+
+export function addCar(state, { sessionId, name, car }) {
 
     const session = state.sessions.find(s => s.id === sessionId)
 
-    if (!session) {
-        throw new Error("Session not found")
+    if (!session) throw new Error("Session not found")
+    if (session.freeSlotsLeft <= 0) throw new Error("No free slots left")
+    if (!name || name.trim() === "") throw new Error("Name is required")
+
+    if (session.cars.some(c => c.name === name)) {
+        throw new Error("Car with this driver already exists")
     }
 
-    const driver = session.drivers.find(d => d.id === driverId)
+    const newCar = {
+        id: Date.now(),
+        name: name.trim(),
+        car: car || "—",
 
-    if (!driver) {
-        throw new Error("Driver not found")
+        lastLapTimestamp: null,
+        lapCount: null,
+        latestLapTime: null,
+        currentLap: null,
+        fastestLap: null,
+        isFinished: false
     }
 
-    if (typeof name === "string" && name.trim() !== "") {
-        driver.name = name.trim()
+    session.cars.push(newCar)
+    session.freeSlotsLeft--
+
+    return newCar
+}
+
+export function removeCar(state, { sessionId, carId }) {
+
+    const session = state.sessions.find(s => s.id === sessionId)
+
+    if (!session) throw new Error("Session not found")
+
+    const initialLength = session.cars.length
+
+    session.cars = session.cars.filter(c => c.id !== carId)
+
+    if (session.cars.length < initialLength) {
+        session.freeSlotsLeft++
     }
 
-    if (typeof car === "string" && car.trim() !== "") {
-        driver.car = car.trim()
-    }
+    return { message: "Car removed" }
+}
 
-    return driver
+export function updateCar(state, { sessionId, carId, ...updates }) {
+
+    const session = state.sessions.find(s => s.id === sessionId)
+    if (!session) throw new Error("Session not found")
+
+    const target = session.cars.find(c => c.id === carId)
+    if (!target) throw new Error("Car not found")
+
+    // update only provided fields
+    Object.entries(updates).forEach(([key, value]) => {
+        if (value !== undefined) {
+            target[key] = value
+        }
+    })
+
+    return target
 }

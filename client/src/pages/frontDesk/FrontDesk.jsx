@@ -42,31 +42,31 @@ export default function FrontDesk() {
         socket.emit(EVENTS.SESSION_DELETE, { id })
     }
 
-    // ADD DRIVER
-    const addDriver = (sessionId, name, car) => {
+    // ADD CAR
+    const addCar = (sessionId, name, car) => {
         if (!name?.trim()) return
 
-        socket.emit(EVENTS.DRIVER_ADD, {
+        socket.emit(EVENTS.CAR_ADD, {
             sessionId,
             name,
             car
         })
     }
 
-    // UPDATE DRIVER
-    const updateDriver = (sessionId, driverId, updated) => {
-        socket.emit(EVENTS.DRIVER_UPDATE, {
+    // UPDATE CAR
+    const updateCar = (sessionId, carId, updated) => {
+        socket.emit(EVENTS.CAR_UPDATE, {
             sessionId,
-            driverId,
+            carId,
             ...updated
         })
     }
 
-    // REMOVE DRIVER
-    const removeDriver = (sessionId, driverId) => {
-        socket.emit(EVENTS.DRIVER_REMOVE, {
+    // REMOVE CAR
+    const removeCar = (sessionId, carId) => {
+        socket.emit(EVENTS.CAR_REMOVE, {
             sessionId,
-            driverId
+            carId
         })
     }
 
@@ -106,9 +106,9 @@ export default function FrontDesk() {
                         key={s.id}
                         session={s}
                         onDelete={deleteSession}
-                        onAddDriver={addDriver}
-                        onRemoveDriver={removeDriver}
-                        onUpdateDriver={updateDriver}
+                        onAddCar={addCar}
+                        onRemoveCar={removeCar}
+                        onUpdateCar={updateCar}
                     />
                 ))}
             </div>

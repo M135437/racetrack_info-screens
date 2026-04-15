@@ -1,12 +1,12 @@
 import state from "../state/state.js";
 
-export const recordLap = (driverId) => {
+export const recordLap = (carId) => {
     // testimiseks:
-    console.log(`Server received lap for Driver ID: ${driverId}`);
+    console.log(`Server received lap for Driver ID: ${carId}`);
 
     const activeSession = state.sessions.find(s => s.id === state.runningRace);
-    
-    
+
+
     if (!activeSession) {
         console.error("no active session found for ID: ", state.runningRace);
     }
@@ -19,7 +19,7 @@ export const recordLap = (driverId) => {
     }
 
     // konkreetse sõitja info saamine find()-ga:
-    const driver = driversList.find(d => d.id === driverId);
+    const driver = driversList.find(d => d.id === carId);
 
     const hasStarted = state.runningRace;
 
@@ -35,7 +35,7 @@ export const recordLap = (driverId) => {
     // mitmikkontrolliga taimeriinfo:
     const secondsLeft = state.timer.timeRemaining || 0;
     // (?? puhul vastavalt tingimusele märkidest vasak- v parempoolne väärtus)
-    
+
     // vana: const secondsLeft = state.secondsLeft; // <- TAIMERI INFO 
     const now = Date.now(); // <- STOPPERI ALGPUNKT, aja arvutamiseks
 
@@ -72,7 +72,7 @@ export const recordLap = (driverId) => {
     // -> FINISH-MODE MÕJU NUPULE (hetkel taimeripõhine):
     // joonenupul pole mõju, kui pole sõit alanud v juba viimane ring sooritatud
     if (secondsLeft <= 0 || state.raceMode === "finish") { // pean mihkli kontrollpaneeli ootama - kas "finish"
-    // nullib taimeri ja/või muudab raceMode-i?
+        // nullib taimeri ja/või muudab raceMode-i?
         driver.isFinished = true;
         // kui on sekundid nullis ja vajutatakse nuppu,
         // siis seejärel saab isFinished tõese väärtuse

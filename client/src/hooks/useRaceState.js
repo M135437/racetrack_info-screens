@@ -18,10 +18,14 @@ export const useRaceState = create((set) => ({
     setRunningRace: (id) => set({ runningRace: id }),
     setLeaderboard: (leaderboard) => set({ leaderboard }),
 
+    // EMIT LAP_UPDATE when lap is recorded in LapTracker
+    recordLap: (sessionId, carId) => {
+        console.log("Emitting LAP_UPDATE:", sessionId, carId);
 
-    recordLap: (carId) => {
-    console.log("Emitting LAP_UPDATE for car:", carId);
-    socket.emit(EVENTS.LAP_UPDATE, carId);
+        socket.emit(EVENTS.LAP_UPDATE, {
+            sessionId,
+            carId: carId
+        });
     },
 
     listenSocket: () => {
@@ -38,6 +42,7 @@ export const useRaceState = create((set) => ({
         socket.off(EVENTS.SESSION_LISTED);
         socket.off(EVENTS.MODE_CHANGED);
         socket.off(EVENTS.LAP_UPDATED);
+        socket.off(EVENTS.LAP_UPDATE);
         socket.off(EVENTS.SESSION_STARTED);
         socket.off(EVENTS.SESSION_ENDED);
 
@@ -61,25 +66,60 @@ export const useRaceState = create((set) => ({
             set({ leaderboard: Array.isArray(data) ? data : [] });
         });
 
+        // 🔥 NEW PARTIAL UPDATE (leaderboard)
+        socket.on(EVENTS.LAP_UPDATE, ({ sessionId, carId, ...updates }) => {
+            set((state) => {
+
+                if (!state.runningRace) {
+                    console.warn("LAP_UPDATE ignored: no active race")
+                    return state
+                }
+
+                const updatedSessions = state.sessions.map(session => {
+                    if (session.id !== sessionId) return session;
+
+                    return {
+                        ...session,
+                        cars: (session.cars || []).map(car => {
+                            if (car.id !== carId) return car;
+                            return { ...car, ...updates };
+                        })
+                    };
+                });
+
+                const updatedLeaderboard = state.leaderboard.map(car => {
+                    if (car.id !== carId) return car;
+                    return { ...car, ...updates };
+                });
+
+                return {
+                    sessions: updatedSessions,
+                    leaderboard: updatedLeaderboard
+                };
+            });
+        });
+
         // sessioon algas — NextRace/RaceFlag/RaceControl/FrontDesk/LapTracker/Leaderboard peavad uuenema
         socket.on(EVENTS.SESSION_STARTED, (data) => {
-            set({ raceMode: 'safe',
+            set({
+                raceMode: 'safe',
                 runningRace: data?.raceId ?? null,
                 leaderboard: Array.isArray(data.leaderboard) ? data.leaderboard : []
-             });
+            });
             socket.emit(EVENTS.SESSION_GET);
         });
 
         // sessioon lõppes — NextRace paddock sõnum
         socket.on(EVENTS.SESSION_ENDED, () => {
-            set({ raceMode: 'ended',
-                    runningRace: null
-             });
+            set({
+                raceMode: 'ended',
+                runningRace: null
+            });
             socket.emit(EVENTS.SESSION_GET);
         });
 
         // küsi kohe algandmed
         socket.emit(EVENTS.SESSION_GET);
     }
-        
+
 }));
