@@ -1,5 +1,6 @@
 import state from "./state.js"
 import EVENTS from "../../client/src/shared/events.js"
+import raceService from "../services/raceService.js"
 
 //debub version //REVIEW
 function startTimer(io) {
@@ -25,7 +26,7 @@ function startTimer(io) {
         // stop condition
         if (state.timer.timeRemaining <= 0) {
             console.log("timer.js debug: timer ran out of time!")
-            stopTimer();
+            raceService.endSession(io);
             resetTimer();
         }
     }, 100)
