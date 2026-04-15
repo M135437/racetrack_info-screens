@@ -140,3 +140,16 @@ export function removeDriver(state, { sessionId, driverId }) {
 
     return { message: "Driver removed" }
 }
+
+export function deleteSession(state, { sessionId }) {
+
+    const initialLength = state.sessions.length
+
+    state.sessions = state.sessions.filter(s => s.id !== sessionId)
+
+    if (state.sessions.length === initialLength) {
+        throw new Error("Session not found")
+    }
+
+    return { message: `Session ${sessionId} deleted` }
+}

@@ -35,8 +35,9 @@ function createSession(name, startTime) {
 //DELETE session (maybe to be used for canceling a session before it starts, to think of replacing with race status change to 'canceled' or something similar)
 //now it does not check if session exists, just filters out the session with the given id, can be improved to return error if session with given id does not exist
 function deleteSession(id) {
-    state.sessions = state.sessions.filter(session => session.id !== id);
-    return { message: `Session with id ${id} deleted successfully` };
+    return stateMachine.deleteSession(state, {
+        sessionId: id
+    })
 }
 
 
