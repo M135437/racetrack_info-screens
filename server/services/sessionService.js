@@ -96,7 +96,13 @@ function addDriver(sessionId, driverName, car) {
     const driver = {
         id: Date.now(), // simple unique id generator, can be improved to use a better method for generating unique ids
         name: driverName,
-        car: car || "—"
+        car: car || "—",
+        lastLapTimestamp: null,
+        lapCount: null,
+        latestLapTime: null,
+        currentlap: null,
+        fastestlap: null,
+        isFinished: false
     }
 
     session.drivers.push(driver) // add driver to session's drivers array
