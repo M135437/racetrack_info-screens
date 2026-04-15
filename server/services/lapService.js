@@ -71,7 +71,7 @@ export const recordLap = (driverId) => {
 
     // -> FINISH-MODE MÕJU NUPULE (hetkel taimeripõhine):
     // joonenupul pole mõju, kui pole sõit alanud v juba viimane ring sooritatud
-    if (secondsLeft <= 0) { // pean mihkli kontrollpaneeli ootama - kas "finish"
+    if (secondsLeft <= 0 || state.raceMode === "finish") { // pean mihkli kontrollpaneeli ootama - kas "finish"
     // nullib taimeri ja/või muudab raceMode-i?
         driver.isFinished = true;
         // kui on sekundid nullis ja vajutatakse nuppu,
