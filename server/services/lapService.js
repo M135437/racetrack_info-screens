@@ -32,24 +32,23 @@ export const recordLap = (driverId) => {
     if (driver.lapCount === 0 || driver.lapCount === null) {
         driver.lapCount = 1;
         driver.lastLapTimestamp = now;
+    } else { // robustseks - kui esmane jooneületus post-finish
+        const startTime = driver.lastLapTimestamp;
+        const elapsed = (now - startTime) / 1000; 
 
-        return driver;
-    }
+        driver.latestLapTime = elapsed.toFixed(3); // 3 komakohta millisekundeid DISPLEI-VERSIOON!!
+        driver.lapCount++;
 
-    const startTime = driver.lastLapTimestamp;
-    const elapsed = (now - startTime) / 1000; 
-
-    driver.latestLapTime = elapsed.toFixed(3); // 3 komakohta millisekundeid DISPLEI-VERSIOON!!
-    driver.lapCount++;
-
-    const currentLap = parseFloat(driver.latestLapTime);
-    if (driver.fastestLap === null || currentLap < driver.fastestLap) {
+        const currentLap = parseFloat(driver.latestLapTime);
+        if (driver.fastestLap === null || currentLap < driver.fastestLap) {
         driver.fastestLap = currentLap;
+        }
     }
 
     if (secondsLeft <= 0 || state.raceMode === "finish") { 
-
         driver.isFinished = true;
+        //test:
+        console.log(`driver ${driverid} marked as FINISHED because time is up`)
     }
 
     driver.lastLapTimestamp = now;
