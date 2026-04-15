@@ -100,8 +100,8 @@ function addDriver(sessionId, driverName, car) {
         lastLapTimestamp: null,
         lapCount: null,
         latestLapTime: null,
-        currentlap: null,
-        fastestlap: null,
+        currentLap: null,
+        fastestLap: null,
         isFinished: false
     }
 
