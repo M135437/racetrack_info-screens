@@ -2,7 +2,6 @@ import state from "./state.js"
 import EVENTS from "../../client/src/shared/events.js"
 import raceService from "../services/raceService.js"
 
-//debub version //REVIEW
 function startTimer(io) {
     if (state.timer.timerStatus) {
         console.log("timer.js: timer seems to be already running - there is a value in state.timer.timerStatus that is not null")
