@@ -1,7 +1,9 @@
 // react rendering imports
 import { useState, useEffect } from 'react'
-// hook centralizing socket.IO events
+// hook centralizing socket.IO and events, related library and events contract
+import { socket } from "./socket/socket";
 import { useRaceState } from "./hooks/useRaceState.js"
+import EVENTS from "./shared/events.js"
 // CSS import
 import './App.css'
 
@@ -26,16 +28,27 @@ const AuthGate = ({ children, roleName }) => {
   const [inputKey, setInputKey] = useState("");
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    socket.on(EVENTS.AUTH_RESPONDED, (result) => {
+      if (result.success) {
+        setIsAuthenticated(true);
+        setError("");
+      } else {
+        setError("Incorrect passcode");
+      }
+    });
+
+    return () => {
+      socket.off(EVENTS.AUTH_RESPONDED);
+    };
+  }, []);
+
   const handleLogin = (e) => {
     e.preventDefault();
-    // siia peaks käima socket-infovahetus parooli kontrollimiseks,
-    // aga testimiseks hardcodein "0000":
-    if (inputKey === "0000") {
-      setIsAuthenticated(true);
-    } else {
-      setError("Vale parool - proovi uuesti! (testkood on 0000)");
-      // hetkel läägi ei pane, see vist peaks ka auth-loogikast tulema?
-    }
+    socket.emit(EVENTS.AUTH_ATTEMPT, {
+      role: roleName,
+      passcode: inputKey
+    });
   };
   /* return children if authorized */
   if (isAuthenticated) {
