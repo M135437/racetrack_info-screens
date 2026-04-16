@@ -8,6 +8,7 @@ const EVENTS = {
     SESSION_MODE: "session:mode",         // race control asks to changes flag (state.raceMode.${})
     SESSION_FINISH: "session:finish",     // race control asks to set finish flag (state.raceMode.finish) and finishes race (state.races.${id} -> status:'finished')
     SESSION_END: "session:endSession",    // race control asks to end session
+    STATE_GET: "state:get",               // race control asks for state
 
     DRIVER_ADD: "driver:add",
     DRIVER_REMOVE: "driver:remove",
@@ -27,7 +28,8 @@ const EVENTS = {
     SESSION_FINISHED: "session:finished",     // back-end announces end of specific race
     SESSION_ENDED: "session:sessionEnded",  // back-end confirms end of session as per race control ask or if timer ran out and triggers end of racing session
 
-    LAP_UPDATED: "lap:updated"              //back-end confirms lap update as having been recorded and publishes new time
+    LAP_UPDATED: "lap:updated",              // back-end confirms lap update as having been recorded and publishes new time
+    STATE_DISTRIBUTED: "state:distributed"           // back-end distributes state
 }
 
 export default EVENTS;
