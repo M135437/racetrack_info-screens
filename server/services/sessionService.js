@@ -2,7 +2,7 @@ import state from "../state/state.js"
 import * as stateMachine from "../state/stateMachine.js"
 
 //in-memory pointer to sessions in state
-let sessions = state.sessions;
+let sessionCounter = 1;
 
 function getLastNotStartedSession() {
     for (let i = state.sessions.length - 1; i >= 0; i--) {
@@ -14,11 +14,10 @@ function getLastNotStartedSession() {
 }
 
 //defining session-model (id, name, drivers, cars, status)
-function createSessionObject(name, startTime) {
+function createSessionObject(name) {
     return {
-        id: (state.sessions.length),
+        id: sessionCounter++,
         name,
-        startTime: startTime,
         maxSlots: 8, //default value, can be changed when creating session
         freeSlotsLeft: 8, //default value, can be changed when drivers join
         status: 'notStarted', //later can be 'started', 'finishing' or 'ended'
@@ -40,19 +39,15 @@ function getAllSessions() {
 }
 
 //CREATE (POST) session
-function createSession(name, startTime) {
-    console.log("doing createSession(name, startTime)")
+function createSession(name) {
+    console.log("doing createSession(name)")
     //error handlers
     if (!name || name.trim() === "") {
         throw new Error('Session name is required');
         console.log("name error")
     }
-    if (!startTime) {
-        throw new Error('Start time is required');
-        console.log("starttime error")
-    }
 
-    const session = createSessionObject(name, startTime);
+    const session = createSessionObject(name);
     state.sessions.push(session);
     const last = getLastNotStartedSession();
     if (!last) {
@@ -72,7 +67,8 @@ function deleteSession(id) {
 }
 
 
-//ADD driver to session (not implemented yet, but can be added later when implementing driver management)
+//ADD driver to session (not implemented yet, but can be added later 
+// when implementing driver management)
 function addDriver(sessionId, driverName, car) {
     const session = state.sessions.find(s => s.id === sessionId) //
 

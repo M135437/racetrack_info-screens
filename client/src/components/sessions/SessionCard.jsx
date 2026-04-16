@@ -57,11 +57,6 @@ export default function SessionCard({
 
                 <div className="session-main">
                     <div className="session-name">{session.name}</div>
-
-                    <div className="session-field">
-                        <span className="label">Start Planned At:</span>
-                        <span className="value">{session.startTime}</span>
-                    </div>
                 </div>
 
                 <div className="session-side">
