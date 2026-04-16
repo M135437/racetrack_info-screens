@@ -23,7 +23,7 @@ const Leaderboard = () => {
     <div className="next-race-container">
       <header className="leaderboard-header">
         <h2>LEADERBOARD</h2>
-        // PÄRAST:
+        
         <div className={`race-status ${raceMode || "notStarted"}`}>
           STATUS: {(raceMode || "notStarted").toUpperCase()}
         </div>
