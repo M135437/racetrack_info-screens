@@ -84,4 +84,11 @@ function endSession(io) {
     stopTimer();
 }
 
-export default { startSession, changeMode, finishMode, endSession, getTime};
+function distributeState(io) {
+    io.emit(EVENTS.STATE_DISTRIBUTED, {
+        runningRace: state.runningRace,
+        raceMode: state.raceMode
+    })
+}
+
+export default { startSession, changeMode, finishMode, endSession, getTime, distributeState};

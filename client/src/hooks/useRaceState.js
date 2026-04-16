@@ -14,8 +14,6 @@ export const useRaceState = create((set) => ({
 
     setTime: (time) => set({ time }),
     setSessions: (sessions) => set({ sessions }),
-    setRaceMode: (raceMode) => set({ raceMode }),
-    setRunningRace: (id) => set({ runningRace: id }),
     setLeaderboard: (leaderboard) => set({ leaderboard }),
 
 
@@ -40,6 +38,7 @@ export const useRaceState = create((set) => ({
         socket.off(EVENTS.LAP_UPDATED);
         socket.off(EVENTS.SESSION_STARTED);
         socket.off(EVENTS.SESSION_ENDED);
+        socket.off(EVENTS.STATE_DISTRIBUTED);
 
         // taimer
         socket.on(EVENTS.TIMER_UPDATE, (ms) => {
@@ -50,6 +49,14 @@ export const useRaceState = create((set) => ({
         socket.on(EVENTS.SESSION_LISTED, (data) => {
             set({ sessions: Array.isArray(data) ? data : [] });
         });
+
+        // listen for state distribution
+        socket.on(EVENTS.STATE_DISTRIBUTED, (data) => {
+            set({
+                raceMode: data?.raceMode || 'notStarted',
+                runningRace: data?.runningRace && null
+            })
+        })
 
         // režiimi muutus — flags, countdown, leaderboard vajavad seda
         socket.on(EVENTS.MODE_CHANGED, (newMode) => {
@@ -66,7 +73,7 @@ export const useRaceState = create((set) => ({
             set({ raceMode: 'safe',
                 runningRace: data?.raceId ?? null,
                 leaderboard: Array.isArray(data.leaderboard) ? data.leaderboard : []
-             });
+            });
             socket.emit(EVENTS.SESSION_GET);
         });
 
@@ -80,6 +87,7 @@ export const useRaceState = create((set) => ({
 
         // küsi kohe algandmed
         socket.emit(EVENTS.SESSION_GET);
+        socket.emit(EVENTS.STATE_GET);
     }
         
 }));
