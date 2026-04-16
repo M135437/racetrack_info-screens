@@ -1,12 +1,8 @@
 import { useState, useEffect, useRef } from "react"; 
 import EVENTS from "../../shared/events.js"
 import { socket } from "../../socket/socket";
-// useRef on nuppude cooldown tarbeks
-
 import { useRaceState } from "../../hooks/useRaceState";
 import "./LapTracker.css";
-
-// import FlagDisplay from "../../components/FlagDisplay";
 import Timer from "../../components/Timer";
 
 const LapTracker = () => {
@@ -14,9 +10,7 @@ const LapTracker = () => {
     const { raceMode, leaderboard, listenSocket} = useRaceState();
     const [now, setNow] = useState(Date.now());
     const [cooldowns, setCooldowns] = useState([]);
-    const cooldownsRef = useRef([]); // <-automaatuuendus ilma lehte renderimata;
-    // väldib nupuloogikal "hangumist"; varasemalt üks nupp muutus aktiivseks alles siis,
-    // kui vahepeal mõnd muud nuppu vajutada
+    const cooldownsRef = useRef([]);
 
     useEffect(() => {
         listenSocket();
@@ -24,35 +18,24 @@ const LapTracker = () => {
         return () => clearInterval(interval);
     }, []);
 
-    // nb! handlerecordlap pole OTSESELT vajalik ja saaksin recordLap
-    // funktsiooni kutsuda esile ka react return sees.
-    // AGA! kui tahta kliendipoolel lisada efekte vms, siis tuleb kasuks
-    // ja handlerecordlap kasutusel pole vaja hook-ist eraldi recordLap-i võtta!
-    const handleRecordLap = (id) => { // id, millest saame returnis react.id
+    const handleRecordLap = (id) => {
         // testimiseks:
         console.log(`Client clicking Driver ID: ${id}`);
 
-        if (cooldownsRef.current.includes(id)) { // <- cooldown-kontroll, mis
-        // ei luba vajutust, kui cooldwon state-is
+        if (cooldownsRef.current.includes(id)) {
             console.log(`button for driver ${id} blocked by cooldown!`);
-            return; // testimise abiks logitekst
+            return; 
         };
 
-        // ref-i lisamine:
         cooldownsRef.current.push(id);
-        // css tarbeks state:
         setCooldowns([...cooldownsRef.current]);
 
-        socket.emit(EVENTS.LAP_UPDATE, id); // andmete muutuse
-        // edastamine nupuvajutusel
+        socket.emit(EVENTS.LAP_UPDATE, id);
         
-        // cooldown-ist väljumine:
-        setTimeout(() => { // id põhjal filtreerime cooldowns-i pandud sõiduki VÄLJA:
+        setTimeout(() => { 
             cooldownsRef.current = cooldownsRef.current.filter((carId) => carId !== id);
-
-            // uuendame, et väljuda edukalt cooldownist:
             setCooldowns([...cooldownsRef.current]);
-        }, 5000);
+        }, 1000);
     };
 
     const formatLapDisplay = (lapTime) => {
@@ -68,11 +51,11 @@ const LapTracker = () => {
   const activeModes = ["safe", "hazard", "danger", "finish"];
   const isRaceActive = activeModes.includes(raceMode);
 
-  // kuna nupud on klikatavad ÜHE KORRA ka finishi ajal, siis:
-  const isFinishing = raceMode === "finish";
-
-  // sõitjate leidmine:
   const drivers = leaderboard || [];
+  // nuppude 1->8 järjestamiseks:
+  const sortedDrivers = [...drivers].sort((a, b) => {
+    return parseInt(a.car) - parseInt(b.car);
+  });
 
   // ajutine laptracker-ui-spetsiifiline täisekraaninupp
     function toggleFullScreen() {
@@ -84,45 +67,46 @@ const LapTracker = () => {
         <div className="lap-container">
             <div> {/* ajutine lt-spetsiifiline fullscreen: */}
                 <button onClick={() => toggleFullScreen()}
-                className="fullscreen">Fullscreen</button>
+                className="fullscreen-btn">Fullscreen</button>
             </div>
+            <header className="laptracker-header">
+                <h2>LAP TRACKER</h2>
+            </header>
+            {raceMode !== "notStarted" ? (
             <div className="component-zone">
-                {/*<div className="flag-wrapper">
-                    <FlagDisplay status={raceMode} />
-                </div> */}
+                <div className={`race-status ${raceMode}`}>
+                STATUS: {(raceMode).toUpperCase()}
+                </div>
                 <div className="timer-wrapper">
                     <Timer />
                 </div>
             </div>
-            {/* kontrollime, kas nii taimer kui stopper töötavad */}
-            <div className="debug-timer">
-                <p>Local high-res: {formatLapDisplay(now / 1000)}</p>
-                <p>Mode: {raceMode || "N/A"}</p>
-            </div>
-            {!isRaceActive ? ( // ternary et nuppude asemel oleks
-            // sessioonide vahel tekst:
+            ) : null}
+            {!isRaceActive ? (
                 <div className="waiting-screen">
-                    <p>Waiting for the next race to begin..</p>
+                    <p>
+                        {raceMode === "notStarted"
+                        ? "Waiting for the first race to begin.."
+                        : "Waiting for the next race to begin.."}
+                    </p>
                 </div>
             ) : (
             <div className="drivers-grid">
-            {/* nb! lisa ka vastav klass css-i, ühes display:flex-iga!! */}
-            {drivers.map((driver) => (
+            {sortedDrivers.map((driver) => (
                 <div key={driver.id} className="lap-tracker-ui">
 
                     <button
-                        onClick={() => handleRecordLap(driver.id)/*handleRecordLap(driver.id)*/}
-                        disabled={!isRaceActive || // obsolete?
+                        onClick={() => handleRecordLap(driver.id)}
+                        disabled={
                             driver.isFinished ||
-                            cooldowns.includes(driver.id)}
-                        
+                            cooldowns.includes(driver.id)
+                        }
                         className={`lap-button ${
-                            !isRaceActive || 
-                            driver.isFinished ||
-                            cooldowns.includes(driver.id) ? "disabled" : "active"}`}
+                            driver.isFinished
+                            ? "disabled"
+                            : cooldowns.includes(driver.id) ? "cooling" : "active"}`}
                     >
                         {driver.isFinished ? `${driver.car} FINISHED` : `car ${driver.car} | `}
-                        {/* nupud peavad kuvama SÕIDUKI NR, mitte sõitja nime */}
                         <span>Laps: {driver.lapCount} | Last time: {formatLapDisplay(driver.latestLapTime)} | Best: {formatLapDisplay(driver.fastestLap) || "--"}
                         </span>
                     </button>
@@ -134,5 +118,4 @@ const LapTracker = () => {
     );
 };
 
-// muudame app.jsx-ile nähtavaks:
 export default LapTracker;
