@@ -42,13 +42,14 @@
     index/app.css stiile, et ma näeks oma PÄRIS töö vilju */
 
     height: 100vh; /* 100 prosa kogukõrgusesst */
-    width: 100vw; /* 100 prosa kogulaiusest */
+    width: 100%; /* 100 prosa kogulaiusest */
     display: flex;
     flex-direction: column;
     gap: 20px;
     padding: 10px;
     box-sizing: border-box;
-    overflow: hidden; 
+    overflow-x: hidden; 
+    overflow-y: hidden;
     background-color: #1e2f3f;
 }
 
@@ -122,9 +123,9 @@ või kui tablet ise spetsiifiliselt landscape mode-is */
   font-size: 3rem; /* hästi nähtav */
   font-weight: bold;
   text-transform: uppercase;
-  background-color: greenyellow;
   /*border-radius: 0; /* et nuppudel poleks kumerad nurgad */
-  box-shadow: 5px 5px 3px rgba(193, 255, 94, 0.8) inset !important;
+  box-shadow: inset 5px 5px 3px rgba(255, 255, 255, 0.3),
+              inset -1px -1px 5px rgba(0, 0, 0, 0.4) !important;
   transition: all 0.08s ease-in-out;
   display: block; /* tagab täislaiuse ja et tekst on keskel */
   outline: none !important; /* et lahti saada koledast vaikimisi sinisest joonest */
@@ -143,7 +144,9 @@ või kui tablet ise spetsiifiliselt landscape mode-is */
   /* VÕI siis lisan @media abil, et ainult clickable-seadmetes toimib; näis*/
 }
 .lap-button.active {
-  background-color: greenyellow;
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  box-shadow: inset 5px 5px 3px rgba(255, 255, 255, 0.3),
+              inset -1px -1px 5px rgba(0, 0, 0, 0.4) !important;
   color: white;
   outline: 0 !important;
   outline: none !important;
@@ -164,13 +167,16 @@ või kui tablet ise spetsiifiliselt landscape mode-is */
   box-shadow: none !important;
 }
 .lap-button.disabled {
-  background-color: darkolivegreen !important;
-  box-shadow: 5px 5px 3px rgba(55, 71, 9, 1) inset !important;
+  background-color: rgba(0, 0, 0, 0.2) !important;
+  box-shadow: inset 5px 5px 3px rgba(0, 0, 0, 0.3),
+              inset -1px -1px 5px rgba(255, 255, 255, 0.05) !important;
   color: grey;
   cursor: not-allowed;
 }
 .lap-button.cooling {
   cursor: not-allowed;
+  box-shadow: inset 5px 5px 3px rgba(0, 0, 0, 0.3),
+              inset -1px -1px 5px rgba(255, 255, 255, 0.05) !important;
   position: relative;
   overflow: hidden;
 }
@@ -181,7 +187,7 @@ või kui tablet ise spetsiifiliselt landscape mode-is */
   left: 0;
   height: 100%;
   opacity: 0.5;
-  background-color: darkolivegreen;
+  background-color: rgba(0, 0, 0, 0.4);
   width: 0%;
   animation: cooldownBar 1s linear forwards;
 }

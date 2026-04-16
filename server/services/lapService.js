@@ -7,7 +7,8 @@ export const recordLap = (driverId) => {
     const activeSession = state.sessions.find(s => s.id === state.runningRace);
     
     if (!activeSession) {
-        console.error("no active session found for ID: ", state.runningRace);
+        console.error("no active session found");
+        return null;
     }
 
     const driversList = activeSession.drivers;
@@ -48,7 +49,7 @@ export const recordLap = (driverId) => {
     if (secondsLeft <= 0 || state.raceMode === "finish") { 
         driver.isFinished = true;
         //test:
-        console.log(`driver ${driverid} marked as FINISHED because time is up`)
+        console.log(`driver ${driverId} marked as FINISHED because time is up`);
     }
 
     driver.lastLapTimestamp = now;

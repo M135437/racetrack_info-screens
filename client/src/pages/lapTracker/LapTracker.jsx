@@ -98,8 +98,9 @@ const LapTracker = () => {
                             cooldowns.includes(driver.id)
                         }
                         className={`lap-button ${
-                            driver.isFinished ||
-                            cooldowns.includes(driver.id) ? "cooling" : "active"}`}
+                            driver.isFinished
+                            ? "disabled"
+                            : cooldowns.includes(driver.id) ? "cooling" : "active"}`}
                     >
                         {driver.isFinished ? `${driver.car} FINISHED` : `car ${driver.car} | `}
                         <span>Laps: {driver.lapCount} | Last time: {formatLapDisplay(driver.latestLapTime)} | Best: {formatLapDisplay(driver.fastestLap) || "--"}
