@@ -18,8 +18,8 @@ export const useRaceState = create((set) => ({
 
 
     recordLap: (carId) => {
-    console.log("Emitting LAP_UPDATE for car:", carId);
-    socket.emit(EVENTS.LAP_UPDATE, carId);
+        console.log("Emitting LAP_UPDATE for car:", carId);
+        socket.emit(EVENTS.LAP_UPDATE, carId);
     },
 
     listenSocket: () => {
@@ -54,7 +54,7 @@ export const useRaceState = create((set) => ({
         socket.on(EVENTS.STATE_DISTRIBUTED, (data) => {
             set({
                 raceMode: data?.raceMode || 'notStarted',
-                runningRace: data?.runningRace && null
+                runningRace: data?.runningRace ?? null
             })
         })
 
@@ -70,7 +70,8 @@ export const useRaceState = create((set) => ({
 
         // sessioon algas — NextRace/RaceFlag/RaceControl/FrontDesk/LapTracker/Leaderboard peavad uuenema
         socket.on(EVENTS.SESSION_STARTED, (data) => {
-            set({ raceMode: 'safe',
+            set({
+                raceMode: 'safe',
                 runningRace: data?.raceId ?? null,
                 leaderboard: Array.isArray(data.leaderboard) ? data.leaderboard : []
             });
@@ -79,9 +80,10 @@ export const useRaceState = create((set) => ({
 
         // sessioon lõppes — NextRace paddock sõnum
         socket.on(EVENTS.SESSION_ENDED, () => {
-            set({ raceMode: 'ended',
-                    runningRace: null
-             });
+            set({
+                raceMode: 'ended',
+                runningRace: null
+            });
             socket.emit(EVENTS.SESSION_GET);
         });
 
@@ -89,5 +91,5 @@ export const useRaceState = create((set) => ({
         socket.emit(EVENTS.SESSION_GET);
         socket.emit(EVENTS.STATE_GET);
     }
-        
+
 }));
