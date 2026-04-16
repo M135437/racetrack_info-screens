@@ -63,9 +63,11 @@ const LapTracker = () => {
         <div className="lap-container">
             <div> {/* ajutine lt-spetsiifiline fullscreen: */}
                 <button onClick={() => toggleFullScreen()}
-                className="fullscreen">Fullscreen</button>
+                className="fullscreen-btn">Fullscreen</button>
             </div>
-            <h1>Lap Tracker</h1>
+            <header className="laptracker-header">
+                <h2>LAP TRACKER</h2>
+            </header>
             {raceMode !== "notStarted" ? (
             <div className="component-zone">
                 <div className={`race-status ${raceMode}`}>
@@ -76,10 +78,6 @@ const LapTracker = () => {
                 </div>
             </div>
             ) : null}
-            {/* kontrollime, kas nii taimer kui stopper töötavad 
-            <div className="debug-timer">
-                <p>Local high-res: {formatLapDisplay(now / 1000)}</p>
-            </div> */}
             {!isRaceActive ? (
                 <div className="waiting-screen">
                     <p>

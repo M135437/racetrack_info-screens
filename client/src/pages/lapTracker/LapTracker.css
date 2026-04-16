@@ -1,19 +1,17 @@
-/* NB! esialgu jätan õpikommentaarid sisse, aga enne main-i
-    merge-i võtan maha (mul on nii lihtsam õppida)*/
-
 /* global border-box peaks saama kaetud app.css-ga */
 
 /* ajutine paikne fullscreen nupp */
-.fullscreen {
+.fullscreen-btn {
   position: absolute;
-  right: 10px;
-  z-index: 9999; /* kõigi muude elementide peal */
+  top: 20px;
+  right: 20px;
+  z-index: 10;
   background: rgba(255, 255, 255, 0.2); /* õrn värvierinevus taustaga */
   cursor: pointer;
   opacity: 0.5;
   transition: 0.2s;
 }
-.fullscreen:hover {
+.fullscreen-btn:hover {
   opacity: 1;
 }
 
@@ -21,11 +19,11 @@
   fullscreenis - nt must taustpõhi jne jne */
   background-color: #000; /* või misiganes saab meie PÄRIS taustvärv olema */
 }
-:fullscreen .fullscreen {
+:fullscreen .fullscreen-btn {
   opacity: 0; /* et täisekraanil nuppu kohe ei kuvaks*/
   transition: 0.2s;
 }
-:fullscreen .fullscreen:hover {
+:fullscreen .fullscreen-btn:hover {
   opacity: 1;
 }
 /* kui on spetsiifilised high-res tabletid, läheb vaja ka:
@@ -35,7 +33,7 @@
 
 .lap-container {
   /* kui kasutada all: unset; <- kirjutab üle KÕIK global-id*/
-    position: absolute;
+    /*position: absolute;
     top: 0;
     padding-top: 50px;
     left: 0;
@@ -48,55 +46,59 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
-    padding: 20px;
+    padding: 10px;
     box-sizing: border-box;
-    overflow: hidden; /* ei võimalda skrollimist */
-    background-color: rgba(41, 40, 83, 1);
+    overflow: hidden; 
+    background-color: #1e2f3f;
 }
-.debug-timer {
-  /* minimeerime testala suuruse
-  hiljem saan ümber kohaldada header-iks ja lisada
-  vb toggle full-screen siia */
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  align-items: center;
-  padding-bottom: 5px;
+
+.laptracker-header {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+    border-bottom: 4px solid #ffd000;
+    padding-bottom: 10px;
 }
+.laptracker-header h2{
+    font-weight: 800;
+    font-family: 'Orbitron', sans-serif;
+    color: #ffd000; 
+    letter-spacing: 2px; 
+}
+
 .waiting-screen {
   animation: fadeIn 1s ease-in;
 }
-@keyframes fadeIn { /* animatsiooniinff vaiketekstile: */
+@keyframes fadeIn { 
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
 .lap-tracker-ui {
   display: flex;
   height: 100%; /* tagab, et iga div täidab kogu oma ala laiuse */
   /* vaatan, kuidas visuaalselt on, enne kui lisan äärised (border) */
 }
-/* lisame animatsiooni e keyframes, et nupud ei ilmuks *plaksti!*
-ette, vaid sujuvalt: */
 @keyframes slideIn {
-  from { /* ilmumise algpunkt */
-    opacity: 0; /* nähtamatust */
-    transform: translateY(-30px); /* y-teljel 20px kauguselt*/
+  from { 
+    opacity: 0; 
+    transform: translateY(-30px); 
   }
-  to { /* lõppunkt */
-    opacity: 1; /* läbipaistmatuks */
-    transform: translateY(0); /* klassiga ettenähtud asukoht*/
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
   }
 }
-.drivers-grid { /* vaikimisi e portreevaade */
-  flex: 1; /* iga sõitja ala koguruudustikus sama */
+
+.drivers-grid { /* PORTRAIT */
+  flex: 1; 
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* portrait, max 2 nuppu kõrvuti */
-  grid-auto-rows: 1fr; /* laieneb automaatselt */
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: 1fr; 
   /*gap: 1px;*/
   width: 100%;
   /*vana:
-  flex-wrap: wrap; /* kui lisada objekte juurde, siis kui enam
-  ühte ritta ei mahu, luuakse uus rida jne
   align-items: stretch; /* tagab sama kõrguse */
   animation: slideIn 1s ease-out forwards; /* keyframes-id */
 }
@@ -121,7 +123,7 @@ või kui tablet ise spetsiifiliselt landscape mode-is */
   font-weight: bold;
   text-transform: uppercase;
   background-color: greenyellow;
-  border-radius: 0; /* et nuppudel poleks kumerad nurgad */
+  /*border-radius: 0; /* et nuppudel poleks kumerad nurgad */
   box-shadow: 5px 5px 3px rgba(193, 255, 94, 0.8) inset !important;
   transition: all 0.08s ease-in-out;
   display: block; /* tagab täislaiuse ja et tekst on keskel */
@@ -189,14 +191,15 @@ või kui tablet ise spetsiifiliselt landscape mode-is */
 }
 
 .component-zone {
+  width: 100%;
   position:absolute;
   top: 0;
-  right: 100px;
-  z-index: 9999;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   height: 60px;
+  font-weight: 800;
 }
 .race-status {
   display: flex;
@@ -212,7 +215,7 @@ või kui tablet ise spetsiifiliselt landscape mode-is */
 }
 .race-status.danger,
 .race-status.ended {
-  background: red;
+  background: red !important;
 }
 .race-status.hazard {
   background: orange;
