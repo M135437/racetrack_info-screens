@@ -1,60 +1,37 @@
-.next-race-container {
-    height: 100vh;
-    width: 100vw;
-    background-color: #1e2f3f; /* 👉 sama theme nagu teistel lehtedel */
-    color: #ffffff;
-    padding: 40px;
-    box-sizing: border-box;
-  }
-  
-  /* 🔥 HEADER */
-  .next-race-header {
-    text-align: center;
-    margin-bottom: 30px;
-  }
-  
-  /* 🟡 CARD */
-  .race-card {
-    background: #2c3e50;
-    padding: 20px;
-    border-radius: 10px;
-    max-width: 500px;
-    margin: 0 auto;
-  }
-  
-  /* 👉 Race title */
-  .race-title {
-    color: #ffde00; /* kollane highlight */
-    margin-bottom: 15px;
-  }
-  
-  /* 👥 DRIVER LIST */
-  .drivers {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  /* 👉 üks driver rida */
-  .driver-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 0;
-    border-bottom: 1px solid #444;
-  }
-  
-  /* 🖼️ driver icon */
-  .driver-row img {
-    width: 30px;
-  }
-  
-  /* 👉 nimi */
-  .driver-name {
-    flex: 1;
-  }
-  
-  /* 👉 auto number */
-  .driver-car {
-    color: #ffde00;
-  }
+/* 🌐 GLOBAL THEME */
+body {
+  margin: 0;
+  background-color: #1e2f3f;
+  color: white;
+  font-family: 'Arial Black', sans-serif;
+}
 
+/* 🟡 PEALKIRJAD */
+h1 {
+  color: #ffde00;
+  letter-spacing: 2px;
+}
+
+/* 🔳 FULLSCREEN BUTTON */
+.fullscreen-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+
+  background: rgba(255,255,255,0.15);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.3);
+
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* 📦 CONTAINER BASE */
+.page-container {
+  height: 100vh;
+  width: 100vw;
+  padding: 40px;
+  box-sizing: border-box;
+  position: relative;
+}
