@@ -52,6 +52,10 @@ const LapTracker = () => {
   const isRaceActive = activeModes.includes(raceMode);
 
   const drivers = leaderboard || [];
+  // nuppude 1->8 järjestamiseks:
+  const sortedDrivers = [...drivers].sort((a, b) => {
+    return parseInt(a.car) - parseInt(b.car);
+  });
 
   // ajutine laptracker-ui-spetsiifiline täisekraaninupp
     function toggleFullScreen() {
@@ -88,7 +92,7 @@ const LapTracker = () => {
                 </div>
             ) : (
             <div className="drivers-grid">
-            {drivers.map((driver) => (
+            {sortedDrivers.map((driver) => (
                 <div key={driver.id} className="lap-tracker-ui">
 
                     <button
