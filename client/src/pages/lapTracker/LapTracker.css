@@ -167,6 +167,26 @@ või kui tablet ise spetsiifiliselt landscape mode-is */
   color: grey;
   cursor: not-allowed;
 }
+.lap-button.cooling {
+  cursor: not-allowed;
+  position: relative;
+  overflow: hidden;
+}
+.lap-button.cooling::after { /* cooldown-efekti animatsiooniks */
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  opacity: 0.5;
+  background-color: darkolivegreen;
+  width: 0%;
+  animation: cooldownBar 1s linear forwards;
+}
+@keyframes cooldownBar {
+  from { width: 0% }
+  to { width: 100% }
+}
 
 .component-zone {
   position:absolute;
