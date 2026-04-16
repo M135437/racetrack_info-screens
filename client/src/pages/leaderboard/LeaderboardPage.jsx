@@ -21,7 +21,6 @@ const sortedLeaderboard = useMemo(() => {
   });
 }, [leaderboard]);
 
-
 // Funktsioon aja vormindamiseks (et säiliks MM:SS.ms vaade)
 const formatTime = (seconds) => {
   if (!seconds || seconds === Infinity) return "--:--.---";
@@ -52,7 +51,7 @@ const formatTime = (seconds) => {
                     TIME LEFT: <Timer time={time} />
                 </div>
             </header>
-
+            
             <div className="leaderboard-table">
                 <div className="table-header">
                     <span>POS</span>
