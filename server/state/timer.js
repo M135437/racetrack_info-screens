@@ -26,7 +26,7 @@ function startTimer(io) {
         // stop condition
         if (state.timer.timeRemaining <= 0) {
             console.log("timer.js debug: timer ran out of time!")
-            raceService.endSession(io);
+            raceService.finishMode(io)
             resetTimer();
         }
     }, 100)
