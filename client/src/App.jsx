@@ -22,6 +22,10 @@ import NextRace from "./pages/nextRace/NextRace";
 import Flags from "./pages/flags/Flags";
 import Countdown from "./pages/countdown/Countdown";
 
+
+// DEV IMPORTS for testing and development purposes - can be removed later
+import DevPanel from "./dev/DevPanel"
+
 /* authentication prompt */
 const AuthGate = ({ children, roleName }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -57,17 +61,17 @@ const AuthGate = ({ children, roleName }) => {
 
   // Authorization view
   return (<AuthorizationScreen
-            roleName={roleName}
-            handleLogin={handleLogin}
-            inputKey={inputKey}
-            setInputKey={setInputKey}
-            error={error}
-    />);
+    roleName={roleName}
+    handleLogin={handleLogin}
+    inputKey={inputKey}
+    setInputKey={setInputKey}
+    error={error}
+  />);
 };
 
 // Placeholder for missing content (mainly used for dev purposes)
 const Placeholder = ({ ajutine }) => (
-  <div style={{ padding: "20px"}}>
+  <div style={{ padding: "20px" }}>
     <h2>{ajutine} Leht</h2>
     <p>Page under construction</p>
     <Link to="/">Returh to main page</Link>
@@ -75,52 +79,57 @@ const Placeholder = ({ ajutine }) => (
 );
 
 function App() {
-    const listenSocket = useRaceState((state) => state.listenSocket);
+  const listenSocket = useRaceState((state) => state.listenSocket);
 
-    useEffect(() => {
-        listenSocket();
-    }, []);
+  useEffect(() => {
+    listenSocket();
+  }, []);
 
-            {/*RETURNING CONTENT VIA ROUTING*/
-          /* note - all planned content provided through explicit routes */}
+  {/*RETURNING CONTENT VIA ROUTING*/
+    /* note - all planned content provided through explicit routes */
+  }
   return (
-    <BrowserRouter>
-      <Routes>
+    <>
+      <BrowserRouter>
+        <Routes>
 
-        {/* ROOT DIR*/}
-        <Route path="/" element={<HomePage/>}/>
+          {/* ROOT DIR*/}
+          <Route path="/" element={<HomePage />} />
 
           {/* FRONT DESK*/}
-        <Route path="/front-desk" element={
-          <AuthGate roleName="Receptionist">
-            <FrontDesk/>
-          </AuthGate>}/>
-          
+          <Route path="/front-desk" element={
+            <AuthGate roleName="Receptionist">
+              <FrontDesk />
+            </AuthGate>} />
+
           {/* RACE CONTROL */}
-        <Route path="/race-control" element={
-          <AuthGate roleName="Safety Official">
-            <RaceControl />
-          </AuthGate>}/>
-          
+          <Route path="/race-control" element={
+            <AuthGate roleName="Safety Official">
+              <RaceControl />
+            </AuthGate>} />
+
           {/* LAP TRACKER */}
-        <Route path="/lap-line-tracker" element={
-          <AuthGate roleName="Lap Observer">
-            <LapTracker/>
-          </AuthGate>}/>
+          <Route path="/lap-line-tracker" element={
+            <AuthGate roleName="Lap Observer">
+              <LapTracker />
+            </AuthGate>} />
 
           {/* PUBLIC SCREENS */}
 
-        <Route path="/leader-board" element=
-        {<LeaderboardPage />}/>
-        <Route path="/next-race" element=
-        {<NextRace />} />
-        <Route path="/race-flags" element=
-        {<Flags/>}/>
-        <Route path="/race-countdown" element=
-        {<Countdown/>}/>
+          <Route path="/leader-board" element=
+            {<LeaderboardPage />} />
+          <Route path="/next-race" element=
+            {<NextRace />} />
+          <Route path="/race-flags" element=
+            {<Flags />} />
+          <Route path="/race-countdown" element=
+            {<Countdown />} />
 
-      </Routes>
-    </BrowserRouter>
+        </Routes>
+      </BrowserRouter>
+
+      {import.meta.env.DEV && <DevPanel />}
+    </>
   );
 }
 
