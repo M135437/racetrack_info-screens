@@ -9,7 +9,7 @@ export default function DevPanel() {
     // ------------------------
 
     const generateViaSocket = () => {
-        console.log("Generating sessions + drivers via socket...")
+        console.log("Generating sessions + drivers...")
 
         // 1. создаём сессии
         testSessions.forEach(session => {
@@ -18,16 +18,16 @@ export default function DevPanel() {
             })
         })
 
-        // 2. ждём обновление
+        // 2. ждём список от сервера
         const handler = (serverSessions) => {
             console.log("SESSION_LISTED:", serverSessions)
 
-            const freshSessions = serverSessions.filter(
+            const fresh = serverSessions.filter(
                 s => s.status === "notStarted"
             )
 
             // 3. добавляем drivers
-            freshSessions.forEach((serverSession, index) => {
+            fresh.forEach((serverSession, index) => {
                 const testSession = testSessions[index]
                 if (!testSession) return
 
@@ -47,7 +47,7 @@ export default function DevPanel() {
     }
 
     // ------------------------
-    // CLEAR ALL (delete sessions)
+    // CLEAR ALL
     // ------------------------
 
     const clearAll = () => {
@@ -62,8 +62,38 @@ export default function DevPanel() {
         }
 
         socket.on(EVENTS.SESSION_LISTED, handler)
-
         socket.emit(EVENTS.SESSION_GET)
+    }
+
+    // ------------------------
+    // RACE CONTROL
+    // ------------------------
+
+    const startRace = () => {
+        console.log("Start race")
+        socket.emit(EVENTS.SESSION_START)
+    }
+
+    const setSafe = () => {
+        socket.emit(EVENTS.SESSION_MODE, "safe")
+    }
+
+    const setHazard = () => {
+        socket.emit(EVENTS.SESSION_MODE, "hazard")
+    }
+
+    const setDanger = () => {
+        socket.emit(EVENTS.SESSION_MODE, "danger")
+    }
+
+    const finishRace = () => {
+        console.log("Finish race")
+        socket.emit(EVENTS.SESSION_FINISH)
+    }
+
+    const endSession = () => {
+        console.log("End session")
+        socket.emit(EVENTS.SESSION_END)
     }
 
     // ------------------------
@@ -75,8 +105,9 @@ export default function DevPanel() {
 
             <div style={titleStyle}>DEV PANEL</div>
 
+            {/* DATA */}
             <section style={sectionStyle}>
-                <div style={sectionTitle}>SERVER (socket)</div>
+                <div style={sectionTitle}>DATA</div>
 
                 <button onClick={generateViaSocket}>
                     Generate sessions
@@ -85,6 +116,18 @@ export default function DevPanel() {
                 <button onClick={clearAll}>
                     Clear all
                 </button>
+            </section>
+
+            {/* RACE CONTROL */}
+            <section style={sectionStyle}>
+                <div style={sectionTitle}>RACE CONTROL</div>
+
+                <button onClick={startRace}>Start</button>
+                <button onClick={setSafe}>Safe</button>
+                <button onClick={setHazard}>Hazard</button>
+                <button onClick={setDanger}>Danger</button>
+                <button onClick={finishRace}>Finishing</button>
+                <button onClick={endSession}>End</button>
             </section>
 
         </div>
@@ -99,14 +142,14 @@ const panelStyle = {
     position: "fixed",
     top: 10,
     right: 10,
-    width: 220,
+    width: 240,
     background: "#111",
     color: "#fff",
     padding: 12,
     borderRadius: 10,
     display: "flex",
     flexDirection: "column",
-    gap: 10,
+    gap: 12,
     zIndex: 9999,
     fontSize: 12
 }
