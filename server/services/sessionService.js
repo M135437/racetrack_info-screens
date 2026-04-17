@@ -71,57 +71,54 @@ function addDriver(sessionId, driverName, car) {
     const session = state.sessions.find(s => s.id === sessionId);
     if (!session) throw new Error("Session not found");
 
-    // 1. Teisendame sissetuleva auto numbriks
-    let carNumber = car ? Number(car) : null;
-
-    // 2. Kontrollime, kas sisestati tekst (nt "kiire auto")
-    if (car && isNaN(carNumber)) {
-        throw new Error("Auto number peab olema number, mitte tekst!");
+    // 1. KONTROLL: Kas kohti on üldse vaba?
+    if (session.freeSlotsLeft <= 0) {
+        throw new Error("Sellesse sõitu rohkem sõitjaid ei mahu (kohtade arv täis)!");
     }
 
-    // automatic car assignment logic (kui auto number on null, siis leiame esimese vaba auto numbriga 1 kuni maxSlots)
-
-    // Võtame kõik numbrid, mis on JUBA võetud
-    const takenCars = session.drivers.map(d => Number(d.car));
-
-    if (carNumber === null) {
-        // Kui kasutaja EI valinud autot, leiame esimese vaba vahemikus 1 kuni maxSlots
-        for (let i = 1; i <= session.maxSlots; i++) {
-            if (!takenCars.includes(i)) {
-                carNumber = i;
-                break; // Leidsime esimese vaba, lõpetame otsimise
-            }
-        }
-    } else {
-        // Kui kasutaja ISE valis auto, kontrollime, kas see on vaba
-        if (takenCars.includes(carNumber)) {
-            throw new Error(`Auto number ${carNumber} on juba kasutusel!`);
-        }
-    }
-
-    // Kui ikka pole carNumber-it (nt kõik kohad on täis), viskame vea
-    if (carNumber === null) {
-        throw new Error("Vabu autosid ei ole saadaval!");
-    }
-
-    // auto number on nüüd kindlalt olemas ja kontrollitud, et see on vaba. Jätkame sõitja loomisega.
-
-    // 3. Nime puhastus ja kontroll (see osa jääb samaks)
+    // 2. Nime puhastus ja kontroll
     const cleanName = driverName ? driverName.trim() : "";
     if (cleanName === "") throw new Error("Driver name is required");
 
-    const alreadyExists = session.drivers.some(d =>
-        d.name.toLowerCase() === cleanName.toLowerCase()
-    );
-    if (alreadyExists) throw new Error(`Sõitja "${cleanName}" on juba nimekirjas!`);
+    if (session.drivers.some(d => d.name.toLowerCase() === cleanName.toLowerCase())) {
+        throw new Error(`Sõitja "${cleanName}" on juba nimekirjas!`);
+    }
 
-    if (session.freeSlotsLeft <= 0) throw new Error("No free slots left");
+    // 3. Auto numbri "tark" loogika
+    let carNumber = car ? Number(car) : null;
+    const takenCars = session.drivers.map(d => Number(d.car));
 
-    // 4. Loome sõitja
+    // Kas sisestatud auto on vigane või juba võetud?
+    const isCarInvalid = car && isNaN(carNumber);
+    const isCarTaken = carNumber !== null && takenCars.includes(carNumber);
+
+    // Kui auto on puudu, vigane või võetud, leiame automaatselt esimese vaba
+    if (carNumber === null || isCarInvalid || isCarTaken) {
+        let found = false;
+        // Me kasutame session.maxSlots, et otsida vaba numbrit vahemikus 1-8
+        for (let i = 1; i <= session.maxSlots; i++) {
+            if (!takenCars.includes(i)) {
+                carNumber = i;
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            // See viga tekib siis, kui maxSlots on täis, aga mingil põhjusel freeSlotsLeft seda ei püüdnud
+            throw new Error("Vabu auto numbreid ei leitud!");
+        }
+
+        if (isCarTaken) {
+            console.log(`INFO: Auto ${car} oli hõivatud. Sõitjale ${cleanName} määrati automaatselt vaba auto: ${carNumber}`);
+        }
+    }
+
+    // 4. Loome sõitja objekti
     const driver = {
         id: Date.now() + Math.random(),
         name: cleanName,
-        car: carNumber, // See on nüüd alati number, kas käsitsi valitud või automaatne
+        car: carNumber,
         lastLapTimestamp: null,
         lapCount: null,
         latestLapTime: null,
@@ -130,10 +127,12 @@ function addDriver(sessionId, driverName, car) {
         isFinished: false
     };
 
+    // 5. Salvestame
     session.drivers.push(driver);
     session.freeSlotsLeft--;
 
-    console.log(`EDUKAS: Sõitja ${cleanName} lisatud. Auto: ${carNumber}`);
+    console.log(`EDUKAS: ${cleanName} (Auto: ${carNumber}) lisatud. Vabu kohti: ${session.freeSlotsLeft}`);
+
     return driver;
 }
 
