@@ -12,15 +12,25 @@ import ControlButton from "../../components/ControlButton.jsx"
 import ListOfSessions from "../../components/ListOfSessions.jsx"
 import NoSessionsState from "../../components/NoSessionsState.jsx";
 import ReturnToPaddock from "../../components/ReturnToPaddock.jsx"
+import { useEffect } from "react";
+import SessionListing from "../../components/SessionListing.jsx";
 
 const element = 'RACE CONTROL'
 
 function RaceControl() {
     console.log("socket connected at RaceControl:", socket.connected);
 
-    const sessions = useRaceState((state) => state.sessions);
+    const sessions = useRaceState(state => state.sessions);
+    console.log("siin trükin racekontrolis ja sessions on: ", sessions)
+    const nextSession = sessions.find((session) => session.status === 'notStarted');
+    console.log("siin trükin juba nextSession: ", nextSession)
     const raceMode = useRaceState((state) => state.raceMode);
     const runningRace = useRaceState((state) => state.runningRace)
+    const listenSocket = useRaceState((state) => state.listenSocket);
+
+    useEffect(() => {
+        if(listenSocket) {listenSocket();}
+    }, [listenSocket]);
 
     // button onClick functions
     const emitStart = () => {
@@ -40,8 +50,8 @@ function RaceControl() {
         };
 
     const displayView = (() => {
-        if (!(sessions && sessions.length > 0) && !(runningRace)) return "waitingForSession";
-        if (sessions && (sessions.length > 0) && !(runningRace)) return "startingSession";
+        if (!(nextSession) && !(runningRace)) return "waitingForSession";
+        if (nextSession && !(runningRace)) return "startingSession";
         if (runningRace && !(raceMode === PROTECTED_MODES.FINISH)) return "duringRace";
         if (raceMode === PROTECTED_MODES.FINISH) return "returningToPaddock";
         return "waitingForSession";
@@ -60,7 +70,7 @@ function RaceControl() {
         
             <div className="card">
                 <p>Next Race:</p>
-                <ListOfSessions sessions={sessions}/>
+                <SessionListing nextSession={nextSession}/>
 
             </div>
         <ControlButton buttonName={"start".toUpperCase()} onClick={emitStart}/>
@@ -78,7 +88,7 @@ function RaceControl() {
             </>
         )}
 
-        {displayView == "returningToPaddock" && (
+        {displayView === "returningToPaddock" && (
             <>
                 <Timer />
                 <ReturnToPaddock />

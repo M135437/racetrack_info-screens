@@ -4,7 +4,7 @@ import EVENTS from "../shared/events";
 
 let isListening = false;
 
-export const useRaceState = create((set, get) => ({
+export const useRaceState = create((set) => ({
     time: null,
     sessions: [],
     raceMode: 'notStarted',
@@ -15,12 +15,6 @@ export const useRaceState = create((set, get) => ({
     setTime: (time) => set({ time }),
     setSessions: (sessions) => set({ sessions }),
     setLeaderboard: (leaderboard) => set({ leaderboard }),
-
-    getNextSession: () => {
-        const sessions = get().sessions;
-        return sessions.find(session => session.status === 'notStarted') || null;
-    }
-
 
     recordLap: (carId) => {
         console.log("Emitting LAP_UPDATE for car:", carId);
@@ -44,24 +38,22 @@ export const useRaceState = create((set, get) => ({
         socket.off(EVENTS.SESSION_STARTED);
         socket.off(EVENTS.SESSION_ENDED);
         socket.off(EVENTS.STATE_DISTRIBUTED);
+        socket.off(EVENTS.SESSION_ERROR);
 
-        // taimer
+        // timer
         socket.on(EVENTS.TIMER_UPDATE, (ms) => {
             set({ time: ms });
         });
 
-        // sessioonide nimekiri
+        // session list
         socket.on(EVENTS.SESSION_LISTED, (data) => {
             set({ sessions: Array.isArray(data) ? data : [] });
         });
 
-        // Puhastame vana kuulari (hea tava)
-        socket.off(EVENTS.SESSION_ERROR);
-
-        // Kuulame veateateid backendist
+        // listed for errors from backend side
         socket.on(EVENTS.SESSION_ERROR, (errorMessage) => {
             console.error("BACKEND ERROR:", errorMessage);
-            // alerti kasutan frontdeskis, kuna seal on võimalik sessioonide nimekirja muuta ja see võib põhjustada vigu, mida on vaja kasutajale näidata
+            // alert intended to be used at Front Desk for informing user of possible session&driver creation errors
             alert(`Hoiatus: ${errorMessage}`);
         });
 
@@ -73,17 +65,17 @@ export const useRaceState = create((set, get) => ({
             })
         })
 
-        // režiimi muutus — flags, countdown, leaderboard vajavad seda
+        // mode changes -- required by Race Flags, Countdown, Leaderboard
         socket.on(EVENTS.MODE_CHANGED, (newMode) => {
             set({ raceMode: newMode });
         });
 
-        // ringiaegade uuendus — leaderboard vajab seda
+        // lap time updates -- listened for Leaderbaord
         socket.on(EVENTS.LAP_UPDATED, (data) => {
             set({ leaderboard: Array.isArray(data) ? data : [] });
         });
 
-        // sessioon algas — NextRace/RaceFlag/RaceControl/FrontDesk/LapTracker/Leaderboard peavad uuenema
+        // start of session — NextRace/RaceFlag/RaceControl/FrontDesk/LapTracker/Leaderboard need to update when received
         socket.on(EVENTS.SESSION_STARTED, (data) => {
             set({
                 raceMode: 'safe',
@@ -93,7 +85,7 @@ export const useRaceState = create((set, get) => ({
             socket.emit(EVENTS.SESSION_GET);
         });
 
-        // sessioon lõppes — NextRace paddock sõnum
+        // end of session — for NextRace return to paddock
         socket.on(EVENTS.SESSION_ENDED, () => {
             set({
                 raceMode: 'ended',
@@ -102,7 +94,7 @@ export const useRaceState = create((set, get) => ({
             socket.emit(EVENTS.SESSION_GET);
         });
 
-        // küsi kohe algandmed
+        // request data upon startup/opening the page
         socket.emit(EVENTS.SESSION_GET);
         socket.emit(EVENTS.STATE_GET);
     }

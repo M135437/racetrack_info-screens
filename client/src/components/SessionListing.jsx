@@ -1,14 +1,16 @@
-function SessionsListing({ session }) {
-    if (!session) return null;
+function SessionListing({ nextSession }) {
+    console.log(nextSession);
+    console.log("jeeeeh")
+    if (!nextSession) return null;
 
     return (
         <div className="race-card">
             <h2 className="race-title">
-                {session.name || "Upcoming session"}
+                {nextSession.name || "Upcoming session"}
             </h2>
 
             <div className="driver-list">
-                {session.drivers?.map((driver, index) => (
+                {nextSession.drivers?.map((driver, index) => (
                     <div key={driver.id || index} className="driver-row">
                         <span className="driver-name">{driver.name}</span>
                         <span className="driver-car">
@@ -21,4 +23,4 @@ function SessionsListing({ session }) {
     );
 }
 
-export default SessionsListing;
+export default SessionListing;
