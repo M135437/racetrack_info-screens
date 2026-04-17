@@ -41,7 +41,7 @@ function RaceControl() {
 
     const displayView = (() => {
         if (!(sessions && sessions.length > 0) && !(runningRace)) return "waitingForSession";
-        if (sessions && (sessions.length > 0)) return "startingSession";
+        if (sessions && (sessions.length > 0) && !(runningRace)) return "startingSession";
         if (runningRace && !(raceMode === PROTECTED_MODES.FINISH)) return "duringRace";
         if (raceMode === PROTECTED_MODES.FINISH) return "returningToPaddock";
         return "waitingForSession";
