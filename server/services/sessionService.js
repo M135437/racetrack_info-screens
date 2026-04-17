@@ -70,28 +70,43 @@ function deleteSession(id) {
 //ADD driver to session (not implemented yet, but can be added later 
 // when implementing driver management)
 function addDriver(sessionId, driverName, car) {
-    const session = state.sessions.find(s => s.id === sessionId) //
+    // 1. Leiame sessiooni
+    const session = state.sessions.find(s => s.id === sessionId)
 
     if (!session) {
         throw new Error("Session not found")
+    }
+
+    // 2. DEBUG LOGI - Et näha, mitu korda funktsioon käivitub
+    console.log(`--- addDriver käivitus nimega: "${driverName}" ---`);
+
+    // 3. PUHASTAME NIMEE (eemaldame tühikud)
+    const cleanName = driverName ? driverName.trim() : "";
+
+    if (cleanName === "") {
+        throw new Error("Driver name is required")
+    }
+
+    // 4. TURVAMEES: Kontrollime, kas see nimi on juba sessioonis
+    // Lisasin .toLowerCase(), et "Mikk" ja "mikk" oleksid sama asi
+    const alreadyExists = session.drivers.some(d =>
+        d.name.toLowerCase() === cleanName.toLowerCase()
+    );
+
+    if (alreadyExists) {
+        console.log(`BLOKEERITUD: Sõitja ${cleanName} on juba olemas.`);
+        // RETURN asemel kasuta THROW, kui tahad, et frontend saaks veateate
+        throw new Error(`Sõitja nimega "${cleanName}" on juba nimekirjas!`);
     }
 
     if (session.freeSlotsLeft <= 0) {
         throw new Error("No free slots left")
     }
 
-    if (!driverName || driverName.trim() === "") {
-        throw new Error("Driver name is required")
-    }
-
-    // prevent adding drivers with duplicate names in the same session, can be improved to allow duplicates if needed, but for now it will just throw an error if a driver with the same name already exists in the session
-    if (session.drivers.some(d => d.name === driverName)) {
-        throw new Error("Driver with this name already exists")
-    }
-
+    // 5. LOOME SÕITJA (id-le lisame suvalise numbri, et vältida kokkupõrkeid)
     const driver = {
-        id: Date.now(), // simple unique id generator, can be improved to use a better method for generating unique ids
-        name: driverName,
+        id: Date.now() + Math.random(),
+        name: cleanName,
         car: car || "—",
         lastLapTimestamp: null,
         lapCount: null,
@@ -101,8 +116,11 @@ function addDriver(sessionId, driverName, car) {
         isFinished: false
     }
 
-    session.drivers.push(driver) // add driver to session's drivers array
-    session.freeSlotsLeft-- // decrease free slots left by 1
+    // 6. LISAME NIMEKIRJA
+    session.drivers.push(driver)
+    session.freeSlotsLeft--
+
+    console.log(`EDUKAS: Sõitja ${cleanName} lisatud. Kokku nüüd: ${session.drivers.length}`);
 
     return driver
 }
