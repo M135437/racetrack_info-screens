@@ -1,31 +1,32 @@
 .fullscreen-btn {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  z-index: 10;
-  background: rgba(255, 255, 255, 0.2);
+  top: 15px;
+  right: 15px;
+  z-index: 99;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
   cursor: pointer;
   opacity: 0.5;
-  transition: 0.2s;
+  transition: opacity 0.2s;
+  font-size: 1.5rem;
+  padding: 8px;
+  line-height: 1;
 }
-.fullscreen-btn:hover {
-  opacity: 1;
+@media (hover: hover) {
+  .fullscreen-btn:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.3);
 }
-
-:fullscreen { 
-  background-color: #000; 
 }
 :fullscreen .fullscreen-btn {
-  opacity: 0; 
-  transition: 0.2s;
+  opacity: 0,05; 
 }
-:fullscreen .fullscreen-btn:hover {
+:fullscreen .fullscreen-btn:active {
   opacity: 1;
 }
-/* kui on spetsiifilised high-res tabletid, läheb vb vaja ka:
 ::backdrop {
-  background-color: #000;
-tuleb veebiüleselt lasta testida vb */
+  background-color: #1e2f3f;
+}
 
 .lap-container {
     height: 100vh; 
@@ -112,7 +113,6 @@ tuleb veebiüleselt lasta testida vb */
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(2, 1fr);
    }
-
   /* Layout for 1-4 buttons: */
   .drivers-grid:has(> :last-child:nth-child(1)) {
     grid-template-columns: 1fr;
@@ -129,6 +129,13 @@ tuleb veebiüleselt lasta testida vb */
   .drivers-grid:has(> :last-child:nth-child(4)) {
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(2, 1fr);
+  }
+  .laptracker-header {
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+  }
+  .laptracker-header h2 {
+    font-size: 1.2rem;
   }
 }
 
