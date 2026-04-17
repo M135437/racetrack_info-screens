@@ -4,8 +4,8 @@ import * as stateMachine from "../state/stateMachine.js"
 //in-memory pointer to sessions in state
 let sessionCounter = 1;
 
-function getLastNotStartedSession() {
-    for (let i = state.sessions.length - 1; i >= 0; i--) {
+function getFirstNotStartedSession() {
+    for (let i = 0; i < state.sessions.length; i++) {
         if (state.sessions[i].status === 'notStarted') {
             return state.sessions[i];
         }
@@ -49,12 +49,12 @@ function createSession(name) {
 
     const session = createSessionObject(name);
     state.sessions.push(session);
-    const last = getLastNotStartedSession();
-    if (!last) {
+    const first = getFirstNotStartedSession();
+    if (!first) {
         console.log("No notStarted sessions found");
         return session;
     }
-    stateMachine.stateUptNextRaceId(last.id);
+    stateMachine.stateUptNextRaceId(first.id);
     return session;
 }
 
