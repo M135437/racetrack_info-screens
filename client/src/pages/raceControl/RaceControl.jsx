@@ -9,7 +9,6 @@ import "../../App.css"
 import PageHeader from "../../components/PageHeader.jsx"
 import Timer from "../../components/Timer.jsx"
 import ControlButton from "../../components/ControlButton.jsx"
-import ListOfSessions from "../../components/ListOfSessions.jsx"
 import NoSessionsState from "../../components/NoSessionsState.jsx";
 import ReturnToPaddock from "../../components/ReturnToPaddock.jsx"
 import { useEffect } from "react";
