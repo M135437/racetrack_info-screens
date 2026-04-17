@@ -1,31 +1,32 @@
 .fullscreen-btn {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  z-index: 10;
-  background: rgba(255, 255, 255, 0.2);
+  top: 15px;
+  right: 15px;
+  z-index: 99;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
   cursor: pointer;
   opacity: 0.5;
-  transition: 0.2s;
+  transition: opacity 0.2s;
+  font-size: 1.5rem;
+  padding: 8px;
+  line-height: 1;
 }
-.fullscreen-btn:hover {
-  opacity: 1;
+@media (hover: hover) {
+  .fullscreen-btn:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.3);
 }
-
-:fullscreen { 
-  background-color: #000; 
 }
 :fullscreen .fullscreen-btn {
-  opacity: 0; 
-  transition: 0.2s;
+  opacity: 0,05; 
 }
-:fullscreen .fullscreen-btn:hover {
+:fullscreen .fullscreen-btn:active {
   opacity: 1;
 }
-/* kui on spetsiifilised high-res tabletid, läheb vb vaja ka:
 ::backdrop {
-  background-color: #000;
-tuleb veebiüleselt lasta testida vb */
+  background-color: #1e2f3f;
+}
 
 .lap-container {
     height: 100vh; 
@@ -91,7 +92,7 @@ tuleb veebiüleselt lasta testida vb */
   }
 }
 
-/* PORTRAIT-VIEW */
+/* DEFAULT and DESKTOP VIEW */
 .drivers-grid { 
   flex: 1; 
   display: grid !important;
@@ -106,13 +107,55 @@ tuleb veebiüleselt lasta testida vb */
   box-sizing: border-box;
   animation: slideIn 1s ease-out forwards;
 }
-/* LANDSCAPE VIEW */
+/* PORTRAIT on mobile */
+@media screen and (max-width: 768px) and (orientation: portrait) {
+  .laptracker-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    min-height: 40px;
+  }
+  .laptracker-header h2{
+    font-size: 1rem;
+    letter-spacing: 1px;
+    /*margin: 0; VB, et vältida brauserite vaikesätteid? */
+  }
+  .drivers-grid {
+    max-width: 768px;
+  }
+  .lap-button {
+    font-size: clamp(1.1rem, 8vw, 1.5rem)
+  }
+  .component-zone {
+    position: relative;
+    display: flex;
+    margin-left: auto;
+    width: fit-content;
+    align-items: center;
+    margin-top: 15px;
+    margin-left: 15px;
+    height: auto;
+    top: auto;
+  }
+  .race-status {
+    height: 18px;
+    font-size: 0.6rem;
+    padding: 0 5px;
+  }
+  .timer-wrapper {
+    height: 25px;
+    width: 50px;
+    font-size: 1rem;
+    margin-left: -5px;
+  }
+}
+/* LANDSCAPE on mobile/tablet */
 @media screen and (min-width: 768px) and (orientation: landscape) {
   .drivers-grid { /* Default: 5-8 buttons */
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(2, 1fr);
    }
-
   /* Layout for 1-4 buttons: */
   .drivers-grid:has(> :last-child:nth-child(1)) {
     grid-template-columns: 1fr;
@@ -129,6 +172,13 @@ tuleb veebiüleselt lasta testida vb */
   .drivers-grid:has(> :last-child:nth-child(4)) {
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(2, 1fr);
+  }
+  .laptracker-header {
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+  }
+  .laptracker-header h2 {
+    font-size: 1.5rem;
   }
 }
 
@@ -216,7 +266,7 @@ tuleb veebiüleselt lasta testida vb */
 }
 @media screen and (max-width: 480) {
   .lap-button {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
   }
 }
 

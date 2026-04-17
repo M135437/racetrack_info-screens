@@ -82,7 +82,7 @@ const LapTracker = () => {
         <div className="lap-container">
             <div>
                 <button onClick={() => toggleFullScreen()}
-                className="fullscreen-btn">Fullscreen</button>
+                className="fullscreen-btn">⛶</button>
             </div>
             <header className="laptracker-header">
                 <h2>LAP TRACKER</h2>
