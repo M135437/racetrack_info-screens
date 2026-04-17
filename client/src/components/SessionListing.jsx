@@ -1,6 +1,4 @@
 function SessionListing({ nextSession }) {
-    console.log(nextSession);
-    console.log("jeeeeh")
     if (!nextSession) return null;
 
     return (
