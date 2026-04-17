@@ -11,6 +11,7 @@ const LapTracker = () => {
     const [now, setNow] = useState(Date.now());
     const [cooldowns, setCooldowns] = useState([]);
     const cooldownsRef = useRef([]);
+    const [isExiting, setIsExiting] = useState(false);
 
     useEffect(() => {
         listenSocket();
@@ -57,7 +58,21 @@ const LapTracker = () => {
     return parseInt(a.car) - parseInt(b.car);
   });
 
-  // ajutine laptracker-ui-spetsiifiline täisekraaninupp
+  // Slide-out effect for button-grid
+  useEffect(() => {
+        if (isRaceActive) {
+            setIsExiting(false);
+        }
+        if (!isRaceActive && drivers.length > 0) {
+            setIsExiting(true);
+            const slideOutTimer = setTimeout(() => {
+                setIsExiting(false);
+            }, 1000);
+            return () => clearTimeout(slideOutTimer);
+        }
+    }, [raceMode, isRaceActive]);
+
+  // temp? fullscreen
     function toggleFullScreen() {
         if (document.fullscreenElement) document.exitFullscreen();
         else document.documentElement.requestFullscreen(); 
@@ -65,9 +80,9 @@ const LapTracker = () => {
 
     return (
         <div className="lap-container">
-            <div> {/* ajutine lt-spetsiifiline fullscreen: */}
+            <div>
                 <button onClick={() => toggleFullScreen()}
-                className="fullscreen-btn">Fullscreen</button>
+                className="fullscreen-btn">⛶</button>
             </div>
             <header className="laptracker-header">
                 <h2>LAP TRACKER</h2>
@@ -82,16 +97,12 @@ const LapTracker = () => {
                 </div>
             </div>
             ) : null}
-            {!isRaceActive ? (
-                <div className="waiting-screen">
-                    <p>
-                        {raceMode === "notStarted"
-                        ? "Waiting for the first race to begin.."
-                        : "Waiting for the next race to begin.."}
-                    </p>
-                </div>
-            ) : (
-            <div className="drivers-grid">
+            
+            {(drivers.length > 0 && (isRaceActive || isExiting)) ? (
+            <div className={`drivers-grid ${isExiting
+                ? "exit-animation"
+                : ""}`
+                }>
             {sortedDrivers.map((driver) => (
                 <div key={driver.id} className="lap-tracker-ui">
 
@@ -106,13 +117,21 @@ const LapTracker = () => {
                             ? "disabled"
                             : cooldowns.includes(driver.id) ? "cooling" : "active"}`}
                     >
-                        {driver.isFinished ? `${driver.car} FINISHED` : `car ${driver.car} | `}
-                        <span>Laps: {driver.lapCount} | Last time: {formatLapDisplay(driver.latestLapTime)} | Best: {formatLapDisplay(driver.fastestLap) || "--"}
-                        </span>
+                        {driver.isFinished ? `${driver.car} FINISHED` : `car ${driver.car}`}
+                        {/*<span>Laps: {driver.lapCount} | Last time: {formatLapDisplay(driver.latestLapTime)} | Best: {formatLapDisplay(driver.fastestLap) || "--"}
+                        </span> */}
                     </button>
                 </div>
             ))}
         </div>
+        ) : (
+            <div className="waiting-screen">
+                    <p>
+                        {raceMode === "notStarted"
+                        ? "Waiting for the first race to begin.."
+                        : "Waiting for the next race to begin.."}
+                    </p>
+            </div>
         )}
         </div>
     );

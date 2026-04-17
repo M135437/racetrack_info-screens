@@ -1,48 +1,36 @@
-/* global border-box peaks saama kaetud app.css-ga */
-
-/* ajutine paikne fullscreen nupp */
 .fullscreen-btn {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  z-index: 10;
-  background: rgba(255, 255, 255, 0.2); /* õrn värvierinevus taustaga */
+  top: 15px;
+  right: 15px;
+  z-index: 99;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
   cursor: pointer;
   opacity: 0.5;
-  transition: 0.2s;
+  transition: opacity 0.2s;
+  font-size: 1.5rem;
+  padding: 8px;
+  line-height: 1;
 }
-.fullscreen-btn:hover {
-  opacity: 1;
+@media (hover: hover) {
+  .fullscreen-btn:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.3);
 }
-
-:fullscreen { /* üle kirjutamaks võimalikke lehitseja vaikesätteid
-  fullscreenis - nt must taustpõhi jne jne */
-  background-color: #000; /* või misiganes saab meie PÄRIS taustvärv olema */
 }
 :fullscreen .fullscreen-btn {
-  opacity: 0; /* et täisekraanil nuppu kohe ei kuvaks*/
-  transition: 0.2s;
+  opacity: 0,05; 
 }
-:fullscreen .fullscreen-btn:hover {
+:fullscreen .fullscreen-btn:active {
   opacity: 1;
 }
-/* kui on spetsiifilised high-res tabletid, läheb vaja ka:
 ::backdrop {
-  background-color: #000;
-*/
+  background-color: #1e2f3f;
+}
 
 .lap-container {
-  /* kui kasutada all: unset; <- kirjutab üle KÕIK global-id*/
-    /*position: absolute;
-    top: 0;
-    padding-top: 50px;
-    left: 0;
-    z-index: 9998;
-    /* ^ need 4 üle kirjutamaks vite-i globaalset
-    index/app.css stiile, et ma näeks oma PÄRIS töö vilju */
-
-    height: 100vh; /* 100 prosa kogukõrgusesst */
-    width: 100%; /* 100 prosa kogulaiusest */
+    height: 100vh; 
+    width: 100%; 
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -69,7 +57,8 @@
 }
 
 .waiting-screen {
-  animation: fadeIn 1s ease-in;
+  opacity: 0;
+  animation: fadeIn 1s ease-in 0.4s forwards;
 }
 @keyframes fadeIn { 
   from { opacity: 0; }
@@ -78,9 +67,10 @@
 
 .lap-tracker-ui {
   display: flex;
-  height: 100%; /* tagab, et iga div täidab kogu oma ala laiuse */
-  /* vaatan, kuidas visuaalselt on, enne kui lisan äärised (border) */
+  height: 100%;
+  width: 100%;
 }
+
 @keyframes slideIn {
   from { 
     opacity: 0; 
@@ -91,57 +81,137 @@
     transform: translateY(0); 
   }
 }
-
-.drivers-grid { /* PORTRAIT */
-  flex: 1; 
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-auto-rows: 1fr; 
-  /*gap: 1px;*/
-  width: 100%;
-  /*vana:
-  align-items: stretch; /* tagab sama kõrguse */
-  animation: slideIn 1s ease-out forwards; /* keyframes-id */
-}
-/* siit landscape-view stiil, mis käivitub vaid siis, kui ekraan väga lai
-või kui tablet ise spetsiifiliselt landscape mode-is */
-@media screen and (min-width: 768px) and (orientation: landscape) {
-  .drivers-grid {
-    /* muundame spetsiifiliselt max-tulbad: */
-    grid-template-columns: repeat(4, 1fr);
-    gap: 2px;
+@keyframes slideOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(30px);
   }
 }
 
-/* megasuure nupu saavutamine: */
+/* DEFAULT and DESKTOP VIEW */
+.drivers-grid { 
+  flex: 1; 
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(45%, 1fr));
+  grid-auto-rows: 1fr; 
+  width: 100%;
+  max-width: 1000px; 
+  margin: 0 auto; 
+  justify-items: stretch;
+  align-items: stretch;
+  justify-content: center;
+  box-sizing: border-box;
+  animation: slideIn 1s ease-out forwards;
+}
+/* PORTRAIT on mobile */
+@media screen and (max-width: 768px) and (orientation: portrait) {
+  .laptracker-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    min-height: 40px;
+  }
+  .laptracker-header h2{
+    font-size: 1rem;
+    letter-spacing: 1px;
+    /*margin: 0; VB, et vältida brauserite vaikesätteid? */
+  }
+  .drivers-grid {
+    max-width: 768px;
+  }
+  .lap-button {
+    font-size: clamp(1.1rem, 8vw, 1.5rem)
+  }
+  .component-zone {
+    position: relative;
+    display: flex;
+    margin-left: auto;
+    width: fit-content;
+    align-items: center;
+    margin-top: 15px;
+    margin-left: 15px;
+    height: auto;
+    top: auto;
+  }
+  .race-status {
+    height: 18px;
+    font-size: 0.6rem;
+    padding: 0 5px;
+  }
+  .timer-wrapper {
+    height: 25px;
+    width: 50px;
+    font-size: 1rem;
+    margin-left: -5px;
+  }
+}
+/* LANDSCAPE on mobile/tablet */
+@media screen and (min-width: 768px) and (orientation: landscape) {
+  .drivers-grid { /* Default: 5-8 buttons */
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+   }
+  /* Layout for 1-4 buttons: */
+  .drivers-grid:has(> :last-child:nth-child(1)) {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+  }
+  .drivers-grid:has(> :last-child:nth-child(2)) {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: 1fr;
+  }
+  .drivers-grid:has(> :last-child:nth-child(3)) {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr;
+  }
+  .drivers-grid:has(> :last-child:nth-child(4)) {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+  }
+  .laptracker-header {
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+  }
+  .laptracker-header h2 {
+    font-size: 1.5rem;
+  }
+}
+
+.drivers-grid.exit-animation {
+  animation: slideOut 1s ease-in forwards !important;
+}
+
 .lap-button {
-  appearance: none;
+  flex: 1;
   background-clip: padding-box;
   border: none;
   width: 100%;
   height: 100%;
-  font-size: 3rem; /* hästi nähtav */
+  font-size: clamp(1,5rem, 5vw, 3rem);
   font-weight: bold;
   text-transform: uppercase;
-  /*border-radius: 0; /* et nuppudel poleks kumerad nurgad */
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
   box-shadow: inset 5px 5px 3px rgba(255, 255, 255, 0.3),
               inset -1px -1px 5px rgba(0, 0, 0, 0.4) !important;
   transition: all 0.08s ease-in-out;
-  display: block; /* tagab täislaiuse ja et tekst on keskel */
-  outline: none !important; /* et lahti saada koledast vaikimisi sinisest joonest */
+  display: flex; 
+  outline: none !important; 
   -webkit-tap-highlight-color: transparent;
-  /* seni ükski neist outline none-idest jne ei eemaldanud sinist joonekest;
-  pole high-priority, nii et kunagi hiljem vb tegeleb edasi */
-  /* katse saada inset-varjud tagasi pärast padding-top muudatust: */
   transform: translateZ(0);
   -webkit-font-smoothing: antialiased;
 }
-.lap-button:hover { /* tableti tõttu hiljem kustutan. võib näida "kinni kiilunud"*/
+.lap-button:hover { /* review - will it make buttons look "frozen" on tablet? */
   outline: none !important;
   outline: 0 !important;
   cursor: pointer;
   opacity: 0.9;
-  /* VÕI siis lisan @media abil, et ainult clickable-seadmetes toimib; näis*/
 }
 .lap-button.active {
   background-color: rgba(255, 255, 255, 0.2) !important;
@@ -150,11 +220,10 @@ või kui tablet ise spetsiifiliselt landscape mode-is */
   color: white;
   outline: 0 !important;
   outline: none !important;
-  /* box-shadow: none !important; */
 }
-.lap-button.active:active { /* nupuvajutuse hetkel muudatused: */
-  transform: scale(0.98); /* "vajub" ekraani sisse */
-  filter: brightness(1.1); /* "kumab" kergelt*/
+.lap-button.active:active { 
+  transform: scale(0.98); 
+  filter: brightness(1.1); 
 }
 .lap-button:focus {
   outline: 0 !important;
@@ -180,7 +249,7 @@ või kui tablet ise spetsiifiliselt landscape mode-is */
   position: relative;
   overflow: hidden;
 }
-.lap-button.cooling::after { /* cooldown-efekti animatsiooniks */
+.lap-button.cooling::after { 
   content: "";
   position: absolute;
   bottom: 0;
@@ -194,6 +263,11 @@ või kui tablet ise spetsiifiliselt landscape mode-is */
 @keyframes cooldownBar {
   from { width: 0% }
   to { width: 100% }
+}
+@media screen and (max-width: 480) {
+  .lap-button {
+    font-size: 1.2rem;
+  }
 }
 
 .component-zone {
