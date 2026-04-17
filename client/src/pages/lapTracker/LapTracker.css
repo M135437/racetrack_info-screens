@@ -60,18 +60,41 @@
 }
 
 .waiting-screen {
-  animation: fadeIn 1s ease-in 0.3s forwards;
+  opacity: 0;
+  animation: fadeIn 1s ease-in 0.4s forwards;
 }
 @keyframes fadeIn { 
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
+/* vahepealne flex-versioon:
 .lap-tracker-ui {
   display: flex;
+  width: 100%;
   height: 100%; /* tagab, et iga div täidab kogu oma ala laiuse */
-  /* vaatan, kuidas visuaalselt on, enne kui lisan äärised (border) */
+  /* vaatan, kuidas visuaalselt on, enne kui lisan äärised (border) 
+  justify-content: center;
+  /* portree 
+  flex: 0 0 calc(50% - 10px);
+  min-width: 0;
+  box-sizing: border-box;
 }
+/* landscape 
+@media screen and (min-width: 768px) and (orientation: landscape) {
+  .drivers-grid {
+    max-width: 1400px;
+  }
+  .lap-tracker-ui {
+    flex: 0 0 calc(25% - 12px)
+  }
+} */
+.lap-tracker-ui {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
 @keyframes slideIn {
   from { 
     opacity: 0; 
@@ -93,49 +116,95 @@
   }
 }
 
-/* PORTRAIT */
-.drivers-grid:not(.exit-animation) { 
+/* portrait */
+.drivers-grid { 
   flex: 1; 
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 500px));
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(45%, 1fr));
   grid-auto-rows: 1fr; 
-  
   width: 100%;
   max-width: 1000px; /* et desktopil ei läheks liiga suureks */
   margin: 0 auto; /* et nupud püsiks keskel */
+  justify-items: stretch;
+  align-items: stretch;
   justify-content: center;
-  animation: slideIn 1s ease-out forwards; /* keyframes-id */
+  box-sizing: border-box;
+  animation: slideIn 1s ease-out forwards;
 }
 /* LANDSCAPE */
 @media screen and (min-width: 768px) and (orientation: landscape) {
+  /* toimiv esmaversioon:
   .drivers-grid {
-    grid-template-columns: repeat(4, minmax(0, 350px));
+    grid-template-columns: repeat(auto-fit, minmax(21%, 1fr));
     width: 100%;
     max-width: 1400px;
-    margin: 0 auto;
-    justify-content:center;
+    /*margin: 0 auto;
+    justify-content: center; 
+  } */
+  .drivers-grid { /* 5-8 nuppu */
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+   }
+
+  /* täpsustav nupusuuruste lisa landscapeis: */
+  /* ainus nupp: */
+  .drivers-grid:has(> :last-child:nth-child(1)) {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+  }
+  /* 2 nuppu: */
+  .drivers-grid:has(> :last-child:nth-child(2)) {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: 1fr;
+  }
+  /* 3 nuppu: */
+  .drivers-grid:has(> :last-child:nth-child(3)) {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr;
+  }
+  /* 4 nuppu: */
+  .drivers-grid:has(> :last-child:nth-child(4)) {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
   }
 }
-.exit-animation {
-  animation: slideOut 0.5s ease-in forwards !important;
-}
 
+/* vahepealne flexversioon:
+ .drivers-grid {
+  display: flex !important;
+  flex-wrap: wrap;
+  flex: 1;
+  width: 100%;
+  max-width: 10000px;
+  margin: 0 auto;
+  justify-content: center;
+  align-content: flex-start;
+  box-sizing: border-box;
+  animation: slideIn 1s ease-out forwards;
+ } */
+.drivers-grid.exit-animation {
+  animation: slideOut 1s ease-in forwards !important;
+}
 
 /* megasuure nupu saavutamine: */
 .lap-button {
-  appearance: none;
+  /*appearance: none;*/
+  flex: 1;
   background-clip: padding-box;
   border: none;
   width: 100%;
   height: 100%;
-  font-size: 3rem; /* hästi nähtav */
+  font-size: clamp(1,5rem, 5vw, 3rem); /* muunduva suurusega */
   font-weight: bold;
   text-transform: uppercase;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
   /*border-radius: 0; /* et nuppudel poleks kumerad nurgad */
   box-shadow: inset 5px 5px 3px rgba(255, 255, 255, 0.3),
               inset -1px -1px 5px rgba(0, 0, 0, 0.4) !important;
   transition: all 0.08s ease-in-out;
-  display: block; /* tagab täislaiuse ja et tekst on keskel */
+  display: flex; /* "block" tagaks täislaiuse ja et tekst on keskel */
   outline: none !important; /* et lahti saada koledast vaikimisi sinisest joonest */
   -webkit-tap-highlight-color: transparent;
   /* seni ükski neist outline none-idest jne ei eemaldanud sinist joonekest;

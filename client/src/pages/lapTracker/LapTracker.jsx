@@ -97,15 +97,8 @@ const LapTracker = () => {
                 </div>
             </div>
             ) : null}
-            {!isRaceActive && !isExiting ? (
-                <div className="waiting-screen">
-                    <p>
-                        {raceMode === "notStarted"
-                        ? "Waiting for the first race to begin.."
-                        : "Waiting for the next race to begin.."}
-                    </p>
-                </div>
-            ) : (
+            
+            {(drivers.length > 0 && (isRaceActive || isExiting)) ? (
             <div className={`drivers-grid ${isExiting
                 ? "exit-animation"
                 : ""}`
@@ -125,12 +118,20 @@ const LapTracker = () => {
                             : cooldowns.includes(driver.id) ? "cooling" : "active"}`}
                     >
                         {driver.isFinished ? `${driver.car} FINISHED` : `car ${driver.car} | `}
-                        <span>Laps: {driver.lapCount} | Last time: {formatLapDisplay(driver.latestLapTime)} | Best: {formatLapDisplay(driver.fastestLap) || "--"}
-                        </span>
+                        {/*<span>Laps: {driver.lapCount} | Last time: {formatLapDisplay(driver.latestLapTime)} | Best: {formatLapDisplay(driver.fastestLap) || "--"}
+                        </span> */}
                     </button>
                 </div>
             ))}
         </div>
+        ) : (
+            <div className="waiting-screen">
+                    <p>
+                        {raceMode === "notStarted"
+                        ? "Waiting for the first race to begin.."
+                        : "Waiting for the next race to begin.."}
+                    </p>
+            </div>
         )}
         </div>
     );
