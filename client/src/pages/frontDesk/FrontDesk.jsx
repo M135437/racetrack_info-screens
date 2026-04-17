@@ -9,7 +9,6 @@ export default function FrontDesk() {
     const [sessions, setSessions] = useState([])
     const [inputs, setInputs] = useState({})
     const [name, setName] = useState("")
-    const [startTime, setStartTime] = useState("")
 
     useEffect(() => {
         socket.emit(EVENTS.SESSION_GET)
@@ -27,15 +26,13 @@ export default function FrontDesk() {
 
     // SESSION
     const createSession = () => {
-        if (!name.trim() || !startTime) return
+        if (!name.trim()) return
 
         socket.emit(EVENTS.SESSION_CREATE, {
-            name,
-            startTime
+            name
         })
 
         setName("")
-        setStartTime("")
     }
 
     const deleteSession = (id) => {
@@ -93,11 +90,6 @@ export default function FrontDesk() {
                     placeholder="Race name"
                 />
 
-                <input
-                    type="time"
-                    value={startTime}
-                    onChange={(e) => setStartTime(e.target.value)}
-                />
 
                 <button type="submit">
                     Create

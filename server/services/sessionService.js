@@ -2,7 +2,7 @@ import state from "../state/state.js"
 import * as stateMachine from "../state/stateMachine.js"
 
 //in-memory pointer to sessions in state
-let sessions = state.sessions;
+let sessionCounter = 1;
 
 function getLastNotStartedSession() {
     for (let i = state.sessions.length - 1; i >= 0; i--) {
@@ -14,11 +14,10 @@ function getLastNotStartedSession() {
 }
 
 //defining session-model (id, name, drivers, cars, status)
-function createSessionObject(name, startTime) {
+function createSessionObject(name) {
     return {
-        id: (state.sessions.length),
+        id: sessionCounter++,
         name,
-        startTime: startTime,
         maxSlots: 8, //default value, can be changed when creating session
         freeSlotsLeft: 8, //default value, can be changed when drivers join
         status: 'notStarted', //later can be 'started', 'finishing' or 'ended'
@@ -40,19 +39,15 @@ function getAllSessions() {
 }
 
 //CREATE (POST) session
-function createSession(name, startTime) {
-    console.log("doing createSession(name, startTime)")
+function createSession(name) {
+    console.log("doing createSession(name)")
     //error handlers
     if (!name || name.trim() === "") {
         throw new Error('Session name is required');
         console.log("name error")
     }
-    if (!startTime) {
-        throw new Error('Start time is required');
-        console.log("starttime error")
-    }
 
-    const session = createSessionObject(name, startTime);
+    const session = createSessionObject(name);
     state.sessions.push(session);
     const last = getLastNotStartedSession();
     if (!last) {
@@ -72,43 +67,73 @@ function deleteSession(id) {
 }
 
 
-//ADD driver to session (not implemented yet, but can be added later when implementing driver management)
 function addDriver(sessionId, driverName, car) {
-    const session = state.sessions.find(s => s.id === sessionId) //
+    const session = state.sessions.find(s => s.id === sessionId);
+    if (!session) throw new Error("Session not found");
 
-    if (!session) {
-        throw new Error("Session not found")
-    }
-
+    // 1. KONTROLL: Kas kohti on üldse vaba?
     if (session.freeSlotsLeft <= 0) {
-        throw new Error("No free slots left")
+        throw new Error("Sellesse sõitu rohkem sõitjaid ei mahu (kohtade arv täis)!");
     }
 
-    if (!driverName || driverName.trim() === "") {
-        throw new Error("Driver name is required")
+    // 2. Nime puhastus ja kontroll
+    const cleanName = driverName ? driverName.trim() : "";
+    if (cleanName === "") throw new Error("Driver name is required");
+
+    if (session.drivers.some(d => d.name.toLowerCase() === cleanName.toLowerCase())) {
+        throw new Error(`Sõitja "${cleanName}" on juba nimekirjas!`);
     }
 
-    // prevent adding drivers with duplicate names in the same session, can be improved to allow duplicates if needed, but for now it will just throw an error if a driver with the same name already exists in the session
-    if (session.drivers.some(d => d.name === driverName)) {
-        throw new Error("Driver with this name already exists")
+    // 3. Auto numbri "tark" loogika
+    let carNumber = car ? Number(car) : null;
+    const takenCars = session.drivers.map(d => Number(d.car));
+
+    // Kas sisestatud auto on vigane või juba võetud?
+    const isCarInvalid = car && isNaN(carNumber);
+    const isCarTaken = carNumber !== null && takenCars.includes(carNumber);
+
+    // Kui auto on puudu, vigane või võetud, leiame automaatselt esimese vaba
+    if (carNumber === null || isCarInvalid || isCarTaken) {
+        let found = false;
+        // Me kasutame session.maxSlots, et otsida vaba numbrit vahemikus 1-8
+        for (let i = 1; i <= session.maxSlots; i++) {
+            if (!takenCars.includes(i)) {
+                carNumber = i;
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            // See viga tekib siis, kui maxSlots on täis, aga mingil põhjusel freeSlotsLeft seda ei püüdnud
+            throw new Error("Vabu auto numbreid ei leitud!");
+        }
+
+        if (isCarTaken) {
+            console.log(`INFO: Auto ${car} oli hõivatud. Sõitjale ${cleanName} määrati automaatselt vaba auto: ${carNumber}`);
+        }
     }
 
+    // 4. Loome sõitja objekti
     const driver = {
-        id: Date.now(), // simple unique id generator, can be improved to use a better method for generating unique ids
-        name: driverName,
-        car: car || "—",
+        id: Date.now() + Math.random(),
+        name: cleanName,
+        car: carNumber,
         lastLapTimestamp: null,
         lapCount: null,
         latestLapTime: null,
         currentLap: null,
         fastestLap: null,
         isFinished: false
-    }
+    };
 
-    session.drivers.push(driver) // add driver to session's drivers array
-    session.freeSlotsLeft-- // decrease free slots left by 1
+    // 5. Salvestame
+    session.drivers.push(driver);
+    session.freeSlotsLeft--;
 
-    return driver
+    console.log(`EDUKAS: ${cleanName} (Auto: ${carNumber}) lisatud. Vabu kohti: ${session.freeSlotsLeft}`);
+
+    return driver;
 }
 
 
@@ -133,29 +158,25 @@ function removeDriver(sessionId, driverId) {
 }
 
 function updateDriver(sessionId, driverId, name, car) {
-    const session = state.sessions.find(s => s.id === sessionId)
+    const session = state.sessions.find(s => s.id === sessionId);
+    if (!session) throw new Error("Session not found");
 
-    if (!session) {
-        throw new Error("Session not found")
-    }
+    const driver = session.drivers.find(d => d.id === driverId);
+    if (!driver) throw new Error("Driver not found");
 
-    const driver = session.drivers.find(d => d.id === driverId)
-
-    if (!driver) {
-        throw new Error("Driver not found")
-    }
-
-    // update driver info if new values are provided, 
-    // otherwise keep existing values
     if (typeof name === "string" && name.trim() !== "") {
-        driver.name = name.trim()
+        driver.name = name.trim();
     }
 
-    if (typeof car === "string" && car.trim() !== "") {
-        driver.car = car.trim()
+    // Muudame sissetuleva auto teksti numbriks
+    if (car !== undefined && car !== null) {
+        const newCarNum = Number(car);
+        if (!isNaN(newCarNum)) {
+            driver.car = newCarNum;
+        }
     }
 
-    return driver
+    return driver;
 }
 
 

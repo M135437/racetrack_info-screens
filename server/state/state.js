@@ -1,9 +1,5 @@
 let state = {
-	sessions: [
-		{
-			drivers: []
-		}
-	],	// sessions massiivi lõpp
+	sessions: [],	// sessions massiivi lõpp
 
 	runningRace: null, 	// initially null, upon start or equals(race.id) -> use as pointer to state.races.{}
 	nextRace: 0,	// initially 0, increments to next session id as soon as session/race starts

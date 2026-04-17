@@ -2,19 +2,13 @@ import state from "./state.js"
 import EVENTS from "../../client/src/shared/events.js"
 import raceService from "../services/raceService.js"
 
-//debub version //REVIEW
 function startTimer(io) {
-    //DEBUG
-    console.log("timer.js debug: starting timer"); //REVIEW
-    //console.log(`timer.js debug: timerStatus is ${state.timer.timerStatus} at start`) // REVIEW
-    //check that timer is already not running
     if (state.timer.timerStatus) {
-        console.log("timer.js debug: timer seems to be already running - there is a value in state.timer.timerStatus that is not null") // REVIEW
-        // proper feedback to UI TBD //REVIEW
+        console.log("timer.js: timer seems to be already running - there is a value in state.timer.timerStatus that is not null")
         return;
     }
+    console.log("timer.js: timer started");
     // update variables
-    const debugvalue = JSON.stringify(state.timer.timeRemaining); // REVIEW
     state.timer.timeRemaining = state.timer.duration;
     state.timer.startTime = Date.now();
     // start timer
@@ -25,20 +19,25 @@ function startTimer(io) {
 
         // stop condition
         if (state.timer.timeRemaining <= 0) {
-            console.log("timer.js debug: timer ran out of time!")
+            console.log("timer.js: timer ran out of time!")
             raceService.finishMode(io)
             resetTimer();
+            return;
         }
     }, 100)
 }
 
 function stopTimer() {
-    console.log("timer.js debug: stop() called, stopping timer"); // REVIEW
+    console.log("timer.js: stopTimer() called");
     clearInterval(state.timer.timerStatus);
     state.timer.timerStatus = null;
 }
 
 function resetTimer() {
+    console.log("timer.js: resetTimer() called");
+    clearInterval(state.timer.timerStatus)
+    state.timer.timerStatus = null;
+
     state.timer.timeRemaining = state.timer.duration;
     state.timer.startTime = null;
 }

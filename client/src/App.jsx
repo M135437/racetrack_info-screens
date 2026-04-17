@@ -1,22 +1,17 @@
+// react rendering imports
 import { useState, useEffect } from 'react'
+// hook centralizing socket.IO and events, related library and events contract
+import { socket } from "./socket/socket";
 import { useRaceState } from "./hooks/useRaceState.js"
+import EVENTS from "./shared/events.js"
+// CSS import
 import './App.css'
 
-// npm install react-router-dom (client-kaustas)
-/* nb! kuna meil on (minu pärast) vana vite, siis installimisel toob
-esile vite-i 1 high-risk murekoha. 
-gemini sõnul see vaid murekoht arenduse ajal serveripoolel (kui häkker samas
-võrgus tahaks salafailidele ligi pääseda, siis potentsiaalselt saaks), kuid
-mis ei kandu lõpptootesse üle.
-
-npm audit fix uuendaks vite-i, aga kuna mul juust arvuti, siis pliis
-ärme vaheta vite versiooni :D
-*/
-
-// vajalikud impordid jaotusfunktsionaalsuseks:
+// routing imports
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
-// ui-impordid:
+// user interface imports:
+import AuthorizationScreen from "./components/AuthorizationScreen"
 import HomePage from "./pages/homePage/HomePage";
 
 import FrontDesk from "./pages/frontDesk/FrontDesk";
@@ -27,62 +22,55 @@ import NextRace from "./pages/nextRace/NextRace";
 import Flags from "./pages/flags/Flags";
 import Countdown from "./pages/countdown/Countdown";
 
-/* ajutine autentimiskuva (hiljem eraldi komponendiks?) 
-ühtlasi - sõnastus hiljem kohaldada vastaval auth.js sisule */
+/* authentication prompt */
 const AuthGate = ({ children, roleName }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [inputKey, setInputKey] = useState("");
   const [error, setError] = useState("");
 
-  // nb! "children" on kindel sõnavara (reserved keyword) !!!
-  // siin loodud AuthGate funktsioon kasutab "children", et 
-  // KÕIKI tema sees määratletud osi kokku grupeerida ->
-  // loob ümbrise, mis aitab vältida koodi taaskirjutamist (DRY-põhimõte),
-  // sest loogika (tagasta "lapsed" kehtib igale elemendile, millega
-  // ta on ümbritsetud ja ei pea igale mõjutamist vajale elemendile
-  // hakkama looma oma eraldi loogikat)
+  useEffect(() => {
+    socket.on(EVENTS.AUTH_RESPONDED, (result) => {
+      if (result.success) {
+        setIsAuthenticated(true);
+        setError("");
+      } else {
+        setError("Incorrect passcode");
+      }
+    });
+
+    return () => {
+      socket.off(EVENTS.AUTH_RESPONDED);
+    };
+  }, []);
 
   const handleLogin = (e) => {
     e.preventDefault();
-    // siia peaks käima socket-infovahetus parooli kontrollimiseks,
-    // aga testimiseks hardcodein "0000":
-    if (inputKey === "0000") {
-      setIsAuthenticated(true);
-    } else {
-      setError("Vale parool - proovi uuesti! (testkood on 0000)");
-      // hetkel läägi ei pane, see vist peaks ka auth-loogikast tulema?
-    }
+    socket.emit(EVENTS.AUTH_ATTEMPT, {
+      role: roleName,
+      passcode: inputKey
+    });
   };
-  if (isAuthenticated) { // kui autentimine õnnestus, siis
-    return children; // UI sisu kuvamine
+  /* return children if authorized */
+  if (isAuthenticated) {
+    return children;
   }
 
-  // pääsukuva:
-  return (
-    <div style={{ padding: "50px", textAlign: "center" }}>
-      <h2>{roleName} - authorised access only!</h2>
-      <p>Please provide passcode:</p>
-      <form onSubmit={handleLogin}>
-        <input
-        type="password"
-        value={inputKey}
-        onChange={(e) => setInputKey(e.target.value)}
-        />
-        <button type="submit">Enter</button>
-      </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <Link to="/">Home</Link>
-    </div>
-  );
+  // Authorization view
+  return (<AuthorizationScreen
+            roleName={roleName}
+            handleLogin={handleLogin}
+            inputKey={inputKey}
+            setInputKey={setInputKey}
+            error={error}
+    />);
 };
 
-// funktsionaalsuse tekstimiseks minikuva, sest muidu react jookseb kokku,
-// kui komponente veel pole:
+// Placeholder for missing content (mainly used for dev purposes)
 const Placeholder = ({ ajutine }) => (
   <div style={{ padding: "20px"}}>
     <h2>{ajutine} Leht</h2>
-    <p>Lehekülg on arendamisel</p>
-    <Link to="/">Mine tagasi esilehele</Link>
+    <p>Page under construction</p>
+    <Link to="/">Returh to main page</Link>
   </div>
 );
 
@@ -93,36 +81,34 @@ function App() {
         listenSocket();
     }, []);
 
+            {/*RETURNING CONTENT VIA ROUTING*/
+          /* note - all planned content provided through explicit routes */}
   return (
-    <BrowserRouter> {/* kogu return peab olema mähitud jagajasse */}
-    {/* kõik, mis jääb VÄLJAPOOLE <routes>i, on püsivalt brauseri lehel */}
+    <BrowserRouter>
       <Routes>
-        {/* siin osas defineerime kõik route-id: */}
-  
-        {/* "koduleht" ka*/}
+
+        {/* ROOT DIR*/}
         <Route path="/" element={<HomePage/>}/>
 
-        {/* -> ajutine route-ing <- 
-        
-        parooli vajavad UI-d saavad AuthGate-ga mässitud: */}
+          {/* FRONT DESK*/}
         <Route path="/front-desk" element={
           <AuthGate roleName="Receptionist">
-           {/* <Placeholder ajutine="FrontDesk"/> */}
             <FrontDesk/>
           </AuthGate>}/>
           
+          {/* RACE CONTROL */}
         <Route path="/race-control" element={
           <AuthGate roleName="Safety Official">
             <RaceControl />
           </AuthGate>}/>
           
-          {/* MARI JOONENUPUD: */}
+          {/* LAP TRACKER */}
         <Route path="/lap-line-tracker" element={
           <AuthGate roleName="Lap Observer">
             <LapTracker/>
           </AuthGate>}/>
 
-          {/* 🔥 HEILIKA PUBLIC SCREENS */}
+          {/* PUBLIC SCREENS */}
 
         <Route path="/leader-board" element=
         {<LeaderboardPage />}/>

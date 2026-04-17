@@ -4,6 +4,8 @@ import EVENTS from "../../../client/src/shared/events.js";
 
 export default function sessionHandler(io, socket) {
 
+    console.log("Handler laeti socketile:", socket.id);
+
     //GET upcoming sessions
     socket.on(EVENTS.SESSION_GET, () => {
         const sessions = sessionService.getUpcomingSessions()
@@ -13,14 +15,17 @@ export default function sessionHandler(io, socket) {
     //CREATE session
     socket.on(EVENTS.SESSION_CREATE, (data) => {
         try {
-            sessionService.createSession(data.name, data.startTime)
+            sessionService.createSession(data.name)
+            console.log("CREATE DATA:", data)
 
             const sessions = sessionService.getUpcomingSessions()
+            console.log("SESSIONS AFTER CREATE:", sessions)
 
             io.emit(EVENTS.SESSION_LISTED, sessions)
 
         } catch (err) {
-            socket.emit(EVENTS.SESSION_ERROR, err.message)
+            console.log("Server saadab vea välja:", err.message); // See paistab terminalis
+            socket.emit(EVENTS.SESSION_ERROR, err.message); // See saadetakse üle võrgu
         }
     })
 
