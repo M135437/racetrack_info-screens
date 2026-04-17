@@ -11,7 +11,7 @@ const LapTracker = () => {
     const [now, setNow] = useState(Date.now());
     const [cooldowns, setCooldowns] = useState([]);
     const cooldownsRef = useRef([]);
-    const [isExiting, setIsExiting] = useState(false); // <- nupuanimatsiooniks
+    const [isExiting, setIsExiting] = useState(false);
 
     useEffect(() => {
         listenSocket();
@@ -58,7 +58,7 @@ const LapTracker = () => {
     return parseInt(a.car) - parseInt(b.car);
   });
 
-  // nuppude sujuvalt ekraanilt kaotamiseks kui "ended"
+  // Slide-out effect for button-grid
   useEffect(() => {
         if (isRaceActive) {
             setIsExiting(false);
@@ -72,7 +72,7 @@ const LapTracker = () => {
         }
     }, [raceMode, isRaceActive]);
 
-  // ajutine laptracker-ui-spetsiifiline täisekraaninupp
+  // temp? fullscreen
     function toggleFullScreen() {
         if (document.fullscreenElement) document.exitFullscreen();
         else document.documentElement.requestFullscreen(); 
@@ -80,7 +80,7 @@ const LapTracker = () => {
 
     return (
         <div className="lap-container">
-            <div> {/* ajutine lt-spetsiifiline fullscreen: */}
+            <div>
                 <button onClick={() => toggleFullScreen()}
                 className="fullscreen-btn">Fullscreen</button>
             </div>
@@ -117,7 +117,7 @@ const LapTracker = () => {
                             ? "disabled"
                             : cooldowns.includes(driver.id) ? "cooling" : "active"}`}
                     >
-                        {driver.isFinished ? `${driver.car} FINISHED` : `car ${driver.car} | `}
+                        {driver.isFinished ? `${driver.car} FINISHED` : `car ${driver.car}`}
                         {/*<span>Laps: {driver.lapCount} | Last time: {formatLapDisplay(driver.latestLapTime)} | Best: {formatLapDisplay(driver.fastestLap) || "--"}
                         </span> */}
                     </button>
