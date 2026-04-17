@@ -50,6 +50,16 @@ export const useRaceState = create((set) => ({
             set({ sessions: Array.isArray(data) ? data : [] });
         });
 
+        // Puhastame vana kuulari (hea tava)
+        socket.off(EVENTS.SESSION_ERROR);
+
+        // Kuulame veateateid backendist
+        socket.on(EVENTS.SESSION_ERROR, (errorMessage) => {
+            console.error("BACKEND ERROR:", errorMessage);
+            // alerti kasutan frontdeskis, kuna seal on võimalik sessioonide nimekirja muuta ja see võib põhjustada vigu, mida on vaja kasutajale näidata
+            alert(`Hoiatus: ${errorMessage}`);
+        });
+
         // listen for state distribution
         socket.on(EVENTS.STATE_DISTRIBUTED, (data) => {
             set({
