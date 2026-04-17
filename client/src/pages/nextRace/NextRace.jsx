@@ -3,6 +3,7 @@ import "./NextRace.css";
 import { useRaceState } from "../../hooks/useRaceState";
 import { socket } from "../../socket/socket";
 import EVENTS from "../../shared/events";
+import SessionListing from "../../components/SessionListing";
 
 const NextRace = () => {
   // kõik andmed tulevad hookist
@@ -42,23 +43,7 @@ const NextRace = () => {
 
       {/* Järgmine sessioon */}
       {nextSession ? (
-        <div className="race-card">
-
-          <h2 className="race-title">
-            {nextSession.name || "Upcoming session"}
-          </h2>
-
-          <div className="driver-list">
-            
-            {nextSession.drivers &&
-              nextSession.drivers.map((d, index) => (
-                <div key={d.id || index} className="driver-row">
-                  <span className="driver-name">{d.name}</span>
-                  <span className="driver-car">Car {d.car}</span>
-                </div>
-              ))}
-          </div>
-        </div>
+        <SessionListing nextSession={nextSession} />
       ) : (
         // kui järgmist sessiooni pole
         <p className="no-sessions">No upcoming sessions</p>
