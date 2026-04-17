@@ -11,6 +11,7 @@ const LapTracker = () => {
     const [now, setNow] = useState(Date.now());
     const [cooldowns, setCooldowns] = useState([]);
     const cooldownsRef = useRef([]);
+    const [isExiting, setIsExiting] = useState(false); // <- nupuanimatsiooniks
 
     useEffect(() => {
         listenSocket();
@@ -57,6 +58,20 @@ const LapTracker = () => {
     return parseInt(a.car) - parseInt(b.car);
   });
 
+  // nuppude sujuvalt ekraanilt kaotamiseks kui "ended"
+  useEffect(() => {
+        if (isRaceActive) {
+            setIsExiting(false);
+        }
+        if (!isRaceActive && drivers.length > 0) {
+            setIsExiting(true);
+            const slideOutTimer = setTimeout(() => {
+                setIsExiting(false);
+            }, 1000);
+            return () => clearTimeout(slideOutTimer);
+        }
+    }, [raceMode, isRaceActive]);
+
   // ajutine laptracker-ui-spetsiifiline täisekraaninupp
     function toggleFullScreen() {
         if (document.fullscreenElement) document.exitFullscreen();
@@ -82,7 +97,7 @@ const LapTracker = () => {
                 </div>
             </div>
             ) : null}
-            {!isRaceActive ? (
+            {!isRaceActive && !isExiting ? (
                 <div className="waiting-screen">
                     <p>
                         {raceMode === "notStarted"
@@ -91,7 +106,10 @@ const LapTracker = () => {
                     </p>
                 </div>
             ) : (
-            <div className="drivers-grid">
+            <div className={`drivers-grid ${isExiting
+                ? "exit-animation"
+                : ""}`
+                }>
             {sortedDrivers.map((driver) => (
                 <div key={driver.id} className="lap-tracker-ui">
 
