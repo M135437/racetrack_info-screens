@@ -3,11 +3,16 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "dev:server": "cd server && npm run dev",
-    "dev:client": "cd client && npm run dev",
-    "dev": "concurrently --kill-others-on-fail \"npm run dev:server\" \"npm run dev:client\""
-  },
+ "scripts": {
+  "dev:server": "cd server && npm run dev",
+  "dev:client": "cd client && npm run dev",
+  "dev": "concurrently --kill-others-on-fail \"npm run dev:server\" \"npm run dev:client\"",
+
+  "start:server": "cd server && npm start",
+  "start:client": "cd client && npm start",
+
+  "start": "concurrently --kill-others-on-fail \"npm run start:server\" \"npm run start:client\""
+},
   "repository": {
     "type": "git",
     "url": "https://gitea.kood.tech/mihkeltruup/info-screens.git"
