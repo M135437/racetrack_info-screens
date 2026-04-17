@@ -92,7 +92,7 @@
   }
 }
 
-/* PORTRAIT-VIEW */
+/* DEFAULT and DESKTOP VIEW */
 .drivers-grid { 
   flex: 1; 
   display: grid !important;
@@ -107,7 +107,50 @@
   box-sizing: border-box;
   animation: slideIn 1s ease-out forwards;
 }
-/* LANDSCAPE VIEW */
+/* PORTRAIT on mobile */
+@media screen and (max-width: 768px) and (orientation: portrait) {
+  .laptracker-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    min-height: 40px;
+  }
+  .laptracker-header h2{
+    font-size: 1rem;
+    letter-spacing: 1px;
+    /*margin: 0; VB, et vältida brauserite vaikesätteid? */
+  }
+  .drivers-grid {
+    max-width: 768px;
+  }
+  .lap-button {
+    font-size: clamp(1.1rem, 8vw, 1.5rem)
+  }
+  .component-zone {
+    position: relative;
+    display: flex;
+    margin-left: auto;
+    width: fit-content;
+    align-items: center;
+    margin-top: 15px;
+    margin-left: 15px;
+    height: auto;
+    top: auto;
+  }
+  .race-status {
+    height: 18px;
+    font-size: 0.6rem;
+    padding: 0 5px;
+  }
+  .timer-wrapper {
+    height: 25px;
+    width: 50px;
+    font-size: 1rem;
+    margin-left: -5px;
+  }
+}
+/* LANDSCAPE on mobile/tablet */
 @media screen and (min-width: 768px) and (orientation: landscape) {
   .drivers-grid { /* Default: 5-8 buttons */
     grid-template-columns: repeat(4, 1fr);
@@ -135,7 +178,7 @@
     padding-bottom: 5px;
   }
   .laptracker-header h2 {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
   }
 }
 
@@ -223,7 +266,7 @@
 }
 @media screen and (max-width: 480) {
   .lap-button {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
   }
 }
 
