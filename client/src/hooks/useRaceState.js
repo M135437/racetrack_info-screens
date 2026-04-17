@@ -4,7 +4,7 @@ import EVENTS from "../shared/events";
 
 let isListening = false;
 
-export const useRaceState = create((set) => ({
+export const useRaceState = create((set, get) => ({
     time: null,
     sessions: [],
     raceMode: 'notStarted',
@@ -15,6 +15,11 @@ export const useRaceState = create((set) => ({
     setTime: (time) => set({ time }),
     setSessions: (sessions) => set({ sessions }),
     setLeaderboard: (leaderboard) => set({ leaderboard }),
+
+    getNextSession: () => {
+        const sessions = get().sessions;
+        return sessions.find(session => session.status === 'notStarted') || null;
+    }
 
 
     recordLap: (carId) => {
