@@ -39,7 +39,7 @@ function startSession(io) {
     // check if there are no sessions available with status 'notStarted'
     if (!session) {
         console.log("No notStarted sessions available");
-        io.emit(EVENTS.SESSION_ERROR, "No upcoming sessions");
+        io.emit(EVENTS.SESSION_ERROR, "No upcoming sessions available, unable to start. Please contact the receptionist at the front desk.");
         return;
     }
     // take current timestampt
@@ -58,7 +58,7 @@ function startSession(io) {
 }
 
 function changeMode(io, mode) {
-    if (state.raceMode !== RACE_MODES.FINISH) {  // a session already taken to 'finish' mode
+    if (state.raceMode !== RACE_MODES.FINISH && state.RaceMode !== RACE_MODES.ENDED && (state.runningRace)) {  // a session already taken to 'finish' mode
     // should not get let back to hazard nor danger mode as per requirements
     stateUptChangeMode(mode);
     // any other checks this fuction should do before trusting to emit? REVIEW
@@ -72,6 +72,7 @@ function changeMode(io, mode) {
 }
 
 function finishMode(io) {
+    if (state.raceMode === RACE_MODES.ENDED) {return};
     stateUptFinishMode()
 
     io.emit(EVENTS.MODE_CHANGED, state.raceMode);
