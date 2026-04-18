@@ -1,5 +1,5 @@
 import state from "./../state/state.js";  // annab state seisu
-import correctTimeAfterStartup from "../state/timer.js"
+import { correctTimeAfterStartup } from "../state/timer.js"
 import fs from "fs/promises";
 import { DATA_FILE } from "../config/env.js"; // annab export const DATA_FILE = path.join(__dirname, 'data.json');
 
