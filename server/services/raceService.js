@@ -9,7 +9,7 @@ import {
 import { startTimer, resetTimer, stopTimer } from "../state/timer.js"
 import { RACE_MODES, PROTECTED_MODES, ACTIVE_MODES } from "../../client/src/shared/types.js"
 
-function getTime(io) { // REVIEW - debug only
+function getTime(io) { // debug event (REVIEW)
     io.emit("get:time", {
         timeRemaining: state.timer.timeRemaining,
         startTime: state.timer.startTime
@@ -58,29 +58,26 @@ function startSession(io) {
 }
 
 function changeMode(io, mode) {
-    if (state.raceMode !== RACE_MODES.FINISH && state.RaceMode !== RACE_MODES.ENDED && (state.runningRace)) {  // a session already taken to 'finish' mode
-    // should not get let back to hazard nor danger mode as per requirements
+    // a session already taken to 'finishing' or 'ended mode
+    // should not allow let back to hazard nor danger mode as per requirements
+    // should also not using changeMode if there is no no race running at the moment
+    if (state.raceMode !== RACE_MODES.FINISH && state.RaceMode !== RACE_MODES.ENDED && (state.runningRace)) {
     stateUptChangeMode(mode);
-    // any other checks this fuction should do before trusting to emit? REVIEW
     io.emit(EVENTS.MODE_CHANGED, state.raceMode);
     } else {
-        // Once the race mode changes to "Finished", it cannot be changed to any other mode.
-            // any control measures to take here? REVIEW
-        // any other separate checks for changeMode to also avoid "RACE_MODES.SAFE"?
-        // REVIEW&TEST - double-check that there is no option for raceMode === 'ended' and mode gets changed
+        console.log("Please check race status, invalid changeMode requested.")
     }
 }
 
 function finishMode(io) {
+    // block an already ended race from being taken to state 'finishing'
     if (state.raceMode === RACE_MODES.ENDED) {return};
     stateUptFinishMode()
-
     io.emit(EVENTS.MODE_CHANGED, state.raceMode);
 }
 
 function endSession(io) {
     stateUptEndSession()
-
     io.emit(EVENTS.SESSION_ENDED, state.raceMode);
     stopTimer();
 }
