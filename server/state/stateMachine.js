@@ -1,4 +1,3 @@
-import { ENV_VARIABLES } from "../config/env.js"
 import state from "./state.js"
 import { RACE_MODES } from "../../client/src/shared/types.js"
 import { saveState } from "../utils/persistState.js";
@@ -20,6 +19,7 @@ export function stateUptNextRaceId(id) {
     saveState();
 }
 
+    // main functions
 export function stateUptStartSession(session) {
     if (!session) {
         console.log("Updating state as per race start command failed, no session received for processing");

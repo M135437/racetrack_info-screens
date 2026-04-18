@@ -6,7 +6,10 @@ import { DATA_FILE } from "../config/env.js"; // annab export const DATA_FILE = 
 export async function saveState() {
     await fs.writeFile(
         DATA_FILE,
-        JSON.stringify(state, null, "\t"),
+        JSON.stringify(state, (key, value) => {
+        if (key === "timerStatus") return undefined; // setInterval stored in state.timer.timerStatus would cause "TypeError: Converting circular structure to JSON"
+            return value;
+        }),
     "utf-8");
 };
 
