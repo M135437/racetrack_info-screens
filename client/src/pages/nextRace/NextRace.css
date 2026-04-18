@@ -1,0 +1,37 @@
+/* 🌐 GLOBAL THEME */
+body {
+  margin: 0;
+  background-color: #1e2f3f;
+  color: white;
+  font-family: 'Arial Black', sans-serif;
+}
+
+/* 🟡 PEALKIRJAD */
+h1 {
+  color: #ffde00;
+  letter-spacing: 2px;
+}
+
+/* 🔳 FULLSCREEN BUTTON */
+.fullscreen-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+
+  background: rgba(255,255,255,0.15);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.3);
+
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* 📦 CONTAINER BASE */
+.page-container {
+  height: 100vh;
+  width: 100vw;
+  padding: 40px;
+  box-sizing: border-box;
+  position: relative;
+}

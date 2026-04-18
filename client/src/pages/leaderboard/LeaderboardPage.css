@@ -1,0 +1,184 @@
+/* =========================
+   PAGE CONTAINER
+   ========================= */
+   .leaderboard-container {
+    height: 100vh;              /* täisekraan kõrgus */
+    width: 100vw;               /* täisekraan laius */
+    background-color: #1e2f3f;  /* tumeroheline/sinine taust */
+    color: #ffffff;             /* valge tekst */
+    font-family: 'Arial Black', sans-serif;
+  
+    padding: 80px 40px 40px 40px; 
+    /* ↑ top padding suurem, et fullscreen nupp ei kataks headerit */
+  
+    box-sizing: border-box;     /* padding ei suurenda elementi */
+    position: relative;         /* vajalik absolute nuppude jaoks */
+  }
+  
+  
+  /* =========================
+     HEADER (TITLE + STATUS + TIMER)
+     ========================= */
+  .leaderboard-header {
+    display: flex;
+    justify-content: space-between;
+  
+    /* 3 tsooni: vasak | keskel | parem */
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 4px solid #ffd000; /* kollane joon */
+    padding-bottom: 10px;
+  }
+  
+  /* LEADERBOARD tekst */
+  .leaderboard-header h2 {
+    justify-self: start;
+    font-weight: 800;
+    font-family: 'Orbitron', sans-serif;
+    color: #ffd000;         /* kollane */
+    letter-spacing: 2px;    /* spaced-out look */
+    justify-self: start;    /* vasakule */
+  }
+  
+  /* STATUS badge */
+  .race-status {
+    justify-self: center;   /* keskele */
+  
+    background: #2ecc71;    /* roheline */
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  
+  /* eri state värvid */
+  .race-status.ended {
+    background: #27ae60;
+  }
+  
+  .race-status.notStarted {
+    background: #7f8c8d;
+  }
+  
+  /* TIMER */
+  .race-timer {
+    justify-self: end;  /* paremale */
+    font-size: 18px;
+  }
+  
+  
+  /* =========================
+     TABLE HEADER (POS DRIVER jne)
+     ========================= */
+  .table-header {
+    display: grid;
+  
+    /* kõik veerud proportsioonis */
+    grid-template-columns: repeat(6, 1fr);
+  
+    padding: 12px;
+  
+    color: #ffd000;   /* kollane tekst */
+    font-weight: bold;
+  }
+  
+  
+  /* =========================
+     TABLE ROWS
+     ========================= */
+  .table-row {
+    display: grid;
+  
+    /* peab MATCHIMA headeriga */
+    grid-template-columns: 80px 1.5fr 120px 100px 140px 140px;
+    padding: 15px;
+  }
+  
+  /* zebra efekt (vahelduvad read) */
+  .table-row:nth-child(odd) {
+    background-color: #111;      /* tume */
+  }
+  
+  .table-row:nth-child(even) {
+    background-color: #24384d;   /* sinakas */
+  }
+  
+  
+  /* =========================
+     BEST DRIVER (1. koht)
+     ========================= */
+  .best-row {
+    background-color: #000 !important; 
+    /* must highlight (override zebra) */
+  }
+  
+  /* fastest lap highlight */
+  .best {
+    color: #00ffcc;   /* neon roheline */
+    font-weight: bold;
+  }
+  
+  
+  /* =========================
+     CELL ALIGNMENT
+     ========================= */
+  .table-header span,
+  .table-row span {
+    display: flex;
+    align-items: center;
+  }
+  
+  /* POS (1. veerg) keskele */
+  .table-header span:first-child,
+  .table-row span:first-child {
+    justify-content: center;
+  }
+  
+  /* NUMBRID paremale (LAPS + TIMES) */
+  .table-header span:nth-child(4),
+  .table-header span:nth-child(5),
+  .table-header span:nth-child(6),
+  .table-row span:nth-child(4),
+  .table-row span:nth-child(5),
+  .table-row span:nth-child(6) {
+    justify-content: flex-end;
+  }
+  
+  
+  /* =========================
+     EMPTY STATE
+     ========================= */
+  .table-row span {
+    display: flex;
+    align-items: center;
+  }
+  
+  
+  /* =========================
+     FULLSCREEN BUTTON
+     ========================= */
+  .fullscreen-btn {
+    position: absolute;   /* ei mõjuta layouti */
+    top: 20px;
+    right: 20px;
+  
+    z-index: 10;          /* alati kõige peal */
+  
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  
+    padding: 8px 16px;
+    border-radius: 6px;
+  
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  
+  /* =========================
+     HOVER EFFECT (optional)
+     ========================= */
+  .table-row:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }

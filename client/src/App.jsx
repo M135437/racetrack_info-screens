@@ -1,144 +1,136 @@
-import { useState } from 'react'
+// react rendering imports
+import { useState, useEffect } from 'react'
+// hook centralizing socket.IO and events, related library and events contract
+import { socket } from "./socket/socket";
+import { useRaceState } from "./hooks/useRaceState.js"
+import EVENTS from "./shared/events.js"
+// CSS import
 import './App.css'
 
-// npm install react-router-dom (client-kaustas)
-/* nb! kuna meil on (minu pärast) vana vite, siis installimisel toob
-esile vite-i 1 high-risk murekoha. 
-gemini sõnul see vaid murekoht arenduse ajal serveripoolel (kui häkker samas
-võrgus tahaks salafailidele ligi pääseda, siis potentsiaalselt saaks), kuid
-mis ei kandu lõpptootesse üle.
-
-npm audit fix uuendaks vite-i, aga kuna mul juust arvuti, siis pliis
-ärme vaheta vite versiooni :D
-*/
-
-// vajalikud impordid jaotusfunktsionaalsuseks:
+// routing imports
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
-// ui-impordid:
+// user interface imports:
+import AuthorizationScreen from "./components/AuthorizationScreen"
 import HomePage from "./pages/homePage/HomePage";
-//import FrontDesk from "./pages/frontDesk/FrontDesk";
-//import RaceControl from "./pages/raceControl/RaceControl";
-//import LapTracker from "./pages/lapTracker/LapTracker";
-//import LeaderboardPage from "./pages/leaderboard/LeaderboardPage";
-//import NextRace from "./pages/nextRace/NextRace";
-//import Countdown from "./pages/countdown/Countdown";
-//import Flags from "./pages/flags/Flags";
 
-/* ajutine autentimiskuva (hiljem eraldi komponendiks?) 
-ühtlasi - sõnastus hiljem kohaldada vastaval auth.js sisule */
+import FrontDesk from "./pages/frontDesk/FrontDesk";
+import RaceControl from "./pages/raceControl/RaceControl";
+import LapTracker from "./pages/lapTracker/LapTracker";
+import LeaderboardPage from "./pages/leaderboard/LeaderboardPage";
+import NextRace from "./pages/nextRace/NextRace";
+import Flags from "./pages/flags/Flags";
+import Countdown from "./pages/countdown/Countdown";
+
+
+// DEV IMPORTS for testing and development purposes - can be removed later
+import DevPanel from "./dev/DevPanel"
+
+/* authentication prompt */
 const AuthGate = ({ children, roleName }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [inputKey, setInputKey] = useState("");
   const [error, setError] = useState("");
 
-  // nb! "children" on kindel sõnavara (reserved keyword) !!!
-  // siin loodud AuthGate funktsioon kasutab "children", et 
-  // KÕIKI tema sees määratletud osi kokku grupeerida ->
-  // loob ümbrise, mis aitab vältida koodi taaskirjutamist (DRY-põhimõte),
-  // sest loogika (tagasta "lapsed" kehtib igale elemendile, millega
-  // ta on ümbritsetud ja ei pea igale mõjutamist vajale elemendile
-  // hakkama looma oma eraldi loogikat)
+  useEffect(() => {
+    socket.on(EVENTS.AUTH_RESPONDED, (result) => {
+      if (result.success) {
+        setIsAuthenticated(true);
+        setError("");
+      } else {
+        setError("Incorrect passcode");
+      }
+    });
+
+    return () => {
+      socket.off(EVENTS.AUTH_RESPONDED);
+    };
+  }, []);
 
   const handleLogin = (e) => {
     e.preventDefault();
-    // siia peaks käima socket-infovahetus parooli kontrollimiseks,
-    // aga testimiseks hardcodein "0000":
-    if (inputKey === "0000") {
-      setIsAuthenticated(true);
-    } else {
-      setError("Vale parool - proovi uuesti! (testkood on 0000)");
-      // hetkel läägi ei pane, see vist peaks ka auth-loogikast tulema?
-    }
+    socket.emit(EVENTS.AUTH_ATTEMPT, {
+      role: roleName,
+      passcode: inputKey
+    });
   };
-  if (isAuthenticated) { // kui autentimine õnnestus, siis
-    return children; // UI sisu kuvamine
+  /* return children if authorized */
+  if (isAuthenticated) {
+    return children;
   }
 
-  // pääsukuva:
-  return (
-    <div style={{ padding: "50px", textAlign: "center" }}>
-      <h2>{roleName} - authorised access only!</h2>
-      <p>Please provide passcode:</p>
-      <form onSubmit={handleLogin}>
-        <input
-        type="password"
-        value={inputKey}
-        onChange={(e) => setInputKey(e.target.value)}
-        />
-        <button type="subit">Enter</button>
-      </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <Link to="/">Home</Link>
-    </div>
-  );
+  // Authorization view
+  return (<AuthorizationScreen
+    roleName={roleName}
+    handleLogin={handleLogin}
+    inputKey={inputKey}
+    setInputKey={setInputKey}
+    error={error}
+  />);
 };
 
-// ==============
-// funktsionaalsuse tekstimiseks minikuva, sest muidu react jookseb kokku,
-// kui komponente veel pole:
+// Placeholder for missing content (mainly used for dev purposes)
 const Placeholder = ({ ajutine }) => (
-  <div style={{ padding: "20px"}}>
+  <div style={{ padding: "20px" }}>
     <h2>{ajutine} Leht</h2>
-    <p>Lehekülg on arendamisel</p>
-    <Link to="/">Mine tagasi esilehele</Link>
+    <p>Page under construction</p>
+    <Link to="/">Returh to main page</Link>
   </div>
 );
 
 function App() {
+  const listenSocket = useRaceState((state) => state.listenSocket);
+
+  useEffect(() => {
+    listenSocket();
+  }, []);
+
+  {/*RETURNING CONTENT VIA ROUTING*/
+    /* note - all planned content provided through explicit routes */
+  }
   return (
-    <BrowserRouter> {/* kogu return peab olema mähitud jagajasse */}
-    {/* kõik, mis jääb VÄLJAPOOLE <routes>i, on püsivalt brauseri lehel */}
-      <Routes>
-        {/* siin osas defineerime kõik route-id: */}
-  
-        {/* "koduleht" ka*/}
-        <Route path="/" element={<HomePage/>}/>
+    <>
+      <BrowserRouter>
+        <Routes>
 
-        {/* -> ajutine route-ing <- 
-        
-        parooli vajavad UI-d saavad AuthGate-ga mässitud: */}
-        <Route path="/front-desk" element={
-          <AuthGate roleName="Receptionist">
-            <Placeholder ajutine="FrontDesk"/>
-          </AuthGate>}/>
-        <Route path="/race-control" element={
-          <AuthGate roleName="Safety Official">
-            <Placeholder ajutine="RaceControl"/>
-          </AuthGate>}/>
-        <Route path="/lap-line-tracker" element={
-          <AuthGate roleName="Lap Observer">
-            <Placeholder ajutine="LapTracker"/>
-          </AuthGate>}/>
-        <Route path="/leader-board" element={<Placeholder ajutine="LeaderboardPage"/>}/>
-        <Route path="/next-race" element={<Placeholder ajutine="NextRace"/>}/>
-        <Route path="/race-countdown" element={<Placeholder ajutine="Countdown"/>}/>
-        <Route path="/race-flags" element={<Placeholder ajutine="Flags"/>}/>
+          {/* ROOT DIR*/}
+          <Route path="/" element={<HomePage />} />
 
-        {/* päris-routing:
-        <Route path="/front-desk" element={
-          <AuthGate roleName="Receptionist">
-            <FrontDesk/>
-          </AuthGate>
-          }/>
-        <Route path="/race-control" element={
-          </AuthGate roleName="Safety Official">
-            <RaceControl/>
-          </AuthGate>
-          }/>
-        <Route path="/lap-line-tracker" element={
-          <AuthGate roleName="Lap Observer">
-            <LapTracker/>
-          </AuthGate>
-        }/>
-        <Route path="/leader-board" element={<LeaderboardPage/>}/>
-        <Route path="/next-race" element={<NextRace/>}/>
-        <Route path="/race-countdown" element={<Countdown/>}/>
-        <Route path="/race-flags" element={<Flags/>}/>
-        */}
-      </Routes>
-    </BrowserRouter>
+          {/* FRONT DESK*/}
+          <Route path="/front-desk" element={
+            <AuthGate roleName="Receptionist">
+              <FrontDesk />
+            </AuthGate>} />
+
+          {/* RACE CONTROL */}
+          <Route path="/race-control" element={
+            <AuthGate roleName="Safety Official">
+              <RaceControl />
+            </AuthGate>} />
+
+          {/* LAP TRACKER */}
+          <Route path="/lap-line-tracker" element={
+            <AuthGate roleName="Lap Observer">
+              <LapTracker />
+            </AuthGate>} />
+
+          {/* PUBLIC SCREENS */}
+
+          <Route path="/leader-board" element=
+            {<LeaderboardPage />} />
+          <Route path="/next-race" element=
+            {<NextRace />} />
+          <Route path="/race-flags" element=
+            {<Flags />} />
+          <Route path="/race-countdown" element=
+            {<Countdown />} />
+
+        </Routes>
+      </BrowserRouter>
+
+      {import.meta.env.DEV && <DevPanel />}
+    </>
   );
 }
 
-export default App
+export default App;

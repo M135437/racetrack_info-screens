@@ -1,45 +1,45 @@
 import state from "./state.js"
 import EVENTS from "../../client/src/shared/events.js"
+import raceService from "../services/raceService.js"
 
-//debub version //REVIEW
 function startTimer(io) {
-    //DEBUG
-    console.log("timer.js debug: starting timer"); //REVIEW
-    console.log(`timer.js debug: timerStatus is ${state.timer.timerStatus}`) // REVIEW
-    //check that timer is already not running
-    if (state.timer.intervalId) {
-        console.log("timer.js debug: timer seems to be already running - there is a value in state.timer.timerStatus that is not null") // REVIEW
-        // proper feedback to UI TBD //REVIEW
+    if (state.timer.timerStatus) {
+        console.log("timer.js: timer seems to be already running - there is a value in state.timer.timerStatus that is not null")
         return;
     }
+    console.log("timer.js: timer started");
     // update variables
-    const debugvalue = JSON.stringify(state.timer.timeRemaining); // REVIEW
     state.timer.timeRemaining = state.timer.duration;
     state.timer.startTime = Date.now();
     // start timer
     state.timer.timerStatus = setInterval(() => {
-        console.log(`timer.js debug: timeRemaining was ${debugvalue}, now set to ${state.timer.timeRemaining}, start was at timestampt ${state.timer.startTime} (${new Date(state.timer.startTime).toLocaleString()}`) // REVIEW
-        // REVIEW
-        io.emit(EVENTS.TIMER_UPDATE, state.timer.remaining);
-        state.timer.timeRemaining--; // remove one interval unit (configured at end of this function)
+        const elapsed = Date.now() - state.timer.startTime;
+        state.timer.timeRemaining = state.timer.duration - elapsed;
+        io.emit(EVENTS.TIMER_UPDATE, state.timer.timeRemaining);
 
         // stop condition
         if (state.timer.timeRemaining <= 0) {
-            console.log("timer.js debug: timer ran out of time!")
-            stopTimer();
+            console.log("timer.js: timer ran out of time!")
+            raceService.finishMode(io)
+            resetTimer();
+            return;
         }
-    }, 33) // REVIEW try with 66, 200, 1000 for performance variations
+    }, 100)
 }
 
 function stopTimer() {
-    console.log("timer.js debug: stop() called, stopping timer"); // REVIEW
+    console.log("timer.js: stopTimer() called");
     clearInterval(state.timer.timerStatus);
     state.timer.timerStatus = null;
 }
 
 function resetTimer() {
-    console.log("timer.js debug: reset() ran");// REVIEW
-    state.timer.remaining = state.timer.duration; 
+    console.log("timer.js: resetTimer() called");
+    clearInterval(state.timer.timerStatus)
+    state.timer.timerStatus = null;
+
+    state.timer.timeRemaining = state.timer.duration;
+    state.timer.startTime = null;
 }
 
 export { startTimer, stopTimer, resetTimer };

@@ -1,39 +1,85 @@
 import * as sessionService from '../../services/sessionService.js'
+import EVENTS from "../../../client/src/shared/events.js";
+
 
 export default function sessionHandler(io, socket) {
 
+    console.log("Handler laeti socketile:", socket.id);
+
     //GET upcoming sessions
-    socket.on("session:get", () => {
+    socket.on(EVENTS.SESSION_GET, () => {
         const sessions = sessionService.getUpcomingSessions()
-        socket.emit("session:list", sessions)
+        socket.emit(EVENTS.SESSION_LISTED, sessions)
     })
 
     //CREATE session
-    socket.on("session:create", (data) => {
+    socket.on(EVENTS.SESSION_CREATE, (data) => {
         try {
             sessionService.createSession(data.name)
+            console.log("CREATE DATA:", data)
 
             const sessions = sessionService.getUpcomingSessions()
+            console.log("SESSIONS AFTER CREATE:", sessions)
 
-            //emit updated session list to all clients (could be optimized to emit only to clients that need it, but for simplicity emitting to all)
-            io.emit("session:list", sessions)
+            io.emit(EVENTS.SESSION_LISTED, sessions)
 
         } catch (err) {
-            socket.emit("session:error", err.message)
+            console.log("Server saadab vea välja:", err.message); // See paistab terminalis
+            socket.emit(EVENTS.SESSION_ERROR, err.message); // See saadetakse üle võrgu
         }
     })
 
     //DELETE session
-    socket.on("session:delete", (id) => {
+    socket.on(EVENTS.SESSION_DELETE, ({ id }) => {
         try {
             sessionService.deleteSession(id)
 
             const sessions = sessionService.getUpcomingSessions()
 
-            io.emit("session:list", sessions)
+            io.emit(EVENTS.SESSION_LISTED, sessions)
 
         } catch (err) {
-            socket.emit("session:error", err.message)
+            socket.emit(EVENTS.SESSION_ERROR, err.message)
         }
     })
+
+    //ADD driver to session
+    socket.on(EVENTS.DRIVER_ADD, ({ sessionId, name, car }) => {
+        try {
+            sessionService.addDriver(sessionId, name, car)
+
+            const sessions = sessionService.getUpcomingSessions()
+            io.emit(EVENTS.SESSION_LISTED, sessions)
+
+        } catch (err) {
+            socket.emit(EVENTS.SESSION_ERROR, err.message)
+        }
+    })
+
+    //REMOVE driver from session
+    socket.on(EVENTS.DRIVER_REMOVE, ({ sessionId, driverId }) => {
+        try {
+            sessionService.removeDriver(sessionId, driverId)
+
+            const sessions = sessionService.getUpcomingSessions()
+            io.emit(EVENTS.SESSION_LISTED, sessions)
+
+        } catch (err) {
+            socket.emit(EVENTS.SESSION_ERROR, err.message)
+        }
+    })
+
+    //UPDATE driver
+    socket.on(EVENTS.DRIVER_UPDATE, ({ sessionId, driverId, name, car, lastLapTimestamp, lapCount, latestLapTime, currentLap, fastestLap, isFinished }) => {
+        try {
+            sessionService.updateDriver(sessionId, driverId, name, car, lastLapTimestamp, lapCount, latestLapTime, currentLap, fastestLap, isFinished)
+
+            const sessions = sessionService.getUpcomingSessions()
+            io.emit(EVENTS.SESSION_LISTED, sessions)
+
+        } catch (err) {
+            socket.emit(EVENTS.SESSION_ERROR, err.message)
+        }
+    })
+
 }

@@ -1,0 +1,34 @@
+/* layout */
+.frontdesk-container {
+    height: 100vh;
+    width: 100vw;
+    background-color: #1e2f3f;
+    color: #ffffff;
+    font-family: 'Arial Black', sans-serif;
+    padding: 40px;
+    box-sizing: border-box;
+}
+
+.frontdesk-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 4px solid #ffde00;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+}
+
+/* session cards list */
+.sessions {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* create section */
+.create {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
