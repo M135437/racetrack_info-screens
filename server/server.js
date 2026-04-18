@@ -5,7 +5,7 @@ import { Server } from "socket.io";
 import cors from "cors";
 import socketHandlers from "./socket/index.js"
 import { ENV_VARIABLES, RACE_DURATION } from "./config/env.js"
-import {setDuration} from "./state/stateMachine.js"
+import { setDuration } from "./state/stateMachine.js"
 
 // check that env variables are set to control if application can be started,
 // set race duration accordingly

@@ -35,6 +35,9 @@ function RaceControl() {
     const emitStart = () => {
         socket.emit(EVENTS.SESSION_START);
         };
+    const emitSafe = () => {
+        socket.emit(EVENTS.SESSION_MODE, PROTECTED_MODES.SAFE)
+        };
     const emitDanger = () => {
         socket.emit(EVENTS.SESSION_MODE, PROTECTED_MODES.DANGER);
         };
@@ -80,7 +83,7 @@ function RaceControl() {
         {displayView === "duringRace" && (
             <>
                 <Timer />
-                <ControlButton buttonName={PROTECTED_MODES.SAFE.toUpperCase()} onClick={emitStart}/>
+                <ControlButton buttonName={PROTECTED_MODES.SAFE.toUpperCase()} onClick={emitSafe}/>
                 <ControlButton buttonName={PROTECTED_MODES.DANGER.toUpperCase()} onClick={emitDanger}/>
                 <ControlButton buttonName={PROTECTED_MODES.HAZARD.toUpperCase()} onClick={emitHazard}/>
                 <ControlButton buttonName={PROTECTED_MODES.FINISH.toUpperCase()} onClick={emitFinishing}/>
