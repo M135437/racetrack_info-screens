@@ -6,51 +6,63 @@ import { testSessions } from "./devData"
 export default function DevPanel() {
 
     // ------------------------
-    // STATE (persisted)
+    // HELPERS
     // ------------------------
 
-    const [isOpen, setIsOpen] = useState(() => {
-        return localStorage.getItem("devpanel-open") !== "false"
-    })
+    const getPanelHeight = () => {
+        const panel = document.getElementById("dev-panel")
+        return panel ? panel.offsetHeight : 80
+    }
 
-    const [position, setPosition] = useState(() => {
-        const saved = localStorage.getItem("devpanel-pos")
-
-        if (saved) return JSON.parse(saved)
-
-        // right-bottom corner by default
+    const getAnchorPosition = () => {
         const panelWidth = 200
-        const panelHeight = 300 // approximate height
+        const panelHeight = getPanelHeight()
 
         return {
             x: window.innerWidth - panelWidth - 20,
-            y: window.innerHeight - panelHeight - 20
+            y: window.innerHeight - panelHeight //ensure it doesn't go off-screen on start
         }
+    }
+
+    const adjustPositionForOpen = (pos) => {
+        const panelWidth = 200
+        const panelHeight = getPanelHeight()
+
+        return {
+            x: Math.min(pos.x, window.innerWidth - panelWidth),
+            y: Math.min(pos.y, window.innerHeight - panelHeight)
+        }
+    }
+
+    // ------------------------
+    // STATE
+    // ------------------------
+
+    const [isOpen, setIsOpen] = useState(false)
+
+    const [position, setPosition] = useState({
+        x: 0,
+        y: 0
     })
 
     const dragging = useRef(false)
     const offset = useRef({ x: 0, y: 0 })
 
     // ------------------------
-    // PERSIST
+    // INIT (corner anchor on start)
     // ------------------------
 
     useEffect(() => {
-        localStorage.setItem("devpanel-open", isOpen)
-    }, [isOpen])
+        setPosition(getAnchorPosition())
+    }, [])
 
-    useEffect(() => {
-        localStorage.setItem("devpanel-pos", JSON.stringify(position))
-    }, [position])
-
-    localStorage.removeItem("devpanel-pos")
+    // ------------------------
+    // RESIZE
+    // ------------------------
 
     useEffect(() => {
         const handleResize = () => {
-            setPosition(prev => ({
-                x: Math.min(prev.x, window.innerWidth - 220),
-                y: Math.min(prev.y, window.innerHeight - 100)
-            }))
+            setPosition(prev => adjustPositionForOpen(prev))
         }
 
         window.addEventListener("resize", handleResize)
@@ -58,7 +70,7 @@ export default function DevPanel() {
     }, [])
 
     // ------------------------
-    // DRAG LOGIC
+    // DRAG
     // ------------------------
 
     const onMouseDown = (e) => {
@@ -82,13 +94,40 @@ export default function DevPanel() {
         dragging.current = false
     }
 
+    const onTouchStart = (e) => {
+        const touch = e.touches[0]
+        dragging.current = true
+        offset.current = {
+            x: touch.clientX - position.x,
+            y: touch.clientY - position.y
+        }
+    }
+
+    const onTouchMove = (e) => {
+        if (!dragging.current) return
+        const touch = e.touches[0]
+
+        setPosition({
+            x: touch.clientX - offset.current.x,
+            y: touch.clientY - offset.current.y
+        })
+    }
+
+    const onTouchEnd = () => {
+        dragging.current = false
+    }
+
     useEffect(() => {
         window.addEventListener("mousemove", onMouseMove)
         window.addEventListener("mouseup", onMouseUp)
+        window.addEventListener("touchmove", onTouchMove)
+        window.addEventListener("touchend", onTouchEnd)
 
         return () => {
             window.removeEventListener("mousemove", onMouseMove)
             window.removeEventListener("mouseup", onMouseUp)
+            window.removeEventListener("touchmove", onTouchMove)
+            window.removeEventListener("touchend", onTouchEnd)
         }
     }, [])
 
@@ -151,17 +190,18 @@ export default function DevPanel() {
 
     return (
         <div
+            id="dev-panel"
             style={{
                 ...panelStyle,
                 left: position.x,
                 top: position.y
             }}
         >
-
-            {/* HEADER (DRAG HANDLE) */}
+            {/* HEADER */}
             <div
                 style={headerStyle}
                 onMouseDown={onMouseDown}
+                onTouchStart={onTouchStart}
             >
                 <span>DEV PANEL</span>
 
@@ -169,23 +209,37 @@ export default function DevPanel() {
                     style={toggleBtn}
                     onClick={(e) => {
                         e.stopPropagation()
-                        setIsOpen(prev => !prev)
+
+                        setIsOpen(prev => {
+                            const next = !prev
+
+                            if (next) {
+                                setPosition(prevPos =>
+                                    adjustPositionForOpen(prevPos)
+                                )
+                            } else {
+                                setPosition(getAnchorPosition())
+                            }
+
+                            return next
+                        })
                     }}
                 >
                     {isOpen ? "−" : "+"}
                 </button>
             </div>
 
-            {/* COLLAPSED */}
             {!isOpen && (
                 <div style={{ padding: 6, fontSize: 11 }}>
                     ▶
                 </div>
             )}
 
-            {/* CONTENT */}
             {isOpen && (
                 <div style={contentStyle}>
+                    <button onClick={() => setPosition(getAnchorPosition())}>
+                        Reset position
+                    </button>
 
                     <div style={sectionTitle}>DATA</div>
                     <button onClick={generateViaSocket}>Generate</button>
@@ -198,7 +252,6 @@ export default function DevPanel() {
                     <button onClick={setDanger}>Danger</button>
                     <button onClick={finishRace}>Finish</button>
                     <button onClick={endSession}>End</button>
-
                 </div>
             )}
         </div>
@@ -217,7 +270,8 @@ const panelStyle = {
     borderRadius: 10,
     zIndex: 9999,
     fontSize: 12,
-    userSelect: "none"
+    userSelect: "none",
+    touchAction: "none"
 }
 
 const headerStyle = {
