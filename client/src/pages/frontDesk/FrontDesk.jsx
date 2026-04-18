@@ -13,7 +13,6 @@ export default function FrontDesk() {
 
 
 
-    // SESSION
     const createSession = () => {
         if (!name.trim()) return
 
@@ -28,7 +27,7 @@ export default function FrontDesk() {
         socket.emit(EVENTS.SESSION_DELETE, { id })
     }
 
-    // INPUT
+
     const updateInput = (sessionId, field, value) => {
         setInputs(prev => ({
             ...prev,
@@ -39,7 +38,7 @@ export default function FrontDesk() {
         }))
     }
 
-    // DRIVER
+
     const addDriver = (sessionId) => {
         const data = inputs[sessionId] || {}
         if (!data.name?.trim()) return

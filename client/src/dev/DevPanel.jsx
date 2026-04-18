@@ -5,10 +5,8 @@ import { testSessions } from "./devData"
 
 export default function DevPanel() {
 
-    // ------------------------
-    // HELPERS
-    // ------------------------
 
+    // HELPERS
     const getPanelHeight = () => {
         const panel = document.getElementById("dev-panel")
         return panel ? panel.offsetHeight : 80
@@ -34,10 +32,8 @@ export default function DevPanel() {
         }
     }
 
-    // ------------------------
-    // STATE
-    // ------------------------
 
+    // STATE
     const [isOpen, setIsOpen] = useState(false)
 
     const [position, setPosition] = useState({
@@ -48,18 +44,14 @@ export default function DevPanel() {
     const dragging = useRef(false)
     const offset = useRef({ x: 0, y: 0 })
 
-    // ------------------------
+
     // INIT (corner anchor on start)
-    // ------------------------
 
     useEffect(() => {
         setPosition(getAnchorPosition())
     }, [])
 
-    // ------------------------
     // RESIZE
-    // ------------------------
-
     useEffect(() => {
         const handleResize = () => {
             setPosition(prev => adjustPositionForOpen(prev))
@@ -69,9 +61,8 @@ export default function DevPanel() {
         return () => window.removeEventListener("resize", handleResize)
     }, [])
 
-    // ------------------------
+
     // DRAG
-    // ------------------------
 
     const onMouseDown = (e) => {
         dragging.current = true
@@ -131,10 +122,7 @@ export default function DevPanel() {
         }
     }, [])
 
-    // ------------------------
     // SOCKET ACTIONS
-    // ------------------------
-
     const generateViaSocket = () => {
         testSessions.forEach(session => {
             socket.emit(EVENTS.SESSION_CREATE, {
@@ -184,9 +172,6 @@ export default function DevPanel() {
     const finishRace = () => socket.emit(EVENTS.SESSION_FINISH)
     const endSession = () => socket.emit(EVENTS.SESSION_END)
 
-    // ------------------------
-    // UI
-    // ------------------------
 
     return (
         <div
@@ -258,9 +243,7 @@ export default function DevPanel() {
     )
 }
 
-// ------------------------
-// STYLES
-// ------------------------
+
 
 const panelStyle = {
     position: "fixed",
