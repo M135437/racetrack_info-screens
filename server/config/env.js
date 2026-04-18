@@ -8,6 +8,6 @@ export const ENV_VARIABLES = {
 
 const DEV_MODE = process.env.DEV_MODE === 'true';       // true or false
 export const RACE_DURATION = DEV_MODE ? (60*1000) : (600*1000) ;              // (seconds * ms)
-// const DATA_FILE = path.join(__dirname, 'data.json'); // FUTURE DEV - for persisting data on drive
+export const DATA_FILE = path.join(__dirname, '../data/data.json');
 
 export default { ENV_VARIABLES, RACE_DURATION };
