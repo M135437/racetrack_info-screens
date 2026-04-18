@@ -122,7 +122,7 @@ export default function SessionCard({
             </div>
 
             {/* ADD DRIVER */}
-            {onAddDriver && (
+            {onAddDriver && session.freeSlotsLeft > 0 && (
                 <form
                     className="add-driver"
                     onSubmit={(e) => {
