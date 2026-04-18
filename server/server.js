@@ -6,6 +6,7 @@ import cors from "cors";
 import socketHandlers from "./socket/index.js"
 import { ENV_VARIABLES, RACE_DURATION } from "./config/env.js"
 import { setDuration } from "./state/stateMachine.js"
+import { loadState } from "./utils/persistState.js"
 
 // check that env variables are set to control if application can be started,
 // set race duration accordingly
@@ -33,7 +34,12 @@ const io = new Server(server, {
 // pass Socket.IO on to handlers
 socketHandlers(io);
 
+// check if state has been stored
+console.log(loadState());
+
 server.listen(ENV_VARIABLES.RACETRACK_SERVER_PORT, () => {
     console.log(`  ➜  Server running on port ${ENV_VARIABLES.RACETRACK_SERVER_PORT}\n  ➜  http://localhost:${ENV_VARIABLES.RACETRACK_SERVER_PORT}/`);
     console.log(`  ➜  Race duration set to ${(RACE_DURATION / 1000) / 60} minutes`);
+    
 });
+

@@ -4,7 +4,7 @@ import raceService from "../services/raceService.js"
 
 function startTimer(io) {
     if (state.timer.timerStatus) {
-        console.log("timer.js: timer seems to be already running - there is a value in state.timer.timerStatus that is not null")
+        console.log("Server(timer.js): timer seems to be already running - there is a value in state.timer.timerStatus that is not null")
         return;
     }
     console.log("timer.js: timer started");
@@ -40,6 +40,14 @@ function resetTimer() {
 
     state.timer.timeRemaining = state.timer.duration;
     state.timer.startTime = null;
+}
+
+export function correctTimeAfterStartup() {
+        const elapsed = Date.now() - state.timer.startTime;
+        state.timer.timeRemaining = state.timer.duration - elapsed; // see edge case description below and consider
+    // add persistency logic for correcting state.timer.timeRemaining and possibly other date
+    // consider edge case scenarios - crash took place when race was in dev mode (1min), but restarted with prod mode (10min) and vice versa -- duration may cause issues***
+    // double-check for crash-caused errors and logic issues caused at state.timer.timerStatus
 }
 
 export { startTimer, stopTimer, resetTimer };
