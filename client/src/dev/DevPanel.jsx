@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect } from "react"
 import { socket } from "../socket/socket"
 import EVENTS from "../shared/events"
 import { testSessions } from "./devData"
@@ -5,28 +6,106 @@ import { testSessions } from "./devData"
 export default function DevPanel() {
 
     // ------------------------
-    // GENERATE (sessions + drivers)
+    // STATE (persisted)
+    // ------------------------
+
+    const [isOpen, setIsOpen] = useState(() => {
+        return localStorage.getItem("devpanel-open") !== "false"
+    })
+
+    const [position, setPosition] = useState(() => {
+        const saved = localStorage.getItem("devpanel-pos")
+
+        if (saved) return JSON.parse(saved)
+
+        // right-bottom corner by default
+        const panelWidth = 200
+        const panelHeight = 300 // approximate height
+
+        return {
+            x: window.innerWidth - panelWidth - 20,
+            y: window.innerHeight - panelHeight - 20
+        }
+    })
+
+    const dragging = useRef(false)
+    const offset = useRef({ x: 0, y: 0 })
+
+    // ------------------------
+    // PERSIST
+    // ------------------------
+
+    useEffect(() => {
+        localStorage.setItem("devpanel-open", isOpen)
+    }, [isOpen])
+
+    useEffect(() => {
+        localStorage.setItem("devpanel-pos", JSON.stringify(position))
+    }, [position])
+
+    localStorage.removeItem("devpanel-pos")
+
+    useEffect(() => {
+        const handleResize = () => {
+            setPosition(prev => ({
+                x: Math.min(prev.x, window.innerWidth - 220),
+                y: Math.min(prev.y, window.innerHeight - 100)
+            }))
+        }
+
+        window.addEventListener("resize", handleResize)
+        return () => window.removeEventListener("resize", handleResize)
+    }, [])
+
+    // ------------------------
+    // DRAG LOGIC
+    // ------------------------
+
+    const onMouseDown = (e) => {
+        dragging.current = true
+        offset.current = {
+            x: e.clientX - position.x,
+            y: e.clientY - position.y
+        }
+    }
+
+    const onMouseMove = (e) => {
+        if (!dragging.current) return
+
+        setPosition({
+            x: e.clientX - offset.current.x,
+            y: e.clientY - offset.current.y
+        })
+    }
+
+    const onMouseUp = () => {
+        dragging.current = false
+    }
+
+    useEffect(() => {
+        window.addEventListener("mousemove", onMouseMove)
+        window.addEventListener("mouseup", onMouseUp)
+
+        return () => {
+            window.removeEventListener("mousemove", onMouseMove)
+            window.removeEventListener("mouseup", onMouseUp)
+        }
+    }, [])
+
+    // ------------------------
+    // SOCKET ACTIONS
     // ------------------------
 
     const generateViaSocket = () => {
-        console.log("Generating sessions + drivers...")
-
-        // 1. создаём сессии
         testSessions.forEach(session => {
             socket.emit(EVENTS.SESSION_CREATE, {
                 name: session.name
             })
         })
 
-        // 2. ждём список от сервера
         const handler = (serverSessions) => {
-            console.log("SESSION_LISTED:", serverSessions)
+            const fresh = serverSessions.filter(s => s.status === "notStarted")
 
-            const fresh = serverSessions.filter(
-                s => s.status === "notStarted"
-            )
-
-            // 3. добавляем drivers
             fresh.forEach((serverSession, index) => {
                 const testSession = testSessions[index]
                 if (!testSession) return
@@ -46,13 +125,7 @@ export default function DevPanel() {
         socket.on(EVENTS.SESSION_LISTED, handler)
     }
 
-    // ------------------------
-    // CLEAR ALL
-    // ------------------------
-
     const clearAll = () => {
-        console.log("Clearing all sessions...")
-
         const handler = (sessions) => {
             sessions.forEach(s => {
                 socket.emit(EVENTS.SESSION_DELETE, { id: s.id })
@@ -65,71 +138,69 @@ export default function DevPanel() {
         socket.emit(EVENTS.SESSION_GET)
     }
 
-    // ------------------------
-    // RACE CONTROL
-    // ------------------------
-
-    const startRace = () => {
-        console.log("Start race")
-        socket.emit(EVENTS.SESSION_START)
-    }
-
-    const setSafe = () => {
-        socket.emit(EVENTS.SESSION_MODE, "safe")
-    }
-
-    const setHazard = () => {
-        socket.emit(EVENTS.SESSION_MODE, "hazard")
-    }
-
-    const setDanger = () => {
-        socket.emit(EVENTS.SESSION_MODE, "danger")
-    }
-
-    const finishRace = () => {
-        console.log("Finish race")
-        socket.emit(EVENTS.SESSION_FINISH)
-    }
-
-    const endSession = () => {
-        console.log("End session")
-        socket.emit(EVENTS.SESSION_END)
-    }
+    const startRace = () => socket.emit(EVENTS.SESSION_START)
+    const setSafe = () => socket.emit(EVENTS.SESSION_MODE, "safe")
+    const setHazard = () => socket.emit(EVENTS.SESSION_MODE, "hazard")
+    const setDanger = () => socket.emit(EVENTS.SESSION_MODE, "danger")
+    const finishRace = () => socket.emit(EVENTS.SESSION_FINISH)
+    const endSession = () => socket.emit(EVENTS.SESSION_END)
 
     // ------------------------
     // UI
     // ------------------------
 
     return (
-        <div style={panelStyle}>
+        <div
+            style={{
+                ...panelStyle,
+                left: position.x,
+                top: position.y
+            }}
+        >
 
-            <div style={titleStyle}>DEV PANEL</div>
+            {/* HEADER (DRAG HANDLE) */}
+            <div
+                style={headerStyle}
+                onMouseDown={onMouseDown}
+            >
+                <span>DEV PANEL</span>
 
-            {/* DATA */}
-            <section style={sectionStyle}>
-                <div style={sectionTitle}>DATA</div>
-
-                <button onClick={generateViaSocket}>
-                    Generate sessions
+                <button
+                    style={toggleBtn}
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        setIsOpen(prev => !prev)
+                    }}
+                >
+                    {isOpen ? "−" : "+"}
                 </button>
+            </div>
 
-                <button onClick={clearAll}>
-                    Clear all
-                </button>
-            </section>
+            {/* COLLAPSED */}
+            {!isOpen && (
+                <div style={{ padding: 6, fontSize: 11 }}>
+                    ▶
+                </div>
+            )}
 
-            {/* RACE CONTROL */}
-            <section style={sectionStyle}>
-                <div style={sectionTitle}>RACE CONTROL</div>
+            {/* CONTENT */}
+            {isOpen && (
+                <div style={contentStyle}>
 
-                <button onClick={startRace}>Start</button>
-                <button onClick={setSafe}>Safe</button>
-                <button onClick={setHazard}>Hazard</button>
-                <button onClick={setDanger}>Danger</button>
-                <button onClick={finishRace}>Finishing</button>
-                <button onClick={endSession}>End</button>
-            </section>
+                    <div style={sectionTitle}>DATA</div>
+                    <button onClick={generateViaSocket}>Generate</button>
+                    <button onClick={clearAll}>Clear</button>
 
+                    <div style={sectionTitle}>RACE</div>
+                    <button onClick={startRace}>Start</button>
+                    <button onClick={setSafe}>Safe</button>
+                    <button onClick={setHazard}>Hazard</button>
+                    <button onClick={setDanger}>Danger</button>
+                    <button onClick={finishRace}>Finish</button>
+                    <button onClick={endSession}>End</button>
+
+                </div>
+            )}
         </div>
     )
 }
@@ -140,32 +211,41 @@ export default function DevPanel() {
 
 const panelStyle = {
     position: "fixed",
-    top: 10,
-    right: 10,
-    width: 240,
+    width: 200,
     background: "#111",
     color: "#fff",
-    padding: 12,
     borderRadius: 10,
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
     zIndex: 9999,
-    fontSize: 12
+    fontSize: 12,
+    userSelect: "none"
 }
 
-const titleStyle = {
-    fontWeight: "bold",
-    fontSize: 14
+const headerStyle = {
+    display: "flex",
+    justifyContent: "space-between",
+    padding: 8,
+    cursor: "move",
+    background: "#222",
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10
 }
 
-const sectionStyle = {
+const contentStyle = {
     display: "flex",
     flexDirection: "column",
-    gap: 6
+    gap: 6,
+    padding: 10
 }
 
 const sectionTitle = {
-    fontSize: 11,
-    opacity: 0.7
+    fontSize: 10,
+    opacity: 0.6,
+    marginTop: 6
+}
+
+const toggleBtn = {
+    background: "transparent",
+    border: "none",
+    color: "#fff",
+    cursor: "pointer"
 }
