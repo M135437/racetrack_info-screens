@@ -1,6 +1,7 @@
 import { ENV_VARIABLES } from "../config/env.js"
 import state from "./state.js"
 import { RACE_MODES } from "../../client/src/shared/types.js"
+import { saveState } from "../utils/persistState.js";
 
 export function setDuration(RACE_DURATION) {
     state.timer.duration = RACE_DURATION;
@@ -14,15 +15,9 @@ export function getNextRaceId() {                   // goes through the array st
   return next ? next.id : null;
 }
 
-function getAllNotStartedRacesId() {           //REVIEW - not in use yet
-  const allNextRaces = state.sessions.filter((session) => {
-    return  session.status === 'notStarted';
-  });
-  return allNextRaces;
-}
-
 export function stateUptNextRaceId(id) {
     state.nextRace = id;
+    saveState();
 }
 
 export function stateUptStartSession(session) {
@@ -38,16 +33,20 @@ export function stateUptStartSession(session) {
     state.nextRace = getNextRaceId();
     state.leaderboard.push(...session.drivers);
     console.log("state.raceMode pärast: ",state.raceMode);
+    saveState();
+
 }
 
 
 
 export function stateUptChangeMode(mode) {
     state.raceMode = mode;
+    saveState();
 }
 
 export function stateUptFinishMode(mode) {
     state.raceMode = RACE_MODES.FINISH;
+    saveState();
 }
 
 export function stateUptEndSession() {
@@ -55,4 +54,5 @@ export function stateUptEndSession() {
     state.runningRace = null;
     state.leaderboard = [];
     state.nextRace = getNextRaceId();
+    saveState();
 }
