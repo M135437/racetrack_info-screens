@@ -62,7 +62,7 @@ Access key must be provided upon running the server.
 * **Dev-Panel:** collapsible control panel in dev-mode for easier testing. It reduces the need to switch between tabs/windows by allowing a tester to:  
   * generate sessions and drivers  
   * clear the frontdesk of all data  
-  * 'start' and 'end' sessions  
+  * start and end sessions  
   * use all race mode buttons  
 * **Simplified Remote Access:** uses the Environment-Aware Connection String approach for portability and ease of deployment. Any device on the same network can access the UI by navigating to the hosts IP address.  
 * **Persistence:** pushing live data to a local .json file allows races to continue smoothly after any possible server interruptions.  
