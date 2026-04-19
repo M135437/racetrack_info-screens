@@ -84,10 +84,14 @@ function finishMode(io) {
 }
 
 function endSession(io) {
+    stopTimer(); // stop timer and reset timer state
+
+    state.timer.startTime = null;
+    state.timer.timeRemaining = null;
+
     stateUptEndSession();
-    distributeState(io);
+
     io.emit(EVENTS.SESSION_ENDED, state.raceMode);
-    stopTimer();
 }
 
 function distributeState(io) {

@@ -24,14 +24,15 @@ function startTimer(io) {
         // This check prevents potential errors that could arise from trying to calculate elapsed time without a valid start time.
         if (!state.timer.startTime) return; // if startTime is not set, do not proceed with timer logic
         const elapsed = Date.now() - state.timer.startTime; // calculate elapsed time since timer was started
-        state.timer.timeRemaining = state.timer.duration - elapsed;
+        state.timer.timeRemaining = Math.max(0, state.timer.duration - elapsed);// update timeRemaining, ensuring it doesn't go negative
 
         io.emit(EVENTS.TIMER_UPDATE, state.timer.timeRemaining); // emit timer update to clients
 
         // If timeRemaining is less than or equal to 0, it means the timer has run out. In this case, we should call the finishMode function
         if (state.timer.timeRemaining <= 0) {
-            raceService.finishMode(io); // call finishMode when timer runs out
-            resetTimer(); // reset timer after finishing mode
+            raceService.finishMode(io);// finish current mode and move to the next one, if there is a next one, otherwise end session
+            raceService.endSession(io);// end session if there are no more modes left after finishing the current one
+
         }
     }, 100); // update timer every 100ms
 }
@@ -65,7 +66,7 @@ export function correctTimeAfterStartup(io) {
     state.timer.timeRemaining = Math.max(0, remaining); // update timeRemaining, ensuring it doesn't go negative
 
     // If the timer was running before the server restarted and there is still time remaining, restart the timer
-    if (state.timer.timeRemaining > 0) {
+    if (state.timer.timeRemaining > 0 && state.runningRace) {
         startTimer(io);
     }
 
