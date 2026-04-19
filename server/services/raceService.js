@@ -66,7 +66,7 @@ function changeMode(io, mode) {
     // a session already taken to 'finishing' or 'ended mode
     // should not allow let back to hazard nor danger mode as per requirements
     // should also not using changeMode if there is no no race running at the moment
-    if (state.raceMode !== RACE_MODES.FINISH && state.raceMode !== RACE_MODES.ENDED && (state.runningRace)) {
+    if (state.raceMode !== RACE_MODES.FINISH && state.raceMode !== RACE_MODES.ENDED && (state.runningRace) && state.raceMode !== RACE_MODES.NOTSTARTED) {
         stateUptChangeMode(mode);
         distributeState(io);
         io.emit(EVENTS.MODE_CHANGED, state.raceMode);
