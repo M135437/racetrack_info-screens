@@ -65,4 +65,4 @@ Access key must be provided upon running the server.
   * start and end sessions  
   * use all race mode buttons  
 * **Simplified Remote Access:** uses the Environment-Aware Connection String approach for portability and ease of deployment. Any device on the same network can access the UI by navigating to the hosts IP address.  
-* **Persistence:** pushing live data to a local .json file allows races to continue smoothly after any possible server interruptions.  
+* **Persistence:** pushing live data to a local .json file allows races to continue smoothly after sudden server interruptions.  
