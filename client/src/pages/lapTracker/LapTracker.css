@@ -139,6 +139,10 @@ body {
   .drivers-grid {
     grid-template-columns: repeat(auto-fit, minmax(40%, 1fr));
   }
+  .drivers-grid:has(> :last-child:nth-child(2)) {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(2, 1fr);
+  }
   .lap-button {
     font-size: clamp(1.1rem, 8vw, 1.5rem)
   }
