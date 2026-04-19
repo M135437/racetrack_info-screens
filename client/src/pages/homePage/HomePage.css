@@ -1,13 +1,16 @@
 .homepage-container {
-    height: 100vh;
+    min-height: 100vh;
+    min-height: 100svh;
     width: 100%;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     gap: 20px;
     padding: 10px;
     box-sizing: border-box;
     overflow-x: hidden; 
-    overflow-y: hidden;
+    margin: 0;
 }
 .homepage-container h2 {
     font-weight: 800;
@@ -16,7 +19,6 @@
     letter-spacing: 1px;
     text-transform: uppercase;
 }
-
 .homepage-header {
     width: 100%;
     display: flex;
@@ -25,14 +27,25 @@
     border-bottom: 4px solid #ffd000;
     padding-bottom: 10px;
 }
+.homepage-card {
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(0, 0, 0, 0.6);
+    width: 90%;
+    max-width: 600px;
+    padding: 20px;
+    border-radius: 15px;
+}
 .homepage-header h1 {
     font-weight: 800;
     font-family: 'Orbitron', sans-serif;
     color: #ffd000; 
     letter-spacing: 2px; 
+    text-align: center;
+    font-size: 2.5rem;
 }
 
-.menu {
+.role-menu {
     list-style: none; /* pole neid loendipunkte */
     padding: 0;
     margin-top: 10px;
@@ -40,15 +53,98 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 10px;
 }
 
 .role-link {
-    border-radius: 8px;
+    display: inline-block;
+    text-decoration: none;
+    text-align: center;
+    font-weight: normal;
+    border-radius: 15px;
     width: 250px;
-    transition: transform 0.2s;
+    padding: 1px;
+    transition: transform 0.3s, background-color 0.3s, color 0.3s;
     color: white;
+    cursor: pointer;
 }
 .role-link:hover {
     transform: scale(1.05);
+    color: #ffd000;
+    background-color: black;
+    text-decoration: none;
+    border-radius: 15px;
+}
+
+/* PORTRAIT*/
+@media screen and (orientation: portrait) {
+    .homepage-card {
+        width: 95%;
+    }
+    .homepage-header h1 {
+        font-size: 1.5rem;
+        word-break: break-word;
+    }
+    .homepage-container h2 {
+        font-size: 1rem;
+        text-align: center;
+    }
+    .role-link {
+        background-color: rgba(0, 0, 0, 0.4);
+        padding: 8px;
+    }
+}
+
+/* LANDSCAPE */
+@media screen and (orientation: landscape) and (max-height: 500px) {
+    .homepage-container {
+        justify-content: flex-start;
+        padding-top: 40px;
+        padding-bottom: 40px;
+    }
+    .homepage-header h1{
+        font-size: 1.7rem;
+        margin: 0;
+    }
+    .homepage-container h2 {
+        font-size: 1rem;
+    }
+    .role-menu {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 2fr;
+        gap: 5px;
+        margin-top: 5px;
+        margin-bottom: 10px;
+    }
+    .homepage-card {
+        max-width: 80%;
+    }
+    .role-link {
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    section:first-of-type .role-menu {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: center;
+        gap: 10px;
+    }
+    section:first-of-type .role-link {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+    section:nth-of-type(2) .role-menu {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        width: 100%;
+    }
+    section:nth-of-type(2) .role-link {
+        font-size: 0.9rem;
+        padding: 8px;
+        width: 100%;
+    }
 }
