@@ -1,4 +1,5 @@
 import state from "../state/state.js";
+import { saveState } from "../utils/persistState.js";
 
 export const recordLap = (driverId) => {
     // testimiseks:
@@ -53,5 +54,6 @@ export const recordLap = (driverId) => {
     }
 
     driver.lastLapTimestamp = now;
+    saveState()
     return driver; 
 };

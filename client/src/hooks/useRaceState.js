@@ -27,6 +27,12 @@ export const useRaceState = create((set) => ({
             return;
         }
 
+        socket.on("connect", () => {
+            console.log("Reconnected → requesting fresh state")
+
+            socket.emit(EVENTS.SESSION_GET)
+        })
+
         isListening = true;
         console.log("Attaching socket listeners");
 
@@ -59,11 +65,15 @@ export const useRaceState = create((set) => ({
 
         // listen for state distribution
         socket.on(EVENTS.STATE_DISTRIBUTED, (data) => {
+            console.log("STATE_DISTRIBUTED", data)
+
             set({
                 raceMode: data?.raceMode || 'notStarted',
-                runningRace: data?.runningRace ?? null
+                runningRace: data?.runningRace ?? null,
+                leaderboard: Array.isArray(data?.leaderboard) ? data.leaderboard : [],
+                time: data?.timer?.timeRemaining ?? null
             })
-        })
+        });
 
         // mode changes -- required by Race Flags, Countdown, Leaderboard
         socket.on(EVENTS.MODE_CHANGED, (newMode) => {
@@ -78,7 +88,7 @@ export const useRaceState = create((set) => ({
         // start of session — NextRace/RaceFlag/RaceControl/FrontDesk/LapTracker/Leaderboard need to update when received
         socket.on(EVENTS.SESSION_STARTED, (data) => {
             set({
-                raceMode: 'safe',
+                raceMode: data.raceMode,
                 runningRace: data?.raceId ?? null,
                 leaderboard: Array.isArray(data.leaderboard) ? data.leaderboard : []
             });
