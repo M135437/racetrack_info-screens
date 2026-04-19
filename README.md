@@ -230,7 +230,7 @@ info-screens
    └─ utils
       ├─ persistState.js
       └─ processEnvirVariables.js
-
+```
 
 ## 📌 Known Limitations
 
