@@ -1,8 +1,8 @@
 const EVENTS = {
     // UI (front-end triggered) actions (requests to create an event, flow from UI to -> back-end)
     SESSION_CREATE: "session:create",   // front desk asks to create race with racers
-SESSION_DELETE: "session:delete",       // front desk asks for the server to create a session
-SESSION_GET: "session:get",             // front desk ask for the server for the current list of sessions when the component mounts
+    SESSION_DELETE: "session:delete",       // front desk asks for the server to create a session
+    SESSION_GET: "session:get",             // front desk ask for the server for the current list of sessions when the component mounts
     SESSION_ERROR: "session:error",     //  front desk error handling
     SESSION_START: "session:start",     // race control asks to starts race (=flag to 'safe')
     SESSION_MODE: "session:mode",       // race control asks to changes flag (state.raceMode.${})
@@ -13,7 +13,7 @@ SESSION_GET: "session:get",             // front desk ask for the server for the
 
     DRIVER_ADD: "driver:add",
     DRIVER_REMOVE: "driver:remove",
-    DRIVER_UPDATE: "driver:update",   // for future use, in case we want to update driver info (name, car) without having to delete and re-add them
+    DRIVER_UPDATE: "driver:update",
 
     LAP_INIT: "lap:init",                 // lap tracker initialization ||REVIEW - needed during dev for laptracker test
     LAP_UPDATE: "lap:update",             // lap tracker asks to update lap time

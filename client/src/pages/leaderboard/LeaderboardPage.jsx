@@ -21,15 +21,21 @@ const sortedLeaderboard = useMemo(() => {
   });
 }, [leaderboard]);
 
-// Funktsioon aja vormindamiseks (et säiliks MM:SS.ms vaade)
+// Funktsioon aja vormindamiseks
 const formatTime = (seconds) => {
-  if (!seconds || seconds === Infinity) return "--:--.---";
-  const mins = Math.floor(seconds / 60);
-  const secs = Math.floor(seconds % 60);
-  const ms = Math.floor((seconds % 1) * 1000);
-  return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}.${String(ms).padStart(3, "0")}`;
+    if (!seconds || seconds === Infinity) return "--:--.---";
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    const ms = Math.floor((seconds % 1) * 1000);
+    return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}.${String(ms).padStart(3, "0")}`;
 
-};
+  };
+
+  const formatStatus = (status) => {
+    if (!status) return "NOT STARTED";
+    return status.replace(/([A-Z])/g, " $1").trim().toUpperCase();
+  };
+
 
   return (
 
@@ -45,7 +51,7 @@ const formatTime = (seconds) => {
             <header className="leaderboard-header">
                 <h2>LEADERBOARD</h2>
                 <div className={`race-status ${raceMode || "notStarted"}`}>
-                    STATUS: {(raceMode || "notStarted").toUpperCase()}
+                    STATUS: {formatStatus(raceMode)}
                 </div>
                 <div className="race-timer">
                     TIME LEFT: <Timer time={time} />

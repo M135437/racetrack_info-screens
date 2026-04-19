@@ -21,16 +21,15 @@ Designed for use by track marshals and pit crew
 ## Installation & Setup
   
 Täidame siis _päriselt_, kui auth ja tunneling olemas, aga peab olemas olema:  
-`npm start` <- mis käivitab produ-süsteemi; taimer 10min  
 `npm run dev` <- mis käivitab dev-mode, kus taimer 1min  
+`npm start` <- mis käivitab produ-süsteemi; taimer 10min 
   
 ## Features & UI Modes
   
 ### Reception / Front Desk
 - Adding, editing, removing race sessions  
 - Adding, editing, removing drivers  
-- Assigning cars to drivers  
-- Naming sessions and providing estimated start times  
+- Assigning cars to drivers both manually and automatically  
   
 ### Safety Official / Race Control
 - Starting, finishing, and closing race sessions  
@@ -56,5 +55,6 @@ _All displays support fullscreen-view._
   
 - [] **Authentification:** - role-based access to interactive interfaces. Currently has a placeholder auth-gate with hardcoded password.  
 - [] **Remote Access:** - tunneling set-up for off-site monitoring.  
-- [] **History:** - adding persistence for racetime storage.  
+- [] **History:** - adding persistence for racetime storage. 
+- [] **Dev-Panel:** - collapsable dev-panel avaliable in dev-mode for easier testing including generating sessions and drivers, clearing the frontdesk and also race control race mode buttons. Minimizes need to move between screens for testing 
   

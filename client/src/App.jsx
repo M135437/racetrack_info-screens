@@ -22,8 +22,6 @@ import NextRace from "./pages/nextRace/NextRace";
 import Flags from "./pages/flags/Flags";
 import Countdown from "./pages/countdown/Countdown";
 
-
-// DEV IMPORTS for testing and development purposes - can be removed later
 import DevPanel from "./dev/DevPanel"
 
 /* authentication prompt */

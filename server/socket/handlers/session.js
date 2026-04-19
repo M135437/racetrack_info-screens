@@ -24,8 +24,7 @@ export default function sessionHandler(io, socket) {
             io.emit(EVENTS.SESSION_LISTED, sessions)
 
         } catch (err) {
-            console.log("Server saadab vea välja:", err.message); // See paistab terminalis
-            socket.emit(EVENTS.SESSION_ERROR, err.message); // See saadetakse üle võrgu
+            socket.emit(EVENTS.SESSION_ERROR, err.message);
         }
     })
 
