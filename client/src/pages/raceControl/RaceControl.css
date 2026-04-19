@@ -37,14 +37,25 @@
 }
 .racemode-grid button {
     width: 100%;
-    background-color: rgba(0, 0, 0, 0.3);
     color: white;
     padding: 20px;
     font-weight: bold;
     cursor: pointer;
-    color: white;
     border-radius: 15px;
     border: none;
+}
+.racemode-grid :nth-child(1) button {
+    background-color: green;
+}
+.racemode-grid :nth-child(2) button {
+    background-color: red;
+}
+.racemode-grid :nth-child(3) button {
+    background-color: orange;
+}
+.racemode-grid :nth-child(4) button {
+    background-color: white;
+    color: black;
 }
 .racestart-btn {
     margin-top: 20px;
