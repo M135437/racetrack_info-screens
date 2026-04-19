@@ -64,7 +64,7 @@ Access key must be provided upon running the server.
   * clear the frontdesk of all data  
   * 'start' and 'end' sessions  
   * use all race mode buttons  
-, reducing the need to switch between tabs/windows.  
+reducing the need to switch between tabs/windows.  
   
 ## 📅 WIP
    
