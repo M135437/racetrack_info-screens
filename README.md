@@ -1,9 +1,9 @@
-# Beachside Racetrack - Lap Tracking System
+# 🏎️ Beachside Racetrack - Lap Tracking System
   
 An event-driven race management system built with **Socket.io** and **React**.  
   
 **Tablet and Mobile Device interfaces**  
-Designed for use by track marshals and pit crew.  
+📱 🖥️ 💻 Designed for use by track marshals and pit crew.  
   
 | Category | Tech Stack |
 |:---:|:---:|
@@ -12,7 +12,7 @@ Designed for use by track marshals and pit crew.
 | **Real-time** | ![Socket.io](https://img.shields.io/badge/Socket.io-010101?style=for-the-badge&logo=socket.io&logoColor=white) |
 | **Styling** | ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white) |
   
-## Architecture  
+## 🏗️ Architecture  
   
 **Bi-directional Event-Driven Architecture**.  
   
@@ -20,26 +20,26 @@ Designed for use by track marshals and pit crew.
  -> Server-Push - _Persistent WebSocket connection with all clients._  
  -> State Management: _A centralised server-side state handles the timer and race modes; Data is pushed only when it changes._  
    
-## Installation & Setup
+## ⚙️ Installation & Setup
   
 Täidame siis _päriselt_, kui auth ja tunneling olemas, aga peab olemas olema:  
 `npm run dev` <- mis käivitab dev-mode, kus taimer 1min  
 `npm start` <- mis käivitab produ-süsteemi; taimer 10min 
   
-## Features & UI Modes
+## 🛠️ Features & UI Modes
   
-### Reception / Front Desk
+### 🏨 Reception / Front Desk 🖥️ 
 - Adding, editing, removing race sessions  
 - Adding, editing, removing drivers  
 - Assigning cars to drivers both manually and automatically  
 - Automatic-handling of duplicate participant names and car numbers  
   
-### Safety Official / Race Control
+### 🛡️ Safety Official / Race Control 📱 
 - Starting, finishing, and closing race sessions  
 - Switching between race-modes to ensure safety  
 - Includes driver list of upcoming session   
   
-### Lap Observer / Lap Tracker
+### ⏱️ Lap Observer / Lap Tracker 📱 
 - Handling lap-line crossings  
 - Include Race safety indicator and countdown timer  
 - Includes large hard-to-miss buttons  
@@ -48,7 +48,7 @@ Täidame siis _päriselt_, kui auth ja tunneling olemas, aga peab olemas olema:
 - Supports landscape and portrait views for mobile devices  
 - Supports fullscreen view  
   
-### Displays
+### 🖥️ Displays
 **Leaderboard:** for public areas to be viewed by spectators.  
 Includes countdown timer and race safety indicator.   
 **Next Race:** for public areas to be viewed by participants and spectators.  
@@ -57,7 +57,7 @@ Signals subsequent participants to head to paddock.
 **Flag Screens:** to be used around the track for notifying drivers and officials of racetrack safety.  
 _All displays support fullscreen-view._  
   
-### Other  
+### 🔑 Other  
 **Authentication:** role-based access to interactive interfaces.  
 Access key must be provided upon running the server.  
 **Dev-Panel:** collapsible control panel avaliable in dev-mode for easier testing. The panel allows a tester to  
@@ -67,7 +67,7 @@ Access key must be provided upon running the server.
 - use all race mode buttons  
 , reducing the need to switch between tabs/windows.  
   
-## WIP
+## 📅 WIP
    
 - [] **Remote Access:** - tunneling set-up for off-site monitoring.  
 - [] **History:** - adding persistence for racetime storage. 
