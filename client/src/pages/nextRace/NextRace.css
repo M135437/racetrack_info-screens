@@ -1,224 +1,220 @@
+/* NextRace.css */
 
-/* =========================
-   CONTAINER (SAFE SCOPE)
-   ========================= */
-   .next-race-container {
-    height: 100vh;
-    width: 100vw;
-
+.next-race-container {
+    min-height: 100vh;
     background-color: #1e2f3f;
     color: white;
-
     display: flex;
     flex-direction: column;
-    justify-content: center;   /* 🔥 OLULINE */
     align-items: center;
-
-    padding: 40px 20px;
+    justify-content: flex-start;
     box-sizing: border-box;
-    position: relative;
-}
+    padding: 24px 20px 40px;
 
-
-/* =========================
-   TITLE
-   ========================= */
-.next-race-container h1 {
-    font-size: clamp(60px, 18vw, 300px);
-    font-weight: 900;
-    line-height: 1;
     font-family: 'Arial Black', sans-serif;
-    letter-spacing: 2px;
-    color: #ffd000;
-    margin-bottom: 10px;
-}
-
-.next-race-container .top-line {
-  width: 100%;
-  border-bottom: 4px solid #ffd000;
-  margin-bottom: 40px;
-}
-
-/* =========================
-   YELLOW LINE (LIKE LEADERBOARD)
-   ========================= */
-.next-race-container .yellow-line {
-    width: 100%;
-    height: 4px;
-    background-color: #ffd000;
-    margin-bottom: 30px;
-}
-
-
-/* =========================
-   PADDOCK MESSAGE
-   ========================= */
-.next-race-container .paddock-message {
-    font-size: clamp(18px, 2.5vw, 32px);
-    font-weight: bold;
-    color: #ffffff;
-
-    margin-bottom: 25px;
     text-align: center;
-}
+    position: relative;
+    overflow-x: hidde
+  }
 
-
-/* =========================
-   SESSION CARD
-   ========================= */
-.next-race-container .race-card {
+  .yellow-line {
     width: 100%;
     max-width: 1000px;
+    height: 4px;
+    background-color: #ffde00;
+    margin-bottom: 20px;
+  }
+  
 
-    transform: scale(clamp(0.9, 1.2vw, 1.2));
-    transform-origin: center;
-
-    transition: transform 0.3s ease;
-    
-}
-
-
-/* =========================
-   SESSION TITLE
-   ========================= */
-.next-race-container .race-title {
-    font-size: clamp(20px, 3vw, 36px);
-    margin-bottom: 15px;
+  .next-race-container h1 {
+    font-size: clamp(56px, 10vw, 150px);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: 6px;
     text-align: center;
+
+    margin: 0 0 12px 0;
+  }
+
+  .next-race-container .race-title {
+    font-size: clamp(56px, 10vw, 150px);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: 6px;
+    text-align: center;
+    color: #ffde00;
+    margin: 0 0 12px 0;
 }
 
-
-/* =========================
-   DRIVER LIST
-   ========================= */
-.next-race-container .driver-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.next-race-container .session-title {
+  font-size: clamp(24px, 2.2vw, 38px);
+  font-weight: 700;
+  text-align: center;
+  margin: 0 0 22px 0;
+  color: white;
 }
 
+.next-race-container .race-card {
+  width: 100%;
+  max-width: 1000px;
+  transform: none;
+  margin: 0 auto;
+}
 
-/* =========================
-   DRIVER ROW
-   ========================= */
+.next-race-container .drivers-list {
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0 auto;
+}
+
 .next-race-container .driver-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-    font-size: clamp(16px, 2vw, 26px);
+  width: 100%;
+  box-sizing: border-box;
+
+  font-size: clamp(20px, 1.8vw, 30px);
+  padding: 14px 22px;
+
+  background: rgba(0, 0, 0, 0.28);
+  border-radius: 10px;
 }
 
-
-/* DRIVER NAME */
-.next-race-container .driver-name {
-    font-size: clamp(16px, 2vw, 24px);
-}
-
-
-/* CAR */
+.next-race-container .driver-name,
+.next-race-container .car-number,
 .next-race-container .driver-car {
-    font-size: clamp(14px, 1.8vw, 20px);
-    color: #ffd000;
+    font-size: inherit;
 }
 
-
-/* =========================
-   NO SESSION TEXT
-   ========================= */
-.next-race-container .no-sessions {
-    font-size: 20px;
-    opacity: 0.7;
+.no-sessions {
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  opacity: 0.7;
+  margin-top: 40px;
+  text-transform: uppercase;
 }
 
-
-/* =========================
-   LAST RESULTS (fallback)
-   ========================= */
-.next-race-container .last-results {
-    width: 100%;
-    max-width: 700px;
-
-    margin-top: 20px;
-    text-align: center;
+.paddock-message {
+  font-size: clamp(1.8rem, 3.2vw, 3rem);
+  background-color: #ffde00;
+  color: #1e2f3f;
+  padding: 20px 40px;
+  border-radius: 10px;
+  margin: 30px 0;
+  animation: blink 1.5s infinite;
 }
 
-
-.next-race-container .last-results h3 {
-    margin-bottom: 10px;
-    font-size: 20px;
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
 }
 
-
-.next-race-container .result-row {
-    display: flex;
-    justify-content: space-between;
-
-    padding: 8px 12px;
-    font-size: 14px;
-
-    opacity: 0.8;
+.last-results {
+  width: 100%;
+  max-width: 800px;
+  margin-top: 40px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 30px;
+  border-radius: 15px;
 }
 
-
-/* =========================
-   FULLSCREEN BUTTON
-   ========================= */
-.next-race-container .fullscreen-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-
-    background: rgba(255, 255, 255, 0.15);
-    color: white;
-
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    padding: 8px 16px;
-    border-radius: 6px;
-
-    cursor: pointer;
+.results-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
+.result-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 1fr;
+  font-size: 1.8rem;
+  padding: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
 
-/* =========================
-   MOBILE OPTIMIZATION
-   ========================= */
+.rank { color: #ffde00; }
+
+.fullscreen-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid white;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 100;
+}
+
+/* MUUDATUS: desktop/fullscreen 1920x1080 jaoks täpsem häälestus */
+@media (min-width: 1200px) {
+  .next-race-container {
+      padding-top: 20px;
+      padding-bottom: 32px;
+  }
+
+  .yellow-line {
+      margin-bottom: 16px;
+  }
+
+  .next-race-container h1,
+  .next-race-container .race-title {
+      font-size: clamp(64px, 8vw, 132px);
+      margin-bottom: 10px;
+  }
+
+  .next-race-container .session-title {
+      font-size: clamp(26px, 2vw, 40px);
+      margin-bottom: 18px;
+  }
+
+  .next-race-container .drivers-list {
+      gap: 10px;
+  }
+
+  .next-race-container .driver-row {
+      font-size: clamp(22px, 1.5vw, 30px);
+      padding: 12px 22px;
+  }
+}
+
+/* Mobiili jaoks peidame dev-paneli ja reguleerime suurusi */
 @media (max-width: 768px) {
+  h1 { font-size: 4rem; }
+  .no-sessions { font-size: 1.5rem; }
+  .result-row { font-size: 1.2rem; }
 
-    .next-race-container {
-      justify-content: flex-start; /* mobile = mitte keskel */
-      padding: 80px;
-    }
+  /* MUUDATUS: mobiilis hoiame samuti spacingu kontrolli all */
+  .next-race-container {
+      padding: 20px 14px 28px;
+  }
 
-    .next-race-container .driver-row {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 5px;
-    }
+  .yellow-line {
+      margin-bottom: 14px;
+  }
 
-    .next-race-container .race-card {
-      transform: scale(1); /* ära zoomi mobile */
-    }
-}
+  .next-race-container h1,
+  .next-race-container .race-title {
+      font-size: clamp(42px, 13vw, 72px);
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+  }
 
+  .next-race-container .session-title {
+      font-size: clamp(18px, 5vw, 28px);
+      margin-bottom: 16px;
+  }
 
-/* =========================
-   LANDSCAPE FIX
-   ========================= */
-@media (max-width: 768px) and (orientation: landscape) {
-
-    .next-race-container h1 {
-        font-size: 24px;
-    }
-
-    .next-race-container .race-title {
-        font-size: 18px;
-    }
-
-    .next-race-container .driver-name {
-        font-size: 14px;
-    }
-
+  .next-race-container .driver-row {
+      font-size: clamp(16px, 4.2vw, 22px);
+      padding: 10px 14px;
+  }
 }
 
 
