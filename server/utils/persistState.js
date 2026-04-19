@@ -7,19 +7,22 @@ export async function saveState() {
     await fs.writeFile(
         DATA_FILE,
         JSON.stringify(state, (key, value) => {
-        if (key === "timerStatus") return undefined; // setInterval stored in state.timer.timerStatus would cause "TypeError: Converting circular structure to JSON"
+            if (key === "timerStatus") return undefined; // setInterval stored in state.timer.timerStatus would cause "TypeError: Converting circular structure to JSON"
             return value;
         }),
-    "utf-8");
+        "utf-8");
 };
 
-export async function loadState() {
+export async function loadState(io) {
     try {
-    const fileContents  = await fs.readFile(DATA_FILE, "utf-8");
-    Object.assign(state, JSON.parse(fileContents));
-    console.log(`Server (loadState()): State recovered from ${DATA_FILE}`);
-    correctTimeAfterStartup()
-    return true;
+        const fileContents = await fs.readFile(DATA_FILE, "utf-8");
+        Object.assign(state, JSON.parse(fileContents));
+
+        console.log("Stare recovered");
+
+        correctTimeAfterStartup(io); // correct timer after server restarts to ensure it continues to function correctly and emits updates to clients as expected   
+
+        return true;
     } catch {
         console.log(`Server(loadState()): State could not be loaded from ${DATA_FILE}, initializing anew.`);
         return false;

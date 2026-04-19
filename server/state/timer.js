@@ -52,10 +52,10 @@ function resetTimer() {
     state.timer.startTime = null;
 }
 
-export function correctTimeAfterStartup() {
+export function correctTimeAfterStartup(io) {
     //
     if (!state.timer.startTime) {
-        state.timer.timeRemaining = state.timer.duration - elapsed; // if there is no startTime, reset timeRemaining to duration
+        state.timer.timeRemaining = state.timer.duration; // if there is no startTime, it means there is no active timer, so we can simply set timeRemaining to duration and return
         return;
     }
 

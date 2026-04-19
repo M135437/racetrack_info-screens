@@ -1,7 +1,7 @@
 import state from "./state.js"
 import { RACE_MODES } from "../../client/src/shared/types.js"
 import { saveState } from "../utils/persistState.js";
-import { startTimer } from "./timer.js";
+import { startTimer, resetTimer } from "./timer.js";
 
 export function setDuration(RACE_DURATION) {
     state.timer.duration = RACE_DURATION;
@@ -27,6 +27,15 @@ export function stateUptStartSession(session, io) { // when start session comman
         console.log("Updating state as per race start command failed, no session received for processing");
         return;
     }
+
+    // If there is already a running race, we should mark it as ended before starting a new one. This ensures that the state remains consistent and accurately reflects the current status of
+    state.sessions.forEach(s => {
+        if (s.status === 'started') {
+            s.status = 'ended'
+        }
+    })
+
+
     state.runningRace = session.id;
     console.log("state.raceMode enne: ", state.raceMode);
     state.raceMode = RACE_MODES.SAFE;
@@ -35,6 +44,8 @@ export function stateUptStartSession(session, io) { // when start session comman
     state.nextRace = getNextRaceId();
     state.leaderboard.push(...session.drivers);
     console.log("state.raceMode pärast: ", state.raceMode);
+
+    resetTimer(); // reset the timer before starting a new one to ensure it starts with the correct duration and state
 
     startTimer(io); // start the timer when the session starts
 

@@ -37,7 +37,7 @@ const io = new Server(server, {
 
 //Async bootstrap function to initialize the server and load state before starting the server (FIX) Olga
 async function startServer() {
-    await loadState(); // Load state before starting the server
+    await loadState(io); // Load state before starting the server
 
     syncSessionCounter();
 
