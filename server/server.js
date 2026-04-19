@@ -46,8 +46,8 @@ async function startServer() {
     socketHandlers(io);
 
     // START LISTEN ON SERVER
-    server.listen(ENV_VARIABLES.RACETRACK_SERVER_PORT, () => {
-        console.log(`  ➜  Server running on port: ${ENV_VARIABLES.RACETRACK_SERVER_PORT}`)
+    server.listen(ENV_VARIABLES.VITE_SERVER_PORT, () => {
+        console.log(`  ➜  Server running on port: ${ENV_VARIABLES.VITE_SERVER_PORT}`)
         console.log(`  ➜  Race duration: ${(state.timer.duration / 1000) / 60} min`)
     })
 }

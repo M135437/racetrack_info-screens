@@ -17,8 +17,8 @@ const missing = Object.entries(ENV_VARIABLES)
         console.error('║  export FRONTDESK_KEY=your_key                              ║');
         console.error('║  export LAPTRACKER_KEY=your_key                             ║');
         console.error('║  export RACECONTROL_KEY=your_key                            ║');
-        console.error('║  export RACETRACK_SERVER_PORT=your_server port (optional)   ║');
-        console.error('║  npm start                                                  ║');
+        console.error('║  export VITE_SERVER_PORT=your_server port (optional)        ║');
+        console.error('║  npm start (or npm run dev)                                 ║');
         console.error('╚═════════════════════════════════════════════════════════════╝\n');
         process.exit(1);
     }
