@@ -13,6 +13,18 @@ function getFirstNotStartedSession() {
     return null;
 }
 
+function syncSessionCounter() {
+    if (!state.sessions.length) {
+        sessionCounter = 1
+        return
+    }
+
+    const maxId = Math.max(...state.sessions.map(s => s.id))
+    sessionCounter = maxId + 1
+
+    console.log("SessionCounter synced:", sessionCounter)
+}
+
 function createSessionObject(name) {
     return {
         id: sessionCounter++,
@@ -167,5 +179,6 @@ export {
     deleteSession,
     addDriver,
     removeDriver,
-    updateDriver
+    updateDriver,
+    syncSessionCounter
 }
