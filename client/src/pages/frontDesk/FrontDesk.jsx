@@ -2,29 +2,17 @@ import { useEffect, useState } from "react"
 import { socket } from "../../socket/socket"
 import EVENTS from "../../shared/events"
 import "./FrontDesk.css"
+import { useRaceState } from "../../hooks/useRaceState"
 
 import SessionCard from "../../components/sessions/SessionCard"
 
 export default function FrontDesk() {
-    const [sessions, setSessions] = useState([])
+    const sessions = useRaceState(state => state.sessions)
     const [inputs, setInputs] = useState({})
     const [name, setName] = useState("")
 
-    useEffect(() => {
-        socket.emit(EVENTS.SESSION_GET)
 
-        const handler = (data) => {
-            setSessions(data)
-        }
 
-        socket.on(EVENTS.SESSION_LISTED, handler)
-
-        return () => {
-            socket.off(EVENTS.SESSION_LISTED, handler)
-        }
-    }, [])
-
-    // SESSION
     const createSession = () => {
         if (!name.trim()) return
 
@@ -39,7 +27,7 @@ export default function FrontDesk() {
         socket.emit(EVENTS.SESSION_DELETE, { id })
     }
 
-    // INPUT
+
     const updateInput = (sessionId, field, value) => {
         setInputs(prev => ({
             ...prev,
@@ -50,7 +38,7 @@ export default function FrontDesk() {
         }))
     }
 
-    // DRIVER
+
     const addDriver = (sessionId) => {
         const data = inputs[sessionId] || {}
         if (!data.name?.trim()) return

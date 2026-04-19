@@ -1,67 +1,75 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "./NextRace.css";
 import { useRaceState } from "../../hooks/useRaceState";
 import { socket } from "../../socket/socket";
 import EVENTS from "../../shared/events";
+import SessionListing from "../../components/SessionListing";
+import { RACE_MODES } from "../../shared/types";
 
 const NextRace = () => {
-  // kõik andmed tulevad hookist
-  const { sessions, raceMode, listenSocket } = useRaceState();
+  const { raceMode } = useRaceState();
+
+  const [nextRace, setNextRace] = useState(null);
+  const [lastResults, setLastResults] = useState([]);
 
   useEffect(() => {
-    // käivita socket kuulajad
-    listenSocket();
-    // küsi sessioonid kohe kui leht avaneb
-    socket.emit(EVENTS.SESSION_GET);
+    const handleNextRace = (data) => setNextRace(data);
+    const handleResults = (data) => setLastResults(data);
+
+    socket.on(EVENTS.NEXT_RACE, handleNextRace);
+    socket.on(EVENTS.LEADERBOARD_UPDATE, handleResults);
+
+    return () => {
+      socket.off(EVENTS.NEXT_RACE, handleNextRace);
+      socket.off(EVENTS.LEADERBOARD_UPDATE, handleResults);
+    };
   }, []);
 
-  // leia järgmine sessioon — esimene mis pole veel alanud
-  const nextSession = sessions.find((s) => s.status === "notStarted");
-
-  // kas sessioon on lõppenud — näita paddock sõnumit
-  const showPaddockMessage = raceMode === "ended";
+  const showPaddockMessage = raceMode === RACE_MODES.ENDED;
 
   return (
     <div className="next-race-container">
-        {/* 🔥 FULLSCREEN NUPP */}
       <button
         className="fullscreen-btn"
-        onClick={() => document.documentElement.requestFullscreen()}
+        onClick={() => {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+          } else {
+            document.exitFullscreen();
+          }
+        }}
       >
         Fullscreen
       </button>
 
+      <div className="yellow-line" />
+
       <h1>NEXT RACE</h1>
 
-      {/* Paddock sõnum kui sessioon lõppes */}
       {showPaddockMessage && (
         <div className="paddock-message">
           Drivers — please proceed to the paddock
         </div>
       )}
 
-      {/* Järgmine sessioon */}
-      {nextSession ? (
-        <div className="race-card">
-
-          <h2 className="race-title">
-            {nextSession.name || "Upcoming session"}
-          </h2>
-
-          <div className="driver-list">
-            
-            {nextSession.drivers &&
-              nextSession.drivers.map((d, index) => (
-                <div key={d.id || index} className="driver-row">
-                  <span className="driver-name">{d.name}</span>
-                  <span className="driver-car">Car {d.car}</span>
-                </div>
-              ))}
-          </div>
-        </div>
+      {nextRace ? (
+        <SessionListing nextSession={nextRace} />
       ) : (
-        // kui järgmist sessiooni pole
         <p className="no-sessions">No upcoming sessions</p>
+      )}
+
+      {showPaddockMessage && lastResults.length > 0 && (
+        <div className="last-results">
+          <h3>Last race results</h3>
+
+          {lastResults.slice(0, 5).map((driver, index) => (
+            <div key={driver.id || index} className="result-row">
+              <span>{index + 1}</span>
+              <span>{driver.name}</span>
+              <span>{driver.car}</span>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );
