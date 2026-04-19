@@ -28,10 +28,6 @@
     letter-spacing: 8px;
     text-align: center;
   }
-
-
-
-
   h1 {
     font-size: clamp(4rem, 15vw, 10rem); /* MASSIIIVNE pealkiri */
     color: #ffde00;
