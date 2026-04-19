@@ -1,19 +1,12 @@
-// react rendering imports
-import { useState, useEffect } from 'react'
-// hook centralizing socket.IO and events, related library and events contract
+import { useState, useEffect } from 'react';
 import { socket } from "./socket/socket";
-import { useRaceState } from "./hooks/useRaceState.js"
-import EVENTS from "./shared/events.js"
-// CSS import
-import './App.css'
-
-// routing imports
+import { useRaceState } from "./hooks/useRaceState.js";
+import EVENTS from "./shared/events.js";
+import './App.css';
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
-// user interface imports:
-import AuthorizationScreen from "./components/AuthorizationScreen"
+import AuthorizationScreen from "./components/AuthorizationScreen";
 import HomePage from "./pages/homePage/HomePage";
-
 import FrontDesk from "./pages/frontDesk/FrontDesk";
 import RaceControl from "./pages/raceControl/RaceControl";
 import LapTracker from "./pages/lapTracker/LapTracker";
@@ -24,7 +17,7 @@ import Countdown from "./pages/countdown/Countdown";
 
 import DevPanel from "./dev/DevPanel"
 
-/* authentication prompt */
+/* AUTHENTICATION */
 const AuthGate = ({ children, roleName }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [inputKey, setInputKey] = useState("");
@@ -52,12 +45,11 @@ const AuthGate = ({ children, roleName }) => {
       passcode: inputKey
     });
   };
-  /* return children if authorized */
+
   if (isAuthenticated) {
     return children;
   }
 
-  // Authorization view
   return (<AuthorizationScreen
     roleName={roleName}
     handleLogin={handleLogin}
@@ -67,12 +59,12 @@ const AuthGate = ({ children, roleName }) => {
   />);
 };
 
-// Placeholder for missing content (mainly used for dev purposes)
+/* PLACEHOLDER DURING DEV */
 const Placeholder = ({ ajutine }) => (
   <div style={{ padding: "20px" }}>
     <h2>{ajutine} Leht</h2>
     <p>Page under construction</p>
-    <Link to="/">Returh to main page</Link>
+    <Link to="/">Return to main page</Link>
   </div>
 );
 
@@ -83,9 +75,6 @@ function App() {
     listenSocket();
   }, []);
 
-  {/*RETURNING CONTENT VIA ROUTING*/
-    /* note - all planned content provided through explicit routes */
-  }
   return (
     <>
       <BrowserRouter>
