@@ -1,42 +1,61 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "./Flags.css";
 import { useRaceState } from "../../hooks/useRaceState";
 import { RACE_MODES } from "../../shared/types";
 
 const Flags = () => {
-    // raceMode tuleb hookist
-    const { raceMode, listenSocket } = useRaceState();
+  const { raceMode, listenSocket } = useRaceState();
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
-    useEffect(() => {
-        listenSocket();
-    }, []);
+  useEffect(() => {
+    listenSocket();
+  }, []);
 
-    // õige CSS klass vastavalt režiimile
-    const getFlagClass = () => {
-        switch (raceMode) {
-            case RACE_MODES.SAFE:     return "flag-safe";
-            case RACE_MODES.HAZARD:   return "flag-hazard";
-            case RACE_MODES.DANGER:   return "flag-danger";
-            case RACE_MODES.FINISH:   return "flag-finish";
-            case RACE_MODES.ENDED:    return "flag-danger";
-            default:                  return "flag-danger";
-        }
+  useEffect(() => {
+    const handleChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
     };
 
-    return (
-        <div className={`flags-container ${getFlagClass()}`}>
-            <div className="fullscreen-btn-wrapper">
-                <button onClick={() => document.documentElement.requestFullscreen()}>
-                    Fullscreen
-                </button>
-            </div>
+    document.addEventListener("fullscreenchange", handleChange);
 
-            {/* FINISH režiimil ruuduline overlay */}
-            {raceMode === RACE_MODES.FINISH && (
-                <div className="chequered-overlay"></div>
-            )}
-        </div>
-    );
+    return () => {
+      document.removeEventListener("fullscreenchange", handleChange);
+    };
+  }, []);
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  };
+
+  const flagClassMap = {
+    [RACE_MODES.SAFE]: "flag-safe",
+    [RACE_MODES.HAZARD]: "flag-hazard",
+    [RACE_MODES.DANGER]: "flag-danger",
+    [RACE_MODES.FINISH]: "flag-finish",
+    [RACE_MODES.ENDED]: "flag-danger"
+  };
+
+  const flagClass = flagClassMap[raceMode] || "flag-danger";
+
+  return (
+    <div className={`flags-container ${flagClass}`}>
+      
+      {/* Fullscreen toggle */}
+      <div className="fullscreen-btn-wrapper">
+        <button onClick={toggleFullscreen}>
+          {isFullscreen ? "Exit" : "Fullscreen"}
+        </button>
+      </div>
+
+      {raceMode === RACE_MODES.FINISH && (
+        <div className="chequered-overlay" />
+      )}
+    </div>
+  );
 };
 
 export default Flags;
