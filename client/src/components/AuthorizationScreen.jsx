@@ -5,7 +5,7 @@ function AuthorizationScreen({ roleName, handleLogin, inputKey, setInputKey, err
         <div className="auth-container">
             <div className="auth-header">
             <h1>{roleName}</h1>
-            <h2>Authorised access only!</h2>
+            <h2 className="auth-text">Authorised access only!</h2>
             </div>
             <p>Please provide passcode:</p>
             <form onSubmit={handleLogin}>
