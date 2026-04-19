@@ -57,9 +57,9 @@ Signals subsequent participants to head to paddock.
 _All displays support fullscreen-view._  
   
 ### 🔑 Other  
-**Authentication:** role-based access to interactive interfaces.  
+- **Authentication:** role-based access to interactive interfaces.  
 Access key must be provided upon running the server.  
-**Dev-Panel:** collapsible control panel avaliable in dev-mode for easier testing. The panel allows a tester to  
+- **Dev-Panel:** collapsible control panel avaliable in dev-mode for easier testing. The panel allows a tester to  
 - generate sessions and drivers  
 - clear the frontdesk of all data  
 - 'start' and 'end' sessions  
