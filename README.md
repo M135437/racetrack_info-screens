@@ -2,8 +2,7 @@
   
 An event-driven race management system built with **Socket.io** and **React**.  
   
-📱 🖥️ 💻 **Tablet and Mobile Device interfaces**   
-Designed for use by track marshals and pit crew.  
+📱 🖥️ 💻 **Tablet and Mobile Device interfaces** - _Designed for use by track marshals and pit crew._  
   
 | Category | Tech Stack |
 |:---:|:---:|
