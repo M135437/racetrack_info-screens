@@ -13,13 +13,13 @@ const Countdown = () => {
 
     const getStatusText = () => {
         switch (raceMode) {
-            case RACE_MODES.NOTSTARTED: return "Waiting for race to start";
+            case RACE_MODES.NOTSTARTED: return "Waiting to start";
             case RACE_MODES.SAFE:       return "Race in progress";
             case RACE_MODES.HAZARD:     return "Hazard — slow down";
             case RACE_MODES.DANGER:     return "Danger — stop";
-            case RACE_MODES.FINISH:     return "Finish — return to pit lane";
+            case RACE_MODES.FINISH:     return "Finish — return to pit";
             case RACE_MODES.ENDED:      return "Session ended";
-            default:                    return "Waiting for race to start";
+            default:                    return "Waiting to start";
         }
     };
 

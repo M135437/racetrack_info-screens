@@ -1,4 +1,3 @@
-/* layout */
 .frontdesk-container {
     height: 100vh;
     width: 100%;
@@ -20,14 +19,12 @@
     padding-bottom: 10px;
 }
 
-/* session cards list */
 .sessions {
     display: flex;
     flex-direction: column;
     gap: 14px;
 }
 
-/* create section */
 .create {
     margin-bottom: 20px;
     display: flex;
