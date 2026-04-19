@@ -37,13 +37,13 @@ export function stateUptStartSession(session, io) { // when start session comman
 
 
     state.runningRace = session.id;
-    console.log("state.raceMode enne: ", state.raceMode);
+    if (process.env.DEV_MODE) {console.log("Server(stateMachine.js): state.raceMode before changing state: ", state.raceMode);};
     state.raceMode = RACE_MODES.SAFE;
     session.startTime = Date.now();
     session.status = 'started';
     state.nextRace = getNextRaceId();
     state.leaderboard.push(...session.drivers);
-    console.log("state.raceMode pärast: ", state.raceMode);
+    if (process.env.DEV_MODE) {console.log("Server(stateMachine.js): state.raceMode after changing state: ", state.raceMode);};
 
     resetTimer(); // reset the timer before starting a new one to ensure it starts with the correct duration and state
 

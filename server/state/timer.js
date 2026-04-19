@@ -4,7 +4,7 @@ import raceService from "../services/raceService.js"
 
 function startTimer(io) {
     if (state.timer.timerStatus) return; // timer is already running, do not start another one
-    console.log("timer.js: startTimer() called");
+    if (process.env.DEV_MODE) {console.log("Server(timer.js): startTimer() called");};
 
 
     /*{
@@ -39,13 +39,13 @@ function startTimer(io) {
 
 
 function stopTimer() {
-    console.log("timer.js: stopTimer() called");
+    if (process.env.DEV_MODE) {console.log("Server(timer.js): stopTimer() called");};
     clearInterval(state.timer.timerStatus);
     state.timer.timerStatus = null;
 }
 
 function resetTimer() {
-    console.log("timer.js: resetTimer() called");
+    if (process.env.DEV_MODE) {console.log("Server(timer.js): resetTimer() called");};
     clearInterval(state.timer.timerStatus)
     state.timer.timerStatus = null;
 

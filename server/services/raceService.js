@@ -16,7 +16,7 @@ function getSafeState() {
     }));
 }
 
-function getTime(io) { // debug event (REVIEW)
+function getTime(io) { // debug event
     io.emit("get:time", {
         timeRemaining: state.timer.timeRemaining,
         startTime: state.timer.startTime

@@ -9,13 +9,14 @@ function replacer(key, value) {
   return value;
 }
 
-
-
 export default function raceHandler (io, socket) {
-    console.log("raceHandler attached");
-    socket.onAny((event, ...args) => {
-        console.log("VERBOSE MODE - EVENT RECEIVED:", event, args); // REVIEW - for debug purposes
-    });
+    if (process.env.DEV_MODE) {console.log("\t --raceHandler() from race.js");}
+    
+    if (process.env.DEV_MODE) {
+        socket.onAny((event, ...args) => {
+            console.log("VERBOSE MODE - EVENT RECEIVED:", event, args); // for debug purposes on dev
+        });
+    }
     socket.on(EVENTS.SESSION_START, () => {
         raceService.startSession(io);
     });
