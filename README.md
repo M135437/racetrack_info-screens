@@ -19,6 +19,113 @@ An event-driven race management system built with **Socket.io** and **React**.
  -> Server-Push - _Persistent WebSocket connection with all clients._  
  -> State Management: _A centralised server-side state handles the timer and race modes; Data is pushed only when it changes._  
    
+## Project Structure  
+  
+```
+info-screens
+├─ README.md
+├─ client
+│  ├─ README.md
+│  ├─ eslint.config.js
+│  ├─ index.html
+│  ├─ package-lock.json
+│  ├─ package.json
+│  ├─ public
+│  │  ├─ favicon.svg
+│  │  └─ icons.svg
+│  ├─ src
+│  │  ├─ App.css
+│  │  ├─ App.jsx
+│  │  ├─ assets
+│  │  │  ├─ hero.png
+│  │  │  ├─ react.svg
+│  │  │  └─ vite.svg
+│  │  ├─ components
+│  │  │  ├─ AuthorizationScreen.jsx
+│  │  │  ├─ ControlButton.jsx
+│  │  │  ├─ NoSessionsState.jsx
+│  │  │  ├─ PageHeader.jsx
+│  │  │  ├─ ReturnToPaddock.jsx
+│  │  │  ├─ SessionListing.jsx
+│  │  │  ├─ Timer.jsx
+│  │  │  └─ sessions
+│  │  │     ├─ SessionCard.jsx
+│  │  │     └─ sessionCard.css
+│  │  ├─ dev
+│  │  │  ├─ DevPanel.jsx
+│  │  │  ├─ devData.js
+│  │  │  └─ devGenerator.js
+│  │  ├─ hooks
+│  │  │  └─ useRaceState.js
+│  │  ├─ index.css
+│  │  ├─ main.jsx
+│  │  ├─ pages
+│  │  │  ├─ countdown
+│  │  │  │  ├─ Countdown.css
+│  │  │  │  └─ Countdown.jsx
+│  │  │  ├─ flags
+│  │  │  │  ├─ Flags.css
+│  │  │  │  └─ Flags.jsx
+│  │  │  ├─ frontDesk
+│  │  │  │  ├─ FrontDesk.jsx
+│  │  │  │  └─ frontDesk.css
+│  │  │  ├─ homePage
+│  │  │  │  ├─ HomePage.css
+│  │  │  │  └─ HomePage.jsx
+│  │  │  ├─ lapTracker
+│  │  │  │  ├─ LapTracker.css
+│  │  │  │  └─ LapTracker.jsx
+│  │  │  ├─ leaderboard
+│  │  │  │  ├─ LeaderboardPage.css
+│  │  │  │  └─ LeaderboardPage.jsx
+│  │  │  ├─ nextRace
+│  │  │  │  ├─ NextRace.css
+│  │  │  │  └─ NextRace.jsx
+│  │  │  └─ raceControl
+│  │  │     └─ RaceControl.jsx
+│  │  ├─ shared
+│  │  │  ├─ events.js
+│  │  │  └─ types.js
+│  │  └─ socket
+│  │     └─ socket.js
+│  └─ vite.config.js
+├─ install.sh
+├─ makeandrun.sh
+├─ mockBrowserOnSocket.js
+├─ package-lock.json
+├─ package.json
+└─ server
+   ├─ config
+   │  └─ env.js
+   ├─ mockBrowserOnSocket.js
+   ├─ package-lock.json
+   ├─ package.json
+   ├─ server.js
+   ├─ services
+   │  ├─ authService.js
+   │  ├─ lapService.js
+   │  ├─ raceService.js
+   │  ├─ sessionService.js
+   │  └─ testSessionService.js
+   ├─ socket
+   │  ├─ auth.js
+   │  ├─ handlers
+   │  │  ├─ lap.js
+   │  │  ├─ race.js
+   │  │  └─ session.js
+   │  ├─ index.js
+   │  └─ testClient.js
+   ├─ state
+   │  ├─ state.js
+   │  ├─ stateMachine.js
+   │  ├─ testTimer.js
+   │  └─ timer.js
+   └─ utils
+      ├─ carAssignment.js
+      └─ processEnvirVariables.js
+
+```
+
 ## ⚙️ Installation & Setup
   
 Täidame siis _päriselt_, kui auth ja tunneling olemas, aga peab olemas olema:  
@@ -65,4 +172,4 @@ Access key must be provided upon running the server.
   * start and end sessions  
   * use all race mode buttons  
 * **Simplified Remote Access:** uses the Environment-Aware Connection String approach for portability and ease of deployment. Any device on the same network can access the UI by navigating to the hosts IP address.  
-* **Persistence:** pushing live data to a local .json file allows races to continue smoothly after sudden server interruptions.  
+* **Persistence:** pushing live data to a local .json file allows races to continue smoothly after any possible server interruptions.  
