@@ -64,9 +64,5 @@ Access key must be provided upon running the server.
   * clear the frontdesk of all data  
   * 'start' and 'end' sessions  
   * use all race mode buttons  
-  
-## 📅 WIP
-   
-- [] **Remote Access:** - tunneling set-up for off-site monitoring.  
-- [] **History:** - adding persistence for racetime storage. 
-  
+* **Simplified Remote Access:** uses the Environment-Aware Connection String approach for portability and ease of deployment. Any device on the same network can access the UI by navigating to the hosts IP address.  
+* **Persistence:** pushing live data to a local .json file allows races to continue smoothly after any possible server interruptions.  
