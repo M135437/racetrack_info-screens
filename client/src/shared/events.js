@@ -15,7 +15,7 @@ const EVENTS = {
     DRIVER_REMOVE: "driver:remove",
     DRIVER_UPDATE: "driver:update",
 
-    LAP_INIT: "lap:init",                 // lap tracker initialization ||REVIEW - needed during dev for laptracker test
+    LAP_INIT: "lap:init",                 // lap tracker initialization || laptracker dev and debug helper
     LAP_UPDATE: "lap:update",             // lap tracker asks to update lap time
 
     // back-end recurring timer heartbeat

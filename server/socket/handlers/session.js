@@ -1,10 +1,8 @@
 import * as sessionService from '../../services/sessionService.js'
 import EVENTS from "../../../client/src/shared/events.js";
 
-
 export default function sessionHandler(io, socket) {
-
-    console.log("Handler laeti socketile:", socket.id);
+    if (process.env.DEV_MODE) {console.log('\t --sessionHandler() from session.js');}
 
     //GET upcoming sessions
     socket.on(EVENTS.SESSION_GET, () => {
@@ -16,13 +14,13 @@ export default function sessionHandler(io, socket) {
     socket.on(EVENTS.SESSION_CREATE, (data) => {
         try {
             sessionService.createSession(data.name)
-            console.log("CREATE DATA:", data)
+
+            if (process.env.DEV) {console.log("Server(session.js): EVENTS.SESSION_CREATE:", data);};
 
             const sessions = sessionService.getUpcomingSessions()
-            console.log("SESSIONS AFTER CREATE:", sessions)
+            if (process.env.DEV) {console.log("Server(session.js): SESSION CREATED:", sessions);};
 
             io.emit(EVENTS.SESSION_LISTED, sessions)
-
         } catch (err) {
             socket.emit(EVENTS.SESSION_ERROR, err.message);
         }

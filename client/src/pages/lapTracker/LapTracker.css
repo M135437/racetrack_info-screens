@@ -227,7 +227,7 @@ body {
   transform: translateZ(0);
   -webkit-font-smoothing: antialiased;
 }
-.lap-button:hover { /* review - will it make buttons look "frozen" on tablet? */
+.lap-button:hover {
   outline: none !important;
   outline: 0 !important;
   cursor: pointer;

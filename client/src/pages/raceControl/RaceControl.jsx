@@ -20,7 +20,7 @@ function RaceControl() {
     console.log("socket connected at RaceControl:", socket.connected);
 
     const sessions = useRaceState(state => state.sessions);
-    console.log("siin trükin racekontrolis ja sessions on: ", sessions)
+    console.log("Client(RaceControl.jsx): siin trükin racekontrolis ja sessions on: ", sessions)
     const nextSession = sessions.find((session) => session.status === 'notStarted');
     console.log("siin trükin juba nextSession: ", nextSession)
     const raceMode = useRaceState((state) => state.raceMode);
@@ -61,7 +61,9 @@ function RaceControl() {
 
     return <div >
         <div className="container">
-        <PageHeader title={element} />
+            <div className="control-header">
+                <PageHeader title={element} />
+            </div>
         </div>
         <div className="card">
 
@@ -71,30 +73,36 @@ function RaceControl() {
             <>
         
             <div className="card">
-                <p>Next Race:</p>
+                <p className="card_content">Next Race:</p>
                 <SessionListing nextSession={nextSession}/>
 
             </div>
+        <div className="racestart-btn">
         <ControlButton buttonName={"start".toUpperCase()} onClick={emitStart}/>
-
+        </div>
         </>
         )}
 
         {displayView === "duringRace" && (
-            <>
+            
+            <div className="racemode-btn-container">
                 <Timer />
+                <div className="racemode-grid">
                 <ControlButton buttonName={PROTECTED_MODES.SAFE.toUpperCase()} onClick={emitSafe}/>
                 <ControlButton buttonName={PROTECTED_MODES.DANGER.toUpperCase()} onClick={emitDanger}/>
                 <ControlButton buttonName={PROTECTED_MODES.HAZARD.toUpperCase()} onClick={emitHazard}/>
                 <ControlButton buttonName={PROTECTED_MODES.FINISH.toUpperCase()} onClick={emitFinishing}/>
-            </>
+                </div>
+            </div>
         )}
 
         {displayView === "returningToPaddock" && (
             <>
                 <Timer />
                 <ReturnToPaddock />
+            <div className="raceend-btn">
                 <ControlButton buttonName={END_MODE.END.toUpperCase()} onClick={emitEnd}/>
+            </div>
             </>
         )}
         </div>

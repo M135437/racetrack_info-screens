@@ -92,12 +92,13 @@ Note to be at application root when running npm:
 
 ### 4. Open the app
 
-- Frontend: `http://localhost:5173`
-- Backend: `http://localhost:3000`
-- Network access (LAN): `http://<host-ip>:5173`
+- Frontend: `http://localhost:4173` (`http://localhost:5173` while running dev mode)
+- Backend: `http://localhost:3000` (or custom port if using VITE_SERVER_PORT)
+- Network access (LAN): `http://<host-ip>:5173` (`http://<host-ip>:5173` while running dev mode)
 
 > Note: `client/vite.config.js` already includes `server.host = true`, so the Vite dev server should expose the network address when started from the `client` folder.
-  
+> Note: custom port can be set for server<>client communication, example`export VITE_SERVER_PORT=3001` would set server<>client communication on port 3001
+
 ## 🛠️ Key Features & UI Modes
   
 ### 🏨 Reception / Front Desk 🖥️ 

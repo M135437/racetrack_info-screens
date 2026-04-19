@@ -2,8 +2,7 @@ import state from "../state/state.js";
 import { saveState } from "../utils/persistState.js";
 
 export const recordLap = (driverId) => {
-    // testimiseks:
-    console.log(`Server received lap for Driver ID: ${driverId}`);
+    if (process.env.DEV_MODE) {console.log(`Server(lapService.js): received lap for Driver ID: ${driverId}`);};
 
     const activeSession = state.sessions.find(s => s.id === state.runningRace);
     
@@ -29,16 +28,16 @@ export const recordLap = (driverId) => {
 
     const secondsLeft = state.timer.timeRemaining || 0;
 
-    const now = Date.now(); // <- STOPPERI ALGPUNKT, aja arvutamiseks
+    const now = Date.now(); // baseline for the lap-tracking stopper
 
     if (driver.lapCount === 0 || driver.lapCount === null) {
         driver.lapCount = 1;
         driver.lastLapTimestamp = now;
-    } else { // robustseks - kui esmane jooneületus post-finish
+    } else { // robst - condition on first line-crossing in raceMode 'finishing'
         const startTime = driver.lastLapTimestamp;
         const elapsed = (now - startTime) / 1000; 
 
-        driver.latestLapTime = elapsed.toFixed(3); // 3 komakohta millisekundeid DISPLEI-VERSIOON!!
+        driver.latestLapTime = elapsed.toFixed(3); // convert to 3 digits after the decimal point for display
         driver.lapCount++;
 
         const currentLap = parseFloat(driver.latestLapTime);

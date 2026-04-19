@@ -14,9 +14,11 @@ function getSafeState() {
     }));
 }
 
+let initSocketOn = false;
+
 export default function (io) {
     io.on("connection", (socket) => {
-        console.log(`Socket handler on server side connected: ${socket.id}`);
+        if (process.env.DEV_MODE) {console.log(`Server: attaching socket handlers (Socket#ID: ${socket.id}): `);}
 
         socket.emit(EVENTS.STATE_DISTRIBUTED, getSafeState()); // send current state to client on connection
         socket.emit(EVENTS.SESSION_LISTED, state.sessions); // send session list to client on connection

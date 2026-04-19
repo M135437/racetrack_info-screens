@@ -47,10 +47,10 @@ function getAllSessions() {
 }
 
 function createSession(name) {
-    console.log("doing createSession(name)")
+    if (process.env.DEV_MODE) {console.log("Server(sessionService.js): createSession() ran with {name}=",name);}
     if (!name || name.trim() === "") {
         throw new Error('Session name is required');
-        console.log("name error")
+        console.log("name error: ")
     }
 
     const session = createSessionObject(name);
