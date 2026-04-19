@@ -48,12 +48,12 @@ Täidame siis _päriselt_, kui auth ja tunneling olemas, aga peab olemas olema:
 - Supports fullscreen view  
   
 ### 🖥️ Displays
-**Leaderboard:** for public areas to be viewed by spectators.  
+- **Leaderboard:** for public areas to be viewed by spectators.  
 Includes countdown timer and race safety indicator.   
-**Next Race:** for public areas to be viewed by participants and spectators.  
+- **Next Race:** for public areas to be viewed by participants and spectators.  
 Signals subsequent participants to head to paddock.  
-**Countdown:** for public areas and around the track to be viewed by spectators and participants. 
-**Flag Screens:** to be used around the track for notifying drivers and officials of racetrack safety.  
+- **Countdown:** for public areas and around the track to be viewed by spectators and participants. 
+- **Flag Screens:** to be used around the track for notifying drivers and officials of racetrack safety.  
 _All displays support fullscreen-view._  
   
 ### 🔑 Other  
