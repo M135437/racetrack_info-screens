@@ -1,0 +1,30 @@
+import state from "./../state/state.js";  // annab state seisu
+import { correctTimeAfterStartup } from "../state/timer.js"
+import fs from "fs/promises";
+import { DATA_FILE } from "../config/env.js"; // annab export const DATA_FILE = path.join(__dirname, 'data.json');
+
+export async function saveState() {
+    await fs.writeFile(
+        DATA_FILE,
+        JSON.stringify(state, (key, value) => {
+            if (key === "timerStatus") return undefined; // setInterval stored in state.timer.timerStatus would cause "TypeError: Converting circular structure to JSON"
+            return value;
+        }),
+        "utf-8");
+};
+
+export async function loadState(io) {
+    try {
+        const fileContents = await fs.readFile(DATA_FILE, "utf-8");
+        Object.assign(state, JSON.parse(fileContents));
+
+        console.log("Stare recovered");
+
+        correctTimeAfterStartup(io); // correct timer after server restarts to ensure it continues to function correctly and emits updates to clients as expected   
+
+        return true;
+    } catch {
+        console.log(`Server(loadState()): State could not be loaded from ${DATA_FILE}, initializing anew.`);
+        return false;
+    }
+}
