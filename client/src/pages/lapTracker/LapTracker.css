@@ -304,6 +304,7 @@ body {
   background: red;
   border-radius: 5px;
   color: white;
+  white-space: nowrap;
 }
 .race-status.safe {
   background: green;
