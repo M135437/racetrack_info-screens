@@ -1,11 +1,12 @@
-/* layout */
 .frontdesk-container {
     height: 100vh;
-    width: 100vw;
+    width: 100%;
     background-color: #1e2f3f;
     color: #ffffff;
     font-family: 'Arial Black', sans-serif;
-    padding: 40px;
+    padding: 15px;
+    /* Much smaller padding for mobile */
+    min-height: 100vh;
     box-sizing: border-box;
 }
 
@@ -18,14 +19,12 @@
     padding-bottom: 10px;
 }
 
-/* session cards list */
 .sessions {
     display: flex;
     flex-direction: column;
     gap: 14px;
 }
 
-/* create section */
 .create {
     margin-bottom: 20px;
     display: flex;
