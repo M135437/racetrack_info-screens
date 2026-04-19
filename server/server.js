@@ -9,6 +9,7 @@ import { setDuration } from "./state/stateMachine.js"
 import { loadState } from "./utils/persistState.js"
 
 import state from "./state/state.js" //Olga - for testing purposes, to check if state is loaded correctly
+import { syncSessionCounter } from "./services/sessionService.js"
 
 // check that env variables are set to control if application can be started,
 // set race duration accordingly
@@ -38,7 +39,9 @@ const io = new Server(server, {
 async function startServer() {
     await loadState(); // Load state before starting the server
 
-    const hasSavedDuration = state?.timer?.duration
+    syncSessionCounter();
+
+
     // Set duration from env variable if not already set in state, otherwise keep the loaded duration
     if (!state.timer || !state.timer.duration) {
         setDuration(RACE_DURATION)
