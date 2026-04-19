@@ -78,26 +78,32 @@ function RaceControl() {
                 <SessionListing nextSession={nextSession}/>
 
             </div>
+        <div className="racestart-btn">
         <ControlButton buttonName={"start".toUpperCase()} onClick={emitStart}/>
-
+        </div>
         </>
         )}
 
         {displayView === "duringRace" && (
-            <>
+            
+            <div className="racemode-btn-container">
                 <Timer />
+                <div className="racemode-grid">
                 <ControlButton buttonName={PROTECTED_MODES.SAFE.toUpperCase()} onClick={emitSafe}/>
                 <ControlButton buttonName={PROTECTED_MODES.DANGER.toUpperCase()} onClick={emitDanger}/>
                 <ControlButton buttonName={PROTECTED_MODES.HAZARD.toUpperCase()} onClick={emitHazard}/>
                 <ControlButton buttonName={PROTECTED_MODES.FINISH.toUpperCase()} onClick={emitFinishing}/>
-            </>
+                </div>
+            </div>
         )}
 
         {displayView === "returningToPaddock" && (
             <>
                 <Timer />
                 <ReturnToPaddock />
+            <div className="raceend-btn">
                 <ControlButton buttonName={END_MODE.END.toUpperCase()} onClick={emitEnd}/>
+            </div>
             </>
         )}
         </div>
