@@ -70,5 +70,8 @@ export function stateUptEndSession() {
     state.runningRace = null;
     state.leaderboard = [];
     state.nextRace = getNextRaceId();
+
+    state.session = 'ended';
+
     saveState();
 }
