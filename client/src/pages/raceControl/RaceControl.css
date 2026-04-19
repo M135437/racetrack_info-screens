@@ -1,0 +1,22 @@
+.control-header {
+    width: 98%;
+    margin-left: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    border-bottom: 4px solid #ffd000;
+    padding-top: 20px;
+    padding-bottom: 10px;
+    padding-right: 10px;
+    box-sizing: border-box;
+}
+.control-header h2{
+    font-weight: 800;
+    font-family: 'Orbitron', sans-serif;
+    color: #ffd000; 
+    letter-spacing: 2px; 
+    margin: 0;
+    white-space: nowrap;
+    text-transform: uppercase;
+}

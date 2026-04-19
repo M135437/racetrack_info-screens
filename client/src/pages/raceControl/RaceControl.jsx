@@ -5,6 +5,7 @@ import { PROTECTED_MODES, RACE_MODES, END_MODE } from "../../shared/types";
 
 // CSS
 import "../../App.css"
+import "./RaceControl.css"
 // Components
 import PageHeader from "../../components/PageHeader.jsx"
 import Timer from "../../components/Timer.jsx"
@@ -61,7 +62,9 @@ function RaceControl() {
 
     return <div >
         <div className="container">
-        <PageHeader title={element} />
+            <div className="control-header">
+                <PageHeader title={element} />
+            </div>
         </div>
         <div className="card">
 
