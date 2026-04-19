@@ -21,8 +21,10 @@
      ========================= */
   .leaderboard-header {
     display: flex;
-    justify-content: space-between;
-  
+   justify-content: space-between;
+   flex-wrap: wrap;
+   gap: 10x;
+
     /* 3 tsooni: vasak | keskel | parem */
     grid-template-columns: 1fr 1fr 1fr;
     align-items: center;
@@ -74,7 +76,7 @@
     display: grid;
   
     /* kõik veerud proportsioonis */
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: 80px 1.5fr 120px 100px 140px 140px;
   
     padding: 12px;
   
@@ -181,4 +183,42 @@
      ========================= */
   .table-row:hover {
     background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  @media (max-width: 768px) {
+
+    .leaderboard-container {
+      padding: 20px;
+    }
+  
+    .leaderboard-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+  
+    .race-timer {
+      align-self: flex-end;
+    }
+  
+    .table-header {
+      grid-template-columns: 40px 1fr 60px;
+      font-size: 12px;
+    }
+  
+    .table-row {
+      grid-template-columns: 40px 1fr 60px;
+      font-size: 12px;
+    }
+  
+    /* peidame vähemolulised veerud */
+    .table-header span:nth-child(4),
+    .table-header span:nth-child(5),
+    .table-header span:nth-child(6),
+    .table-row span:nth-child(4),
+    .table-row span:nth-child(5),
+    .table-row span:nth-child(6) {
+      display: none;
+    }
+  
   }
