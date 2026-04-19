@@ -1,2 +1,2 @@
-cd client/ && npm install && cd ../server/ && npm install && cd ..
-npm run dev
+cd client/ && npm install && cd ../server/ && npm install && cd .. && npm install
+npm start

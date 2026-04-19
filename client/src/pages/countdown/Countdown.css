@@ -10,6 +10,12 @@
     position: relative;
 }
 
+@media (max-width: 768px) {
+    .dev-panel {
+      display: none;
+    }
+  }
+
 /* Taustavärvid vastavalt režiimile */
 .mode-waiting { background-color: #1e2f3f; }
 .mode-safe    { background-color: #1a472a; }
@@ -22,25 +28,36 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 30px;
+
+    width: 100%;
+    max-width: 100%;
+    padding: 0 10px;
 }
 
 /* Taimer — väga suur */
 .countdown-timer .timer {
-    font-size: 20rem;
+    font-size: clamp(60px, 20vw, 400px);
     font-weight: 900;
     color: #ffffff;
     font-family: 'Arial Black', sans-serif;
     line-height: 1;
+
+    word-break: break-word;
+
 }
 
 /* Režiimi tekst taimeri all */
 .countdown-status {
-    font-size: 2rem;
+    font-size: clamp(20px, 5vw, 40px);
     color: rgba(255, 255, 255, 0.8);
     font-family: 'Arial Black', sans-serif;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
+    text-align: center;
+    padding: 0 10px;
+    max-width: 100%;
 }
 
 .fullscreen-btn {
@@ -59,3 +76,20 @@
 .fullscreen-btn:hover {
     background: rgba(255, 255, 255, 0.25);
 }
+
+/* 🔥 LANDSCAPE FIX */
+@media (max-width: 768px) and (orientation: landscape) {
+    .countdown-timer .timer {
+        font-size: clamp(40px, 10vw, 120px);
+    }
+
+    .countdown-status {
+        font-size: clamp(12px, 2.5vw, 20px);
+        white-space: normal;
+        word-break: keep-all;
+    }
+}
+
+.countdown-status div {
+    display: block;
+  }

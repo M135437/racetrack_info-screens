@@ -86,7 +86,6 @@ const LapTracker = () => {
             </div>
             <header className="laptracker-header">
                 <h2>LAP TRACKER</h2>
-            </header>
             {raceMode !== "notStarted" ? (
             <div className="component-zone">
                 <div className={`race-status ${raceMode}`}>
@@ -97,6 +96,8 @@ const LapTracker = () => {
                 </div>
             </div>
             ) : null}
+            <div className="header-spacer"></div>
+            </header>
             
             {(drivers.length > 0 && (isRaceActive || isExiting)) ? (
             <div className={`drivers-grid ${isExiting
