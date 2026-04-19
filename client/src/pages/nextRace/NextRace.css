@@ -7,9 +7,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 40px 20px;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    padding: 24px 20px 40px;
+
     font-family: 'Arial Black', sans-serif;
     text-align: center;
+    position: relative;
+    overflow-x: hidde
   }
 
   .yellow-line {
@@ -17,92 +22,201 @@
     max-width: 1000px;
     height: 4px;
     background-color: #ffde00;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
   }
   
 
   .next-race-container h1 {
-    font-size: clamp(120px, 25vw, 600px);
+    font-size: clamp(56px, 10vw, 150px);
     font-weight: 900;
     line-height: 0.9;
-    letter-spacing: 8px;
+    letter-spacing: 6px;
     text-align: center;
+
+    margin: 0 0 12px 0;
   }
-  h1 {
-    font-size: clamp(4rem, 15vw, 10rem); /* MASSIIIVNE pealkiri */
+
+  .next-race-container .race-title {
+    font-size: clamp(56px, 10vw, 150px);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: 6px;
+    text-align: center;
     color: #ffde00;
-    margin: 0;
-    line-height: 1;
-    letter-spacing: -2px;
+    margin: 0 0 12px 0;
+}
+
+.next-race-container .session-title {
+  font-size: clamp(24px, 2.2vw, 38px);
+  font-weight: 700;
+  text-align: center;
+  margin: 0 0 22px 0;
+  color: white;
+}
+
+.next-race-container .race-card {
+  width: 100%;
+  max-width: 1000px;
+  transform: none;
+  margin: 0 auto;
+}
+
+.next-race-container .drivers-list {
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0 auto;
+}
+
+.next-race-container .driver-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  width: 100%;
+  box-sizing: border-box;
+
+  font-size: clamp(20px, 1.8vw, 30px);
+  padding: 14px 22px;
+
+  background: rgba(0, 0, 0, 0.28);
+  border-radius: 10px;
+}
+
+.next-race-container .driver-name,
+.next-race-container .car-number,
+.next-race-container .driver-car {
+    font-size: inherit;
+}
+
+.no-sessions {
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  opacity: 0.7;
+  margin-top: 40px;
+  text-transform: uppercase;
+}
+
+.paddock-message {
+  font-size: clamp(1.8rem, 3.2vw, 3rem);
+  background-color: #ffde00;
+  color: #1e2f3f;
+  padding: 20px 40px;
+  border-radius: 10px;
+  margin: 30px 0;
+  animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.last-results {
+  width: 100%;
+  max-width: 800px;
+  margin-top: 40px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 30px;
+  border-radius: 15px;
+}
+
+.results-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.result-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 1fr;
+  font-size: 1.8rem;
+  padding: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.rank { color: #ffde00; }
+
+.fullscreen-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid white;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 100;
+}
+
+/* MUUDATUS: desktop/fullscreen 1920x1080 jaoks täpsem häälestus */
+@media (min-width: 1200px) {
+  .next-race-container {
+      padding-top: 20px;
+      padding-bottom: 32px;
   }
-  
-  .no-sessions {
-    font-size: 2.5rem;
-    opacity: 0.7;
-    margin-top: 50px;
-    text-transform: uppercase;
+
+  .yellow-line {
+      margin-bottom: 16px;
   }
-  
-  .paddock-message {
-    font-size: 3rem;
-    background-color: #ffde00;
-    color: #1e2f3f;
-    padding: 20px 40px;
-    border-radius: 10px;
-    margin: 40px 0;
-    animation: blink 1.5s infinite;
+
+  .next-race-container h1,
+  .next-race-container .race-title {
+      font-size: clamp(64px, 8vw, 132px);
+      margin-bottom: 10px;
   }
-  
-  @keyframes blink {
-    0% { opacity: 1; }
-    50% { opacity: 0.5; }
-    100% { opacity: 1; }
+
+  .next-race-container .session-title {
+      font-size: clamp(26px, 2vw, 40px);
+      margin-bottom: 18px;
   }
-  
-  .last-results {
-    width: 100%;
-    max-width: 800px;
-    margin-top: 40px;
-    background: rgba(0, 0, 0, 0.2);
-    padding: 30px;
-    border-radius: 15px;
+
+  .next-race-container .drivers-list {
+      gap: 10px;
   }
-  
-  .results-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+
+  .next-race-container .driver-row {
+      font-size: clamp(22px, 1.5vw, 30px);
+      padding: 12px 22px;
   }
-  
-  .result-row {
-    display: grid;
-    grid-template-columns: 80px 1fr 1fr;
-    font-size: 1.8rem;
-    padding: 15px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Mobiili jaoks peidame dev-paneli ja reguleerime suurusi */
+@media (max-width: 768px) {
+  h1 { font-size: 4rem; }
+  .no-sessions { font-size: 1.5rem; }
+  .result-row { font-size: 1.2rem; }
+
+  /* MUUDATUS: mobiilis hoiame samuti spacingu kontrolli all */
+  .next-race-container {
+      padding: 20px 14px 28px;
   }
-  
-  .rank { color: #ffde00; }
-  
-  .fullscreen-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    padding: 10px 20px;
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    border: 1px solid white;
-    border-radius: 5px;
-    cursor: pointer;
-    z-index: 100;
+
+  .yellow-line {
+      margin-bottom: 14px;
   }
-  
-  /* Mobiili jaoks peidame dev-paneli ja reguleerime suurusi */
-  @media (max-width: 768px) {
-    h1 { font-size: 4rem; }
-    .no-sessions { font-size: 1.5rem; }
-    .result-row { font-size: 1.2rem; }
+
+  .next-race-container h1,
+  .next-race-container .race-title {
+      font-size: clamp(42px, 13vw, 72px);
+      letter-spacing: 2px;
+      margin-bottom: 10px;
   }
+
+  .next-race-container .session-title {
+      font-size: clamp(18px, 5vw, 28px);
+      margin-bottom: 16px;
+  }
+
+  .next-race-container .driver-row {
+      font-size: clamp(16px, 4.2vw, 22px);
+      padding: 10px 14px;
+  }
+}
+
 
 /* 🌐 GLOBAL THEME */
 body {
