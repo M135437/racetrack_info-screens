@@ -59,7 +59,7 @@ const AuthGate = ({ children, roleName }) => {
   />);
 };
 
-/* PLACEHOLDER DURING DEV */
+/* PLACEHOLDER FOR ROUTING DEV */
 const Placeholder = ({ ajutine }) => (
   <div style={{ padding: "20px" }}>
     <h2>{ajutine} Leht</h2>
