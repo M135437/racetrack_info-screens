@@ -6,7 +6,7 @@ An event-driven real-time race management system built with **Socket.io** and **
   
 ## Table of contents  
 <details>
-<summary>Click to expand file tree</summary> 
+<summary>Click to expand TOC</summary> 
   
 1. [Architecture](#-architecture)  
 2. [Requirements](#-requirements)
