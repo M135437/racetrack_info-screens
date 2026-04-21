@@ -8,6 +8,7 @@
     /* Much smaller padding for mobile */
     min-height: 100vh;
     box-sizing: border-box;
+    overflow-y: visible !important;
 }
 
 .frontdesk-header {
