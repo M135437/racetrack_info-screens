@@ -46,69 +46,59 @@ An event-driven real-time race management system built with **Socket.io** and **
 ## 🧩 Tech Stack
 | Category | Tech Stack |
 |:---|:---|
-| **Frontend** | ![React](https://img.shields.io/badge/React-19.2.4-61DAFB?style=flat-square&logo=react&logoColor=white) ![Zustand](https://img.shields.io/badge/Zustand-5.0.12-443E38?style=flat-square) ![Vite](https://img.shields.io/badge/Vite-8.0.1-646CFF?style=flat-square&logo=vite&logoColor=white) ![Vite Plugin](https://img.shields.io/badge/%40vitejs%2Fplugin--react-6.0.1-646CFF?style=flat-square&logo=vite&logoColor=white) ![Socket.io](https://img.shields.io/badge/Socket.IO_Client-4.8.3-010101?style=flat-square&logo=socket.io&logoColor=white) ![Rolldown](https://img.shields.io/badge/%40rolldown%2Fplugin--babel-0.2.1-FFCD3A?style=flat-square&logo=babel&logoColor=black), React Router DOM v7.14.0 |
+| **Frontend** | ![React](https://img.shields.io/badge/React-19.2.4-61DAFB?style=flat-square&logo=react&logoColor=white) ![Zustand](https://img.shields.io/badge/Zustand-5.0.12-443E38?style=flat-square) ![Vite](https://img.shields.io/badge/Vite-8.0.1-646CFF?style=flat-square&logo=vite&logoColor=white) ![Vite Plugin](https://img.shields.io/badge/%40vitejs%2Fplugin--react-6.0.1-646CFF?style=flat-square&logo=vite&logoColor=white) ![Socket.io](https://img.shields.io/badge/Socket.IO_Client-4.8.3-010101?style=flat-square&logo=socket.io&logoColor=white) ![Rolldown](https://img.shields.io/badge/%40rolldown%2Fplugin--babel-0.2.1-FFCD3A?style=flat-square&logo=babel&logoColor=black) + React Router DOM v7.14.0 |
 | **Backend** | ![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=flat-square&logo=node.js&logoColor=white) ![Express](https://img.shields.io/badge/Express-5.2.1-000000?style=flat-square&logo=express&logoColor=white) ![CORS](https://img.shields.io/badge/CORS-2.8.6-blue?style=flat-square) ![dotenv](https://img.shields.io/badge/dotenv-17.3.1-ECD53F?style=flat-square&logo=dotenv&logoColor=black) ![cross-env](https://img.shields.io/badge/cross--env-10.1.0-333333?style=flat-square) ![nodemon](https://img.shields.io/badge/nodemon-3.1.14-76D04B?style=flat-square&logo=nodemon&logoColor=white) |
 | **Real-time** | ![Socket.io](https://img.shields.io/badge/Socket.IO-4.8.3-010101?style=flat-square&logo=socket.io&logoColor=white) |
 | **Styling** | ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white) |
-
-### Frontend
-
-- React 19.2.4
-- Vite 8.0.1
-- Zustand 5.0.12
-- React Router DOM 7.14.0
-- Socket.IO Client 4.8.3
-- @vitejs/plugin-react 6.0.1
-- @rolldown/plugin-babel 0.2.1
-- CSS3
-
-### Backend
-
-- Node.js 18+
-- Express 5.2.1
-- Socket.IO 4.8.3
-- CORS 2.8.6
-- dotenv 17.3.1
-- cross-env 10.1.0
-- nodemon 3.1.14
-   
+  
 ## ⚙️ Installation & Setup & Run
 
 ### 1. Install dependencies
-Install scripts are provided at the root of the program:
-install.sh - checks and installs Node.js dependencies
-makeandrun.sh - same as install, also runs the program in production mode
+Install scripts are provided at the root of the program:  
+* install.sh - checks and installs Node.js dependencies  
+* makeandrun.sh - same as install; also runs the program in production mode  
 
 ### 2. Pre-configurie access codes
-Setting access codes as environment variables in UNIX-type shells (Linux Bash, maxOS Terminal (zsh, bash), WSL (Windows Subsystem for Linux), Git Bash and others):
-
-`export FRONTDESK_KEY=your_key`
-
-`export LAPTRACKER_KEY=your_key`
-
-`export RACECONTROL_KEY=your_key`
-
-The values can be unset in UNIX-type shells in format `unset KEY`, example `unset FRONTDESK_KEY` after use.
-
-In a PowerShell environment, please use format `$env:KEY = "value"` for the above keys. `Remove-Item Env:KEY`for clearing after use.
-
-In Windows CMD, please use format `set KEY=value` for the above keys. `set KEY=`(leave value field empty) for clearing after use.
-
-### 3. Run server and client apps concurrently 
-Note to be at application root when running npm:
-
-`npm start` run in production mode (timer set to 10 min)
-
-`npm run dev` run in production mode (timer set to 1 min, DEV PANEL activated)
-
+Setting access codes as environment variables in UNIX-type shells (Linux Bash, maxOS Terminal (zsh, bash), WSL (Windows Subsystem for Linux), Git Bash and others):  
+  
+`export FRONTDESK_KEY=your_key`  
+`export LAPTRACKER_KEY=your_key`  
+`export RACECONTROL_KEY=your_key`  
+  
+The values can be unset in UNIX-type shells in format `unset KEY`.  
+  ex: `unset FRONTDESK_KEY` for clearing after use.  
+  
+In a PowerShell environment, please use format `$env:KEY = "value"` for the above keys.  
+  `Remove-Item Env:KEY` for clearing after use.  
+  
+In Windows CMD, please use format `set KEY=value` for the above keys.  
+  `set KEY=`(leave value field empty) for clearing after use.  
+  
+### 3. Run server and client apps concurrently  
+  
+**In root folder _(info-screens)_**:  
+  
+`npm start` to run in **production** mode _(timer set to 10 min)_
+  
+`npm run dev` to run in **development** mode _(timer set to 1 min, DEV PANEL activated)_  
+  
 ### 4. Open the app
 
-- Frontend: `http://localhost:4173` (`http://localhost:5173` while running dev mode)
-- Backend: `http://localhost:3000` (or custom port if using VITE_SERVER_PORT)
-- Network access (LAN): `http://<host-ip>:5173` (`http://<host-ip>:5173` while running dev mode)
+- **Frontend:**  
+`http://localhost:4173`  
+_(`http://localhost:5173` while running dev mode)_  
+  
+- **Backend:**  
+`http://localhost:3000`  
+_(or custom port if using VITE_SERVER_PORT)_  
 
-> Note: `client/vite.config.js` already includes `server.host = true`, so the Vite dev server should expose the network address when started from the `client` folder.
-> Note: custom port can be set for server<>client communication, example`export VITE_SERVER_PORT=3001` would set server<>client communication on port 3001
+- **Network access (LAN):**  
+`http://<host-ip>:5173`  
+_(`http://<host-ip>:5173` while running dev mode)_  
+  
+> **Note:**  `client/vite.config.js` already includes `server.host = true`, so the Vite dev server should expose the network address when started from the `client` folder.  
+  
+> **Note:** custom port can be set for server<>client communication, example`export VITE_SERVER_PORT=3001` would set server<>client communication on port 3001
 
 ## 🛠️ Key Features & UI Modes
   
@@ -142,7 +132,10 @@ Signals subsequent participants to head to paddock.
 _All displays support fullscreen-view._  
 
 ## 📁 Project structure
-
+  
+<details>
+<summary>Click to expand file tree</summary> 
+  
 ```
 info-screens
 ├─ README.md
@@ -228,7 +221,7 @@ info-screens
    │  ├─ lapService.js
    │  ├─ raceService.js
    │  ├─ sessionService.js
-     ├─ socket
+      ├─ socket
    │  ├─ auth.js
    │  ├─ handlers
    │  │  ├─ lap.js
@@ -242,41 +235,46 @@ info-screens
    └─ utils
       ├─ persistState.js
       └─ processEnvirVariables.js
-```
+```  
+  
+</details>
 
-## 📌 Known Limitations
-
-- The current MVP does not fully secure Socket.IO event endpoints
-- Authentication is present at the UI layer but not enforced for every event
-- Persistent data is local and simple, not cloud-hosted and without a database layer
-
-
+## 📌 Known Limitations  
+  
+- The current MVP does not fully secure Socket.IO event endpoints.  
+- Authentication is present at the UI layer but not enforced for every event.  
+- Persistent data is local and simple, not cloud-hosted and without a database layer.  
+  
 ## 🔑 Other  
 * **Authentication:** role-based access to interactive interfaces.  
 Access key must be configured before running the server.
-Employee interfaces prompt for access key before displaying content and controls. No token is persisted. 
-
-Authentication is implemented on UI level, where credentials are sent to server for granting access. 
-
-Authentication is not enforced on Socket.IO events, meaning the UI is open for JavaScript injection and replication of valid client behaviour, allowing access to date and also manipulate data. No token is asked in MVP version.
+Employee interfaces prompt for access key before displaying content and controls. No token is persisted.  
+Authentication is implemented on the UI level; credentials are sent to server for granting access.  
+_Authentication is not enforced on Socket.IO events, meaning the UI is open for possible JavaScript injection, and replication of valid client behaviour, potentially allowing manipulation of data. No token is asked in MVP version._  
+  
 * **Dev-Panel:** collapsible control panel in dev-mode for easier testing. It reduces the need to switch between tabs/windows by allowing a tester to:  
   * generate sessions and drivers  
   * clear the frontdesk of all data  
   * start and end sessions  
   * use all race mode buttons  
+
 * **Simplified Remote Access:** uses the Environment-Aware Connection String approach for portability and ease of deployment. Any device on the same network can access the UI by navigating to the hosts IP address.  
+  
 * **Persistence:** pushing live data to a local .json file allows races to continue smoothly after any possible server interruptions.  
 
 ## ❓ FAQ
-* Unable to run run install script ./install.sh or ./makeandrun.sh in bash?
-  * Please adjust 'chmod +x install.sh && xhmod +x makeandrun.sh' and rerun the scripts
-* How to build node package manually in bash?
-  * Please use 'cd client/ && npm install && cd ../server/ && npm install && cd .. && npm install'
-
-# 🧑‍🤝‍🧑🏆👏 Authors, Roles and Credits
-* Olga Kuvatova – project skeleton, session management, Front Desk views, DEV PANEL, persistency
-* Mihkel Truup – project lead, state management, Race Control views, zustand, useRaceState React.js hook, persistency
-* Mari Virkus – heartbeat and Socket.IO prototyping engineer, lap tracking management, Lap Tracker views, CSS
-* Heilika Ots – public facing views (Leaderboard, Next Race, Countdown, Race Flags), CSS
-
-* Karl Lainestu – mentoring and appreciation
+* **Unable to run run the install scripts `./install.sh` or `./makeandrun.sh` in bash?**  
+  * Please adjust `chmod +x install.sh && xhmod +x makeandrun.sh` and rerun the scripts  
+* **How to build node package manually in bash?**  
+  * Please use `cd client/ && npm install && cd ../server/ && npm install && cd .. && npm install`  
+  
+# 🧑‍🤝‍🧑🏆👏 Authors, Roles and Credits  
+* **Olga Kuvatova** – project skeleton, session management, Front Desk views, DEV PANEL, and persistency  
+  
+* **Mihkel Truup** – project lead, state management, Race Control views, zustand, useRaceState React.js hook, and persistency  
+  
+* **Mari Virkus** – heartbeat and Socket.IO prototyping, lap tracking management, Lap Tracker views, and CSS  
+  
+* **Heilika Ots** – public facing views - Leaderboard, Next Race, Countdown, Race Flags, and CSS
+  
+* **Karl Lainestu** – mentoring and appreciation  
