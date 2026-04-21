@@ -3,7 +3,7 @@
    ========================= */
    .leaderboard-container {
     height: 100vh;              /* täisekraan kõrgus */
-    width: 100vw;               /* täisekraan laius */
+    width: 100%;               /* täisekraan laius */
     background-color: #1e2f3f;  /* tumeroheline/sinine taust */
     color: #ffffff;             /* valge tekst */
     font-family: 'Arial Black', sans-serif;
@@ -13,6 +13,7 @@
   
     box-sizing: border-box;     /* padding ei suurenda elementi */
     position: relative;         /* vajalik absolute nuppude jaoks */
+    overflow: hidden !important;
   }
   
   
