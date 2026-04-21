@@ -39,10 +39,9 @@ async function startServer() {
     syncSessionCounter();
 
     // Set duration from env variable if not already set in state, otherwise keep the loaded duration
-    if (!state.timer || !state.timer.duration) {
-        setDuration(RACE_DURATION)
-    }
+    setDuration(RACE_DURATION)
 
+    // attach socket handlers
     socketHandlers(io);
 
     // START LISTEN ON SERVER
