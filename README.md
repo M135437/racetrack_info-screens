@@ -35,7 +35,7 @@ An event-driven real-time race management system built with **Socket.io** and **
 - Node.js: **18.x or newer**
 - npm: **10.x or newer**
 - Browser: modern Chromium-based browser or latest Firefox
-- Local network access: open port **5173** for client and **3000** for server
+- Local network access: open port **5173** for client (**4173** in dev mode) and **3000** for server
 
 ### 📦 Supported Versions
 
@@ -73,10 +73,10 @@ Setting access codes as environment variables in UNIX-type shells (Linux Bash, m
 The values can be unset in UNIX-type shells in format `unset KEY`.  
 -> ex: `unset FRONTDESK_KEY` for clearing after use.  
   
-In a PowerShell environment, please use format `$env:KEY = "value"` for the above keys.  
+In a PowerShell environment, please use format `$env:KEY = "your_key"` for configuring the above keys.  
 -> `Remove-Item Env:KEY` for clearing after use.  
   
-In Windows CMD, please use format `set KEY=value` for the above keys.  
+In Windows CMD, please use format `set KEY=your_key` for the above keys.  
 -> `set KEY=`(leave value field empty) for clearing after use.  
   
 ### 3. Run server and client apps concurrently  
@@ -136,6 +136,15 @@ Signals subsequent participants to head to paddock.
 - **Countdown:** for public areas and around the track to be viewed by spectators and participants. 
 - **Flag Screens:** to be used around the track for notifying drivers and officials of racetrack safety.  
 _All displays support fullscreen-view._  
+
+## 🧪Extra Features
+
+### 🧰 Dev-Panel: 
+ - *collapsible control panel* in dev-mode for easier testing. It reduces the need to switch between tabs/windows by allowing a tester to:
+- generate sessions and drivers
+- clear the frontdesk of all data
+- start and end sessions
+- use all race mode buttons
 
 ## 📁 Project structure
   
@@ -248,22 +257,18 @@ info-screens
 ## 📌 Known Limitations  
   
 - The current MVP does not fully secure Socket.IO event endpoints.  
-- Authentication is present at the UI layer but not enforced for every event.  
-- Persistent data is local and simple, not cloud-hosted, and without a database layer.  
+- Authentication is present at the UI layer, but not enforced for every event.
+- Persistent data is local and simple, not cloud-hosted, and without a database stack.  
   
 ## 🔑 Other  
 * **Authentication:** role-based access to interactive interfaces.  
 Access keys must be configured before running the server.
-Employee interfaces prompt for access key before displaying content and controls. No token is persisted.  
-Authentication is implemented on the UI level; credentials are sent to server for granting access.  
+Backend<>frontend communication port van be pre-configured (optional) by `export VITE_SERVER_PORT=your_port`
+Employee interfaces prompt for access key before displaying content and controls. No token is persisted.
+  * _Authentication is implemented on the UI level; credentials are sent to server for granting access._  
+  * _Authentication is not enforced on Socket.IO events, meaning the UI is open for potential JavaScript injection, and replication of valid client behaviour, potentially allowing manipulation of data. No token is asked in MVP version._  
   
-_Authentication is not enforced on Socket.IO events, meaning the UI is open for possible JavaScript injection, and replication of valid client behaviour, potentially allowing manipulation of data. No token is asked in MVP version._  
-  
-* **Dev-Panel:** collapsible control panel in dev-mode for easier testing. It reduces the need to switch between tabs/windows by allowing a tester to:  
-  * generate sessions and drivers  
-  * clear the frontdesk of all data  
-  * start and end sessions  
-  * use all race mode buttons  
+* **React Fast Refresh** and **Vite Live reload* active when running on dev mode for agile development
 
 * **Simplified Remote Access:** uses the Environment-Aware Connection String approach for portability and ease of deployment. Any device on the same network can access the UI by navigating to the hosts IP address.  
   
@@ -276,12 +281,12 @@ _Authentication is not enforced on Socket.IO events, meaning the UI is open for 
   * Please use `cd client/ && npm install && cd ../server/ && npm install && cd .. && npm install`  
   
 # 🧑‍🤝‍🧑🏆👏 Authors, Roles and Credits  
-* **Olga Kuvatova** – project skeleton, session management, Front Desk views, DEV PANEL, and persistency  
+* **Olga Kuvatova** – project skeleton, session management, Front Desk views, DEV PANEL, persistency,  optimism catalyst
   
-* **Mihkel Truup** – project lead, state management, Race Control views, zustand, useRaceState React.js hook, and persistency  
+* **Mihkel Truup** – state management, Race Control views, zustand, useRaceState React.js hook, persistency, project lead
   
-* **Mari Virkus** – heartbeat and Socket.IO prototyping, lap tracking management, Lap Tracker views, and CSS  
+* **Mari Virkus** – heartbeat and Socket.IO prototyping engineer, lap tracking management, Lap Tracker views, CSS, flow maintainer
   
-* **Heilika Ots** – public facing views - Leaderboard, Next Race, Countdown, Race Flags, and CSS
+* **Heilika Ots** – public facing views - Leaderboard, Next Race, Countdown, Race Flags, React skeleton and planning, component mounting, design and CSS, lead optimist 
   
 * **Karl Lainestu** – mentoring and appreciation  
