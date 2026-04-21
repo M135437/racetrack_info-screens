@@ -62,6 +62,7 @@ function createSession(name) {
         return session;
     }
     stateMachine.stateUptNextRaceId(first.id);
+    saveState();
     return session;
 }
 
