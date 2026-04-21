@@ -1,10 +1,21 @@
 # 🏎️ Beachside Racetrack - Lap Tracking System
   
-An event-driven race management system for race controller, receptionist, lap tracker usage and spectator display built with **Node.js**, **Vite**, **Socket.io** and **React**.  A real-time system so that everyone has the information they need, exactly when they need it. And the junioper developers building it learned a lot!
+An event-driven real-time race management system built with **Socket.io** and **React** on **Node.js**. Includes role-specific interfaces for employees and public displays for spectators.
   
 📱 🖥️ 💻 **Tablet and Mobile Device interfaces** - _Designed for use by track marshals and pit crew._  
   
-
+## Table of contents  
+1. [Architecture](##architecture)  
+2. [Requirements](##requirements)
+3. [Supported Versions](###supported-versions)  
+4. [Tech Stack](##tech-stack)  
+5. [Installation & Setup & Run](##installation--setup--run)  
+6. [Key Features & UI Modes](##key-features--ui-modes)  
+7. [Project Structure](##project-structure)  
+8. [Known Limitations](##known-limitations)  
+9. [Other](##other)  
+10. [FAQ](##faq)  
+11. [Authors, Roles, and Credits](#authors-roles-and-credits)  
   
 ## 🏗️ Architecture  
   
@@ -21,7 +32,7 @@ An event-driven race management system for race controller, receptionist, lap tr
 - Browser: modern Chromium-based browser or latest Firefox
 - Local network access: open port **5173** for client and **3000** for server
 
-## 📦 Supported Versions
+### 📦 Supported Versions
 
 | Package | Supported | Notes |
 |---|---|---|
@@ -35,9 +46,19 @@ An event-driven race management system for race controller, receptionist, lap tr
 ## 🧩 Tech Stack
 | Category | Tech Stack |
 |:---:|:---:|
-| **Frontend** | ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB) ![Zustand](https://img.shields.io/badge/Zustand-443322?style=for-the-badge&logo=react&logoColor=white) ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white) |
-| **Backend** | ![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white) ![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white) |
-| **Real-time** | ![Socket.io](https://img.shields.io/badge/Socket.io-010101?style=for-the-badge&logo=socket.io&logoColor=white) |
+| **Frontend** | ![React](https://img.shields.io/badge/React-19.2.4-61DAFB?style=flat-square&logo=react&logoColor=white), Router DOM v7.14.0  
+![Zustand](https://img.shields.io/badge/Zustand-5.0.12-443E38?style=flat-square)  
+![Vite](https://img.shields.io/badge/Vite-8.0.1-646CFF?style=flat-square&logo=vite&logoColor=white)  
+![Vite Plugin](https://img.shields.io/badge/%40vitejs%2Fplugin--react-6.0.1-646CFF?style=flat-square&logo=vite&logoColor=white)  
+![Socket.io](https://img.shields.io/badge/Socket.IO_Client-4.8.3-010101?style=flat-square&logo=socket.io&logoColor=white)  
+![Rolldown](https://img.shields.io/badge/%40rolldown%2Fplugin--babel-0.2.1-FFCD3A?style=flat-square&logo=babel&logoColor=black) |
+| **Backend** | ![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=flat-square&logo=node.js&logoColor=white)  
+![Express](https://img.shields.io/badge/Express-5.2.1-000000?style=flat-square&logo=express&logoColor=white)  
+![CORS](https://img.shields.io/badge/CORS-2.8.6-blue?style=flat-square)  
+![dotenv](https://img.shields.io/badge/dotenv-17.3.1-ECD53F?style=flat-square&logo=dotenv&logoColor=black)  
+![cross-env](https://img.shields.io/badge/cross--env-10.1.0-333333?style=flat-square)  
+![nodemon](https://img.shields.io/badge/nodemon-3.1.14-76D04B?style=flat-square&logo=nodemon&logoColor=white) |
+| **Real-time** | ![Socket.io](https://img.shields.io/badge/Socket.IO-4.8.3-010101?style=flat-square&logo=socket.io&logoColor=white) |
 | **Styling** | ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white) |
 
 ### Frontend
