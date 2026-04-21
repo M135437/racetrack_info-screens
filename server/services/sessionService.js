@@ -1,5 +1,6 @@
 import state from "../state/state.js"
 import * as stateMachine from "../state/stateMachine.js"
+import { saveState } from "../utils/persistState.js";
 
 //in-memory pointer to sessions in state
 let sessionCounter = 1;
@@ -66,6 +67,7 @@ function createSession(name) {
 
 function deleteSession(id) {
     state.sessions = state.sessions.filter(session => session.id !== id);
+    saveState();
     return { message: `Session with id ${id} deleted successfully` };
 }
 
@@ -126,7 +128,7 @@ function addDriver(sessionId, driverName, car) {
     // 5. Add the driver to the session and decrease free slots
     session.drivers.push(driver);
     session.freeSlotsLeft--;
-
+    saveState();
     return driver;
 }
 
@@ -145,7 +147,7 @@ function removeDriver(sessionId, driverId) {
     if (session.drivers.length < initialLength) {
         session.freeSlotsLeft++
     }
-
+    saveState();
     return { message: "Driver removed" }
 }
 
@@ -167,7 +169,7 @@ function updateDriver(sessionId, driverId, name, car) {
             driver.car = newCarNum;
         }
     }
-
+    saveState();
     return driver;
 }
 
