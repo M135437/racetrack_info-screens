@@ -20,7 +20,7 @@ An event-driven real-time race management system built with **Socket.io** and **
 10. [FAQ](#-faq)  
 11. [Authors, Roles, and Credits](#-authors-roles-and-credits)  
   
-</summary>
+</details>
   
 ## 🏗️ Architecture  
   
