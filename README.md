@@ -257,7 +257,7 @@ info-screens
 ## 📌 Known Limitations  
   
 - The current MVP does not fully secure Socket.IO event endpoints.  
-- Authentication is present at the UI layer, but not enforced for every event.
+- Authentication is present at the UI layer but not enforced for every event.
 - Persistent data is local and simple, not cloud-hosted, and without a database stack.  
   
 ## 🔑 Other  
