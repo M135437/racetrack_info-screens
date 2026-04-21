@@ -55,10 +55,10 @@ An event-driven real-time race management system built with **Socket.io** and **
 
 ### 1. Install dependencies
 Install scripts are provided at the root of the program:  
-* install.sh - checks and installs Node.js dependencies  
-* makeandrun.sh - same as install; also runs the program in production mode  
+* **install.sh** - checks and installs Node.js dependencies  
+* **makeandrun.sh** - same as install; also runs the program in production mode  
 
-### 2. Pre-configurie access codes
+### 2. Pre-configure access codes
 Setting access codes as environment variables in UNIX-type shells (Linux Bash, maxOS Terminal (zsh, bash), WSL (Windows Subsystem for Linux), Git Bash and others):  
   
 `export FRONTDESK_KEY=your_key`  
@@ -66,21 +66,22 @@ Setting access codes as environment variables in UNIX-type shells (Linux Bash, m
 `export RACECONTROL_KEY=your_key`  
   
 The values can be unset in UNIX-type shells in format `unset KEY`.  
-  ex: `unset FRONTDESK_KEY` for clearing after use.  
+-> ex: `unset FRONTDESK_KEY` for clearing after use.  
   
 In a PowerShell environment, please use format `$env:KEY = "value"` for the above keys.  
-  `Remove-Item Env:KEY` for clearing after use.  
+-> `Remove-Item Env:KEY` for clearing after use.  
   
 In Windows CMD, please use format `set KEY=value` for the above keys.  
-  `set KEY=`(leave value field empty) for clearing after use.  
+-> `set KEY=`(leave value field empty) for clearing after use.  
   
 ### 3. Run server and client apps concurrently  
   
 **In root folder _(info-screens)_**:  
   
-`npm start` to run in **production** mode _(timer set to 10 min)_
-  
-`npm run dev` to run in **development** mode _(timer set to 1 min, DEV PANEL activated)_  
+* `npm start` to run in **production** mode  
+ _(timer set to 10 min)_  
+* `npm run dev` to run in **development** mode  
+_(timer set to 1 min; DEV PANEL activated)_   
   
 ### 4. Open the app
 
@@ -243,13 +244,14 @@ info-screens
   
 - The current MVP does not fully secure Socket.IO event endpoints.  
 - Authentication is present at the UI layer but not enforced for every event.  
-- Persistent data is local and simple, not cloud-hosted and without a database layer.  
+- Persistent data is local and simple, not cloud-hosted, and without a database layer.  
   
 ## 🔑 Other  
 * **Authentication:** role-based access to interactive interfaces.  
-Access key must be configured before running the server.
+Access keys must be configured before running the server.
 Employee interfaces prompt for access key before displaying content and controls. No token is persisted.  
 Authentication is implemented on the UI level; credentials are sent to server for granting access.  
+  
 _Authentication is not enforced on Socket.IO events, meaning the UI is open for possible JavaScript injection, and replication of valid client behaviour, potentially allowing manipulation of data. No token is asked in MVP version._  
   
 * **Dev-Panel:** collapsible control panel in dev-mode for easier testing. It reduces the need to switch between tabs/windows by allowing a tester to:  
@@ -265,7 +267,7 @@ _Authentication is not enforced on Socket.IO events, meaning the UI is open for 
 ## ❓ FAQ
 * **Unable to run run the install scripts `./install.sh` or `./makeandrun.sh` in bash?**  
   * Please adjust `chmod +x install.sh && xhmod +x makeandrun.sh` and rerun the scripts  
-* **How to build node package manually in bash?**  
+* **How to build the required node package manually in bash?**  
   * Please use `cd client/ && npm install && cd ../server/ && npm install && cd .. && npm install`  
   
 # 🧑‍🤝‍🧑🏆👏 Authors, Roles and Credits  
