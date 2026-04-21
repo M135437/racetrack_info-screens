@@ -140,11 +140,11 @@ _All displays support fullscreen-view._
 ## 🧪Extra Features
 
 ### 🧰 Dev-Panel: 
- - *collapsible control panel* in dev-mode for easier testing. It reduces the need to switch between tabs/windows by allowing a tester to:
-- generate sessions and drivers
-- clear the frontdesk of all data
-- start and end sessions
-- use all race mode buttons
+ - *Collapsible and movable control panel* in dev-mode for easier testing. It reduces the need to switch between tabs/windows by allowing a tester to:
+  - generate sessions and drivers
+  - clear the frontdesk of all data
+  - start and end sessions
+  - use all race mode buttons
 
 ## 📁 Project structure
   
