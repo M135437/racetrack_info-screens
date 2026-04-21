@@ -5,6 +5,9 @@ An event-driven real-time race management system built with **Socket.io** and **
 📱 🖥️ 💻 **Tablet and Mobile Device interfaces** - _Designed for use by track marshals and pit crew._  
   
 ## Table of contents  
+<details>
+<summary>Click to expand file tree</summary> 
+  
 1. [Architecture](#-architecture)  
 2. [Requirements](#-requirements)
 3. [Supported Versions](#-supported-versions)  
@@ -16,6 +19,8 @@ An event-driven real-time race management system built with **Socket.io** and **
 9. [Other](#-other)  
 10. [FAQ](#-faq)  
 11. [Authors, Roles, and Credits](#-authors-roles-and-credits)  
+  
+</summary>
   
 ## 🏗️ Architecture  
   
