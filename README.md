@@ -46,18 +46,8 @@ An event-driven real-time race management system built with **Socket.io** and **
 ## 🧩 Tech Stack
 | Category | Tech Stack |
 |:---:|:---:|
-| **Frontend** | ![React](https://img.shields.io/badge/React-19.2.4-61DAFB?style=flat-square&logo=react&logoColor=white), Router DOM v7.14.0  
-![Zustand](https://img.shields.io/badge/Zustand-5.0.12-443E38?style=flat-square)  
-![Vite](https://img.shields.io/badge/Vite-8.0.1-646CFF?style=flat-square&logo=vite&logoColor=white)  
-![Vite Plugin](https://img.shields.io/badge/%40vitejs%2Fplugin--react-6.0.1-646CFF?style=flat-square&logo=vite&logoColor=white)  
-![Socket.io](https://img.shields.io/badge/Socket.IO_Client-4.8.3-010101?style=flat-square&logo=socket.io&logoColor=white)  
-![Rolldown](https://img.shields.io/badge/%40rolldown%2Fplugin--babel-0.2.1-FFCD3A?style=flat-square&logo=babel&logoColor=black) |
-| **Backend** | ![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=flat-square&logo=node.js&logoColor=white)  
-![Express](https://img.shields.io/badge/Express-5.2.1-000000?style=flat-square&logo=express&logoColor=white)  
-![CORS](https://img.shields.io/badge/CORS-2.8.6-blue?style=flat-square)  
-![dotenv](https://img.shields.io/badge/dotenv-17.3.1-ECD53F?style=flat-square&logo=dotenv&logoColor=black)  
-![cross-env](https://img.shields.io/badge/cross--env-10.1.0-333333?style=flat-square)  
-![nodemon](https://img.shields.io/badge/nodemon-3.1.14-76D04B?style=flat-square&logo=nodemon&logoColor=white) |
+| **Frontend** | ![React](https://img.shields.io/badge/React-19.2.4-61DAFB?style=flat-square&logo=react&logoColor=white), Router DOM v7.14.0 ![Zustand](https://img.shields.io/badge/Zustand-5.0.12-443E38?style=flat-square) ![Vite](https://img.shields.io/badge/Vite-8.0.1-646CFF?style=flat-square&logo=vite&logoColor=white) ![Vite Plugin](https://img.shields.io/badge/%40vitejs%2Fplugin--react-6.0.1-646CFF?style=flat-square&logo=vite&logoColor=white) ![Socket.io](https://img.shields.io/badge/Socket.IO_Client-4.8.3-010101?style=flat-square&logo=socket.io&logoColor=white) ![Rolldown](https://img.shields.io/badge/%40rolldown%2Fplugin--babel-0.2.1-FFCD3A?style=flat-square&logo=babel&logoColor=black) |
+| **Backend** | ![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=flat-square&logo=node.js&logoColor=white) ![Express](https://img.shields.io/badge/Express-5.2.1-000000?style=flat-square&logo=express&logoColor=white) ![CORS](https://img.shields.io/badge/CORS-2.8.6-blue?style=flat-square) ![dotenv](https://img.shields.io/badge/dotenv-17.3.1-ECD53F?style=flat-square&logo=dotenv&logoColor=black) ![cross-env](https://img.shields.io/badge/cross--env-10.1.0-333333?style=flat-square) ![nodemon](https://img.shields.io/badge/nodemon-3.1.14-76D04B?style=flat-square&logo=nodemon&logoColor=white) |
 | **Real-time** | ![Socket.io](https://img.shields.io/badge/Socket.IO-4.8.3-010101?style=flat-square&logo=socket.io&logoColor=white) |
 | **Styling** | ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white) |
 
