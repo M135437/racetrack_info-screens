@@ -12,6 +12,6 @@ export default defineConfig({
   },
   preview: {
     host: true,
-    allowedHosts: ['*.up.railway.app']
+    allowedHosts: true
   }
 })
