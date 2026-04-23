@@ -11,6 +11,6 @@ export default defineConfig({
     host: true
   },
   preview: {
-    allowedHosts: ['racetrackinfo-screens-production-8f97.up.railway.app']
+    allowedHosts: ['*.up.railway.app']
   }
 })
